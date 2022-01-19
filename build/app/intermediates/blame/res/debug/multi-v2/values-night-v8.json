@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "D:\\Flutter\\NTESCO-APP\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-night-v8\\values-night-v8.xml",
+            "outputFile": "/Users/dangtm/Github/ntesco-monitoring/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-night-v8/values-night-v8.xml",
             "map": [
                 {
-                    "source": "D:\\Flutter\\NTESCO-APP\\android\\app\\src\\main\\res\\values-night\\styles.xml",
+                    "source": "/Users/dangtm/Github/ntesco-monitoring/android/app/src/main/res/values-night/styles.xml",
                     "from": {
                         "startLines": "3,16",
                         "startColumns": "4,4",

@@ -1,14 +1,8 @@
-import 'package:bmprogresshud/progresshud.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ntesco_smart_monitoring/components/change_language.dart';
-import 'package:ntesco_smart_monitoring/core/auth.dart';
-import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ntesco_smart_monitoring/models/Login.dart';
-import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../components/default_button.dart';

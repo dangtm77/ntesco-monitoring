@@ -1,7 +1,5 @@
-import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/models/Login.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<LoginResponseModel> funcLogin(LoginRequestModel? loginRequestModel) async {
