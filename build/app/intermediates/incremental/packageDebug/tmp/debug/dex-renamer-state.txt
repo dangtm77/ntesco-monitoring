@@ -1,0 +1,4 @@
+#Wed Jan 05 20:17:03 ICT 2022
+base.0=D\:\\Flutter\\NTESCO-APP\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\out\\classes.dex
+renamed.0=classes.dex
+path.0=classes.dex
