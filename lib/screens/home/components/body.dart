@@ -47,7 +47,7 @@ class _BodyPageState extends State<Body> {
                   return Center(
                     child: new Theme(
                       data:
-                          Theme.of(context).copyWith(accentColor: Colors.blue),
+                          Theme.of(context).copyWith(secondaryHeaderColor: Colors.blue),
                       child: new CircularProgressIndicator(),
                     ),
                   );

@@ -5,8 +5,7 @@ import 'package:ntesco_smart_monitoring/components/change_language.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ntesco_smart_monitoring/core/auth.dart';
 import 'package:ntesco_smart_monitoring/helper/util.dart';
-import 'package:ntesco_smart_monitoring/models/Login.dart';
-import 'package:http/http.dart' as http;
+import 'package:ntesco_smart_monitoring/models/Login.dart'; 
 import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -66,8 +65,7 @@ class _SignFormState extends State<SignForm> {
             press: () async {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
-                ProgressHud.of(context)
-                    .show(ProgressHudType.loading, "Vui lòng chờ...");
+                ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
 
                 requestModel!.username = username!.trim();
                 requestModel!.password = password!.trim();
@@ -80,7 +78,7 @@ class _SignFormState extends State<SignForm> {
                         await SharedPreferences.getInstance();
 
                     ProgressHud.of(context)
-                        .showSuccessAndDismiss(text: "Thành công");
+                        ?.showSuccessAndDismiss(text: "Thành công");
                     await Future.delayed(Duration(milliseconds: 300));
 
                     prefs.setBool("ISLOGGEDIN", true);
@@ -88,7 +86,7 @@ class _SignFormState extends State<SignForm> {
                     Navigator.pushReplacementNamed(
                         context, HomeScreen.routeName);
                   } else {
-                    ProgressHud.of(context).dismiss();
+                    ProgressHud.of(context)?.dismiss();
 
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         backgroundColor: Colors.red,
