@@ -51,7 +51,7 @@ class _DataErrorWidgetState extends State<DataErrorWidget> {
         ],
       );
     } else {
-      return Column(
+      return Column( 
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -59,7 +59,7 @@ class _DataErrorWidgetState extends State<DataErrorWidget> {
               child: Column(children: <Widget>[
             Icon(
               Icons.warning_amber_rounded,
-              size: 50,
+              size: 90,
               color: Colors.redAccent,
             ),
             Text("state.error".tr().toUpperCase(),

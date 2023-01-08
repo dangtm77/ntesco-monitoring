@@ -14,8 +14,8 @@
   },
   "menu": {
     "home": "Trang chủ",
-    "reports": "Báo cáo",
-    "reports_subtitle": "Báo cáo hệ thống",
+    "dexuat": "Phiếu đề xuất",
+    "dexuat_subtitle": "Theo dõi phiếu đề xuất",
     "log_out": "Đăng xuất",
     "settings": "Cài đặt",
     "alarm": "Cảnh báo",

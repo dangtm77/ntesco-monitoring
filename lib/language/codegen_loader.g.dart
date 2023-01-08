@@ -30,8 +30,8 @@ class CodegenLoader extends AssetLoader{
   },
   "menu": {
     "home": "Home",
-    "reports": "Reports",
-    "reports_subtitle": "System reports",
+    "dexuat": "Requests",
+    "dexuat_subtitle": "Requests Tracking",
     "log_out": "Log out",
     "settings": "Settings",
     "alarm": "Alarm",
@@ -66,8 +66,8 @@ static const Map<String,dynamic> vi_VN = {
   },
   "menu": {
     "home": "Trang chủ",
-    "reports": "Báo cáo",
-    "reports_subtitle": "Báo cáo hệ thống",
+    "dexuat": "Phiếu đề xuất",
+    "dexuat_subtitle": "Theo dõi phiếu đề xuất",
     "log_out": "Đăng xuất",
     "settings": "Cài đặt",
     "alarm": "Cảnh báo",

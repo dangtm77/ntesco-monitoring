@@ -6,11 +6,12 @@ import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/core/contact_us.dart';
 import 'package:ntesco_smart_monitoring/models/ContactUs.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
-import 'package:easy_localization/easy_localization.dart'; 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../components/top_header.dart';
+import '../../home/home_screen.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -33,9 +34,10 @@ class _BodyPageState extends State<Body> {
         filter: "[[\"code\",\"=\",\"$lang\"],\"and\",[\"type\",\"=\",1]]",
         requireTotalCount: "true");
     var response = await funcGetListContactUs(options);
-    if (response.statusCode == 200)
+    if (response.statusCode == 200) {
+      print(response.body);
       return ContactUsModels.fromJson(jsonDecode(response.body));
-    else if (response.statusCode == 401)
+    } else if (response.statusCode == 401)
       throw response.statusCode;
     else
       throw Exception('StatusCode: ${response.statusCode}');
@@ -52,17 +54,33 @@ class _BodyPageState extends State<Body> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            TopHeaderSub(title: "menu.contact_us".tr(), subtitle: "menu.contact_us_subtitle".tr()), 
+            TopHeaderSub(
+                title: "menu.contact_us".tr(),
+                subtitle: "menu.contact_us_subtitle".tr(),
+                button: InkWell(
+                  borderRadius: BorderRadius.circular(15),
+                  onTap: () =>
+                      Navigator.pushNamed(context, HomeScreen.routeName),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Icon(Icons.error_outline_rounded,
+                          color: kPrimaryColor, size: 40)
+                    ],
+                  ),
+                )),
             Expanded(
               child: new RefreshIndicator(
                 onRefresh: () async {
                   setState(() {
-                    listContactUs = _getListContactUs(context.locale.languageCode);
+                    listContactUs =
+                        _getListContactUs(context.locale.languageCode);
                   });
                 },
                 child: FutureBuilder<ContactUsModels>(
                   future: listContactUs,
-                  builder: (BuildContext context, AsyncSnapshot<ContactUsModels> snapshot) {
+                  builder: (BuildContext context,
+                      AsyncSnapshot<ContactUsModels> snapshot) {
                     if (snapshot.hasError)
                       return DataErrorWidget(error: snapshot.error.toString());
                     else {
@@ -76,13 +94,17 @@ class _BodyPageState extends State<Body> {
                                 child: ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: snapshot.data!.data.length,
-                                  itemBuilder: (BuildContext context, int index) {
-                                    var item = snapshot.data!.data.elementAt(index);
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    var item =
+                                        snapshot.data!.data.elementAt(index);
                                     return AnimationConfiguration.staggeredList(
                                       position: index,
-                                      duration: const Duration(milliseconds: 375),
+                                      duration:
+                                          const Duration(milliseconds: 375),
                                       child: SlideAnimation(
-                                        child: FadeInAnimation(child: contactUsItem(item)),
+                                        child: FadeInAnimation(
+                                            child: contactUsItem(item)),
                                       ),
                                     );
                                   },
@@ -91,7 +113,8 @@ class _BodyPageState extends State<Body> {
                             ),
                           ]);
                         } else {
-                          return NoDataWidget(message: "Không tìm thấy bất kỳ dự án nào.");
+                          return NoDataWidget(
+                              message: "Không tìm thấy bất kỳ thông tin nào");
                         }
                       }
                     }
@@ -107,8 +130,11 @@ class _BodyPageState extends State<Body> {
 
   ListTile contactUsItem(ContactUsModel item) {
     return ListTile(
-      title: Text(item.title, style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600)),
-      subtitle: Text(item.value, style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.w600)),
+      title: Text(item.title,
+          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600)),
+      subtitle: Text(item.value,
+          style:
+              TextStyle(color: kSecondaryColor, fontWeight: FontWeight.w600)),
       trailing: Icon(Icons.arrow_right_rounded),
       leading: Container(
         padding: EdgeInsets.only(left: 10),
@@ -124,9 +150,8 @@ class _BodyPageState extends State<Body> {
         ),
       ),
       onTap: () async {
-        if (await canLaunch(item.option001.toString())) {
-          await launch(item.option001.toString());
-        }
+        var uri = Uri.parse(item.option001.toString());
+        if (await canLaunchUrl(uri)) await canLaunchUrl(uri);
       },
     );
   }

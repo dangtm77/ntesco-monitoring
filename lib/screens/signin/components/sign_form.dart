@@ -38,23 +38,6 @@ class _SignFormState extends State<SignForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Text(
-          //   "Sign In",
-          //   style: TextStyle(
-          //     color: kPrimaryColor,
-          //     fontSize: 26,
-          //     fontWeight: FontWeight.w800,
-          //   ),
-          // ),
-          // SizedBox(height: 5),
-          // Text(
-          //   "Hi there, Nice to see you again.",
-          //   style: TextStyle(
-          //     color: Color(0xFF989eb1),
-          //     fontSize: 13,
-          //     fontWeight: FontWeight.bold,
-          //   ),
-          // ),
           SizedBox(height: getProportionateScreenHeight(10)),
           buildUsernameFormField(),
           SizedBox(height: getProportionateScreenHeight(30)),

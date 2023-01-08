@@ -16,7 +16,7 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   int currentPage = 0;
   List<Map<String, String>> splashData = [
-    {"text": "Chào bạn đến với hệ thống của Ntesco", "image": "assets/images/splash_1.png"},
+    {"text": "Chào bạn đến với của NTesco Portal", "image": "assets/images/splash_1.png"},
     {"text": "Cổng thông tin này giúp mọi người có thể kết nối với nhau", "image": "assets/images/splash_2.png"},
     {"text": "Chúng tôi đem lại sự khác biệt", "image": "assets/images/splash_3.png"},
   ];

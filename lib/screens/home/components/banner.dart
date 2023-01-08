@@ -30,7 +30,7 @@ class HeaderBanner extends StatelessWidget {
           style: TextStyle(color: Colors.white),
           children: [
             TextSpan(
-              text: "hello_message".tr(args: [model!.fullName.toString()]).toString(),
+              text: "hello_message".tr(args: [model!.hoTen.toString()]).toString(),
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(20),
                 fontWeight: FontWeight.bold,

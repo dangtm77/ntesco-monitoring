@@ -6,6 +6,6 @@ framework module hexcolor {
 }
 
 module hexcolor.Swift {
-    header "hexcolor-Swift.h"
-    requires objc
+  header "hexcolor-Swift.h"
+  requires objc
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 
-const endPoint = "io.ntesco.com";
+const endPoint = "portal-api.ntesco.com";
 
 const kPrimaryColor = Color(0xFF0005493); 
 
@@ -11,7 +11,7 @@ const kPrimaryGradientColor = LinearGradient(
   end: Alignment.bottomRight,
   colors: [Color(0xFFFFA53E), Color(0xFFFF7643)],
 );
-const kSecondaryColor = Color(0xFF979797);
+const kSecondaryColor = Colors.black87;
 const kTextColor = Color(0xFF757575);
 
 const kAnimationDuration = Duration(milliseconds: 200);

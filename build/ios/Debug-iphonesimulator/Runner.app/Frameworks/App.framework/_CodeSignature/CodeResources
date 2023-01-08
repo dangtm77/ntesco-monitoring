@@ -10,7 +10,7 @@
 		</data>
 		<key>flutter_assets/AssetManifest.json</key>
 		<data>
-		KtgdUjEB8jZq1kOvKBrb0U0dJAA=
+		8k5vaVSwVu8oL5FVNWWBbo1fnRM=
 		</data>
 		<key>flutter_assets/FontManifest.json</key>
 		<data>
@@ -18,7 +18,7 @@
 		</data>
 		<key>flutter_assets/NOTICES.Z</key>
 		<data>
-		8AlcpNeMs47Uk0jpHIDvYbz1FLk=
+		8qwXlaNg88HNOjYTTRf8NAWZmMU=
 		</data>
 		<key>flutter_assets/assets/fonts/Quicksand-Bold.ttf</key>
 		<data>
@@ -240,6 +240,10 @@
 		<data>
 		8SBHfIiZh1Ts4/JDeHsfw4TMeY8=
 		</data>
+		<key>flutter_assets/assets/images/avatar.jpg</key>
+		<data>
+		b7SjTf8v7j3sAmYv3UBLNgcuLFo=
+		</data>
 		<key>flutter_assets/assets/images/fedex-express.png</key>
 		<data>
 		WMnmQzQewgpW3cjq0wCoL+iFY6I=
@@ -342,11 +346,11 @@
 		</data>
 		<key>flutter_assets/assets/language/en-US.json</key>
 		<data>
-		jJ7agELgvvzBrpYWsbPh6T19q4w=
+		velU9kewTfopab0y11fQJ8Gb+X8=
 		</data>
 		<key>flutter_assets/assets/language/vi-VN.json</key>
 		<data>
-		bai8OfUbX5XK474S3wNEfQGBY0E=
+		w2Ll+BJoCczNu7Va5GULZk1MueU=
 		</data>
 		<key>flutter_assets/fonts/MaterialIcons-Regular.otf</key>
 		<data>
@@ -358,7 +362,7 @@
 		</data>
 		<key>flutter_assets/kernel_blob.bin</key>
 		<data>
-		7AKuIEmz8mA7hajhA0LQVwdVYoY=
+		iZlNlcIGV+LmhBwSpgSiAeLFVaQ=
 		</data>
 		<key>flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>
 		<data>
@@ -391,7 +395,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			ORsFOAFheT7wUXCgFI2JTC1iIyMr6ZpeHD0B9YpOjng=
+			3/433SFGdPFcX88XA0rF4ngBU8/6p/h+wRzZQpGb/98=
 			</data>
 		</dict>
 		<key>flutter_assets/FontManifest.json</key>
@@ -405,7 +409,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			CuBCc7+NttW6WhxNxWVHyTu6V/FJADbOQ1LHHkokZ1w=
+			/GsBKmAwLIdotsmMFzFYapnYz0tJiuKBomt5bLWl7yA=
 			</data>
 		</dict>
 		<key>flutter_assets/assets/fonts/Quicksand-Bold.ttf</key>
@@ -793,6 +797,13 @@
 			LvYN/tXYNgSQv7wO+b8kqUXp6kGTLjEAup4iltMPqj8=
 			</data>
 		</dict>
+		<key>flutter_assets/assets/images/avatar.jpg</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			MW7t7UdCUN+qMwj/hDJGRTZthz2VS+b2KdnEBoH1Nr8=
+			</data>
+		</dict>
 		<key>flutter_assets/assets/images/fedex-express.png</key>
 		<dict>
 			<key>hash2</key>
@@ -972,14 +983,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			QAAtmp+OIqlpTCRfwwYaTlm7lcaIC4z1f8lSI28XbPc=
+			bPjf06zBRp98hvbPAVwKAkmqMqtHshcuZ+bMoodlHfo=
 			</data>
 		</dict>
 		<key>flutter_assets/assets/language/vi-VN.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			qMs6EUIBVl/yC3n918dtMekNTu5bcLHGHzR3oJyBSiI=
+			5O5juRL5Da1ENCxGhRuS/yXfGi48aCVZKpn6nTuZaE0=
 			</data>
 		</dict>
 		<key>flutter_assets/fonts/MaterialIcons-Regular.otf</key>
@@ -1000,7 +1011,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			1xAmuYTzJiUvmiKDCBwOmwWZ1oejxrZvK8N1Nnc84/g=
+			NB/ZaTNgwVyVnHIrQG4aQGV+nBqbHyuAtUxnUa1R7O0=
 			</data>
 		</dict>
 		<key>flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>

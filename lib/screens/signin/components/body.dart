@@ -16,7 +16,7 @@ class Body extends StatelessWidget {
                 SizedBox(height: SizeConfig.screenHeight * 0.05), 
                 Image.asset("assets/images/logo001.png", width: getProportionateScreenWidth(120)), 
                 SizedBox(height:5),
-                Text("NTESCO Smart Monitoring",
+                Text("Smart Monitoring",
                   style: TextStyle(
                     color: Color(0xFF989eb1),
                     fontSize: 18,

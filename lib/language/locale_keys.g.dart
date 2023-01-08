@@ -13,8 +13,8 @@ abstract class  LocaleKeys {
   static const validation_pattern = 'validation.pattern';
   static const validation = 'validation';
   static const menu_home = 'menu.home';
-  static const menu_reports = 'menu.reports';
-  static const menu_reports_subtitle = 'menu.reports_subtitle';
+  static const menu_dexuat = 'menu.dexuat';
+  static const menu_dexuat_subtitle = 'menu.dexuat_subtitle';
   static const menu_log_out = 'menu.log_out';
   static const menu_settings = 'menu.settings';
   static const menu_alarm = 'menu.alarm';
