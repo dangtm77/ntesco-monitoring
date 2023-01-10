@@ -1,0 +1,36 @@
+{
+  "login": {
+    "username_label": "Username",
+    "password_label": "Password",
+    "username_hint": "Enter your username...",
+    "password_hint": "Enter your password...",
+    "signin_button": "Sign In",
+    "forgot_password_button": "Forgot Password?"
+  },
+  "validation": {
+    "required": "Please enter your {}",
+    "string_length": "{} must have at least {} symbols",
+    "pattern": "{} invalid"
+  },
+  "menu": {
+    "home": "Home", 
+    "dexuat": "Requests",
+    "dexuat_subtitle": "Requests Tracking",
+    "log_out": "Log out",
+    "settings": "Settings",
+    "alarm": "Alarm",
+    "contact_us": "Contact us",
+    "contact_us_subtitle": "Contact us - Support - Feedback"
+  },
+  "language_display": "Language display:",
+  "hello_message": "Hi, {}\r\n",
+  "welcome_message": "How are you today!",
+  "state": {
+    "loading": "Loading...",
+    "loading_subtitle": "Loading",
+    "nodata": "Not found",
+    "nodata_subtitle": "Try again or contact to administrator...",
+    "error": "An error is occurring",
+    "error_subtitle": "Please contact to administrator to support..."
+  }
+}

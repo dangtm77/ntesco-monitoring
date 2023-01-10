@@ -32,7 +32,7 @@ class _BodyPageState extends State<Body> {
         skip: 0,
         sort: "[{\"selector\":\"sortIndex\", \"desc\":\"false\"}]",
         filter: "[[\"code\",\"=\",\"$lang\"],\"and\",[\"type\",\"=\",1]]",
-        requireTotalCount: "true");
+        requireTotalCount: 'true');
     var response = await funcGetListContactUs(options);
     if (response.statusCode == 200) {
       print(response.body);

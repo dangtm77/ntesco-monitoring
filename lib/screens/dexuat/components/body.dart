@@ -25,9 +25,10 @@ class Body extends StatefulWidget {
 class _BodyPageState extends State<Body> {
   late Future<PhieuDeXuatModels> listPhieuDeXuat;
   late int yearCurrent = 2022;
+  late List<int> statusCurrent = [];
+
   late int pageIndex = 1;
   late int itemPerPage = 15;
-  late bool isLastPage = false;
   late bool isLoading = false;
   late Future<ThongKeModel> thongKe;
 
@@ -44,22 +45,42 @@ class _BodyPageState extends State<Body> {
   }
 
   Future<PhieuDeXuatModels> _getListPhieuDeXuat() async {
+    var sortOptions = [
+      {"selector": "tinhTrang", "desc": "false"},
+      {"selector": "ngayTao", "desc": "true"}
+    ];
+    var filterOptions = [];
+    if (statusCurrent.length > 0) {
+      for (var index = 0; index < statusCurrent.length; index++) {
+        if (statusCurrent[index] == 0) {
+          filterOptions.add(['isDenLuot', '=', '1']);
+          filterOptions.add('or');
+        } else if (statusCurrent[index] == 1) {
+          filterOptions.add(['tinhTrang', '<=', '1']);
+          filterOptions.add('or');
+        } else if (statusCurrent[index] == 2) {
+          filterOptions.add(['tinhTrang', '=', '2']);
+          filterOptions.add('or');
+        } else if (statusCurrent[index] == 3) {
+          filterOptions.add(['tinhTrang', '=', '3']);
+          filterOptions.add('or');
+        } else
+          filterOptions = [];
+      }
+    }
+
     var options = new LoadOptionsModel(
         take: itemPerPage * pageIndex,
         skip: 0,
-        sort:
-            "[{\"selector\":\"tinhTrang\", \"desc\":\"false\"},{\"selector\":\"ngayTao\", \"desc\":\"true\"}]",
-        filter: "[]",
-        requireTotalCount: "true");
-    var response = await funcGetListPhieuDeXuat(options);
+        sort: jsonEncode(sortOptions),
+        filter: jsonEncode(filterOptions),
+        requireTotalCount: 'true');
+    var response = await funcGetListPhieuDeXuat(yearCurrent, options);
 
-    print(response.body);
     if (response.statusCode == 200) {
       var result = PhieuDeXuatModels.fromJson(jsonDecode(response.body));
       setState(() {
         isLoading = false;
-        if (pageIndex == (result.totalCount / itemPerPage).ceil())
-          isLastPage = true;
       });
       return result;
     } else if (response.statusCode == 401)
@@ -70,24 +91,15 @@ class _BodyPageState extends State<Body> {
 
   Future<ThongKeModel> _getThongKe(int year) async {
     var response = await funGetThongKe(year);
+    print(response.body);
     if (response.statusCode == 200) {
-      var result = ThongKeModels.fromJson(jsonDecode(response.body));
+      var result = ThongKeModels.fromJson(jsonDecode(response.body)).data.first; 
       return new ThongKeModel(
-        dangXuLy: result.data
-            .map((item) => item.dangXuLy)
-            .reduce((value, current) => value + current),
-        daDuyet: result.data
-            .map((item) => item.daDuyet)
-            .reduce((value, current) => value + current),
-        tuChoi: result.data
-            .map((item) => item.tuChoi)
-            .reduce((value, current) => value + current),
-        denLuot: result.data
-            .map((item) => item.denLuot)
-            .reduce((value, current) => value + current),
-        tongCong: result.data
-            .map((item) => item.tongCong)
-            .reduce((value, current) => value + current),
+        dangXuLy: result.dangXuLy??0,
+        daDuyet: result.daDuyet??0,
+        tuChoi: result.tuChoi??0,
+        denLuot: result.denLuot??0,
+        tongCong: result.tongCong??0,
       );
     } else if (response.statusCode == 401)
       throw response.statusCode;
@@ -122,12 +134,11 @@ class _BodyPageState extends State<Body> {
               child: NotificationListener<ScrollNotification>(
                   onNotification: (ScrollNotification scrollInfo) {
                     if (!isLoading &&
-                        !isLastPage &&
                         scrollInfo.metrics.pixels ==
                             scrollInfo.metrics.maxScrollExtent) {
-                      pageIndex = pageIndex + 1;
-                      listPhieuDeXuat = _getListPhieuDeXuat();
                       setState(() {
+                        pageIndex = pageIndex + 1;
+                        listPhieuDeXuat = _getListPhieuDeXuat();
                         isLoading = true;
                       });
                     }
@@ -207,7 +218,7 @@ class _BodyPageState extends State<Body> {
                       width: 10.0,
                     ),
                     SizedBox(width: 10.0),
-                    Text("Đang tải thêm ${itemPerPage} dòng dữ liệu...")
+                    Text("Đang tải thêm $itemPerPage dòng dữ liệu...")
                   ],
                 ),
               ),
@@ -262,9 +273,24 @@ class _BodyPageState extends State<Body> {
                   var textItemTag = list.elementAt(index)['text'].toString();
                   return ItemTags(
                     index: index,
-                    title:
-                        "$textItemTag "+ (valueItemTag>0?"(${NumberHelper.formatShort(valueItemTag)})":""),
+                    title: "$textItemTag " +
+                        (valueItemTag > 0
+                            ? "(${NumberHelper.formatShort(valueItemTag)})"
+                            : ""),
                     textStyle: TextStyle(fontSize: 13.0),
+                    active: statusCurrent.contains(index),
+                    activeColor: kPrimaryColor,
+                    color: Colors.white,
+                    onPressed: (i) {
+                      setState(() {
+                        if (i.active && !statusCurrent.contains(i.index))
+                          statusCurrent.add(i.index);
+                        if (!i.active && statusCurrent.contains(i.index))
+                          statusCurrent.remove(i.index);
+                        pageIndex = 1;
+                        listPhieuDeXuat = _getListPhieuDeXuat();
+                      });
+                    },
                   );
                 },
                 horizontalScroll: true,
@@ -290,7 +316,7 @@ class _BodyPageState extends State<Body> {
       case 2:
         _trangThaiIcon = Icon(Icons.task_alt_rounded, color: Colors.green);
         break;
-      case 2:
+      case 3:
         _trangThaiIcon = Icon(Icons.block_rounded, color: Colors.red);
         break;
     }
