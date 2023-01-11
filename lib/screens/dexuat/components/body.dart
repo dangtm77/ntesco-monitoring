@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:ui';
+import 'package:awesome_select/awesome_select.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_tags/flutter_tags.dart';
+import 'package:ntesco_smart_monitoring/components/default_button.dart';
 import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/core/phieudexuat.dart';
@@ -13,9 +15,7 @@ import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ntesco_smart_monitoring/models/dx/PhieuDeXuat.dart';
 import 'package:ntesco_smart_monitoring/models/dx/ThongKe.dart';
-
 import '../../../components/top_header.dart';
-import '../../home/home_screen.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -23,9 +23,11 @@ class Body extends StatefulWidget {
 }
 
 class _BodyPageState extends State<Body> {
+  TextEditingController _keywordForSearchEditingController = TextEditingController();
+
   late Future<PhieuDeXuatModels> listPhieuDeXuat;
-  late int yearCurrent = 2022;
-  late List<int> statusCurrent = [];
+  late int yearCurrent = DateTime.now().year;
+  late List<int> statusCurrent = [0, 1];
 
   late int pageIndex = 1;
   late int itemPerPage = 15;
@@ -34,6 +36,7 @@ class _BodyPageState extends State<Body> {
 
   @override
   void initState() {
+    _keywordForSearchEditingController.text = "";
     listPhieuDeXuat = _getListPhieuDeXuat();
     thongKe = _getThongKe(yearCurrent);
     super.initState();
@@ -51,30 +54,31 @@ class _BodyPageState extends State<Body> {
     ];
     var filterOptions = [];
     if (statusCurrent.length > 0) {
+      var statusGroupFilterOptions = [];
       for (var index = 0; index < statusCurrent.length; index++) {
         if (statusCurrent[index] == 0) {
-          filterOptions.add(['isDenLuot', '=', '1']);
-          filterOptions.add('or');
+          statusGroupFilterOptions.add(['isDenLuot', '=', '1']);
         } else if (statusCurrent[index] == 1) {
-          filterOptions.add(['tinhTrang', '<=', '1']);
-          filterOptions.add('or');
+          statusGroupFilterOptions.add(['tinhTrang', '<=', '1']);
         } else if (statusCurrent[index] == 2) {
-          filterOptions.add(['tinhTrang', '=', '2']);
-          filterOptions.add('or');
+          statusGroupFilterOptions.add(['tinhTrang', '=', '2']);
         } else if (statusCurrent[index] == 3) {
-          filterOptions.add(['tinhTrang', '=', '3']);
-          filterOptions.add('or');
-        } else
-          filterOptions = [];
+          statusGroupFilterOptions.add(['tinhTrang', '=', '3']);
+        }
+
+        if (index < statusCurrent.length - 1) statusGroupFilterOptions.add('or');
       }
+      filterOptions.add(statusGroupFilterOptions);
+    }
+    if (_keywordForSearchEditingController.text.isNotEmpty) {
+      var searchGroupFilterOptions = [];
+      if (filterOptions.length > 0) filterOptions.add('and');
+      searchGroupFilterOptions.add(['tieuDe', 'contains', _keywordForSearchEditingController.text.toString()]);
+      filterOptions.add(searchGroupFilterOptions);
     }
 
-    var options = new LoadOptionsModel(
-        take: itemPerPage * pageIndex,
-        skip: 0,
-        sort: jsonEncode(sortOptions),
-        filter: jsonEncode(filterOptions),
-        requireTotalCount: 'true');
+    print(jsonEncode(filterOptions));
+    var options = new LoadOptionsModel(take: itemPerPage * pageIndex, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
     var response = await funcGetListPhieuDeXuat(yearCurrent, options);
 
     if (response.statusCode == 200) {
@@ -93,13 +97,13 @@ class _BodyPageState extends State<Body> {
     var response = await funGetThongKe(year);
     print(response.body);
     if (response.statusCode == 200) {
-      var result = ThongKeModels.fromJson(jsonDecode(response.body)).data.first; 
+      var result = ThongKeModels.fromJson(jsonDecode(response.body)).data.first;
       return new ThongKeModel(
-        dangXuLy: result.dangXuLy??0,
-        daDuyet: result.daDuyet??0,
-        tuChoi: result.tuChoi??0,
-        denLuot: result.denLuot??0,
-        tongCong: result.tongCong??0,
+        dangXuLy: result.dangXuLy,
+        daDuyet: result.daDuyet,
+        tuChoi: result.tuChoi,
+        denLuot: result.denLuot,
+        tongCong: result.tongCong,
       );
     } else if (response.statusCode == 401)
       throw response.statusCode;
@@ -120,22 +124,91 @@ class _BodyPageState extends State<Body> {
               subtitle: "menu.dexuat_subtitle".tr(),
               button: InkWell(
                 borderRadius: BorderRadius.circular(15),
-                onTap: () => Navigator.pushNamed(context, HomeScreen.routeName),
+                onTap: () => showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    List<S2Choice<int>> optionsYearFilter = [
+                      S2Choice<int>(value: 2021, title: 'Năm 2021'),
+                      S2Choice<int>(value: 2022, title: 'Năm 2022'),
+                      S2Choice<int>(value: 2023, title: 'Năm 2023'),
+                      S2Choice<int>(value: 2024, title: 'Năm 2024'),
+                    ];
+                    List<S2Choice<int>> optionsStatusFilter = [
+                      S2Choice<int>(value: 0, title: 'Chờ tôi duyệt'),
+                      S2Choice<int>(value: 1, title: 'Đang xử lý'),
+                      S2Choice<int>(value: 2, title: 'Đã phê duyệt'),
+                      S2Choice<int>(value: 3, title: 'Bị từ chối'),
+                      S2Choice<int>(value: 4, title: 'Tất cả phiếu')
+                    ];
+                    return Scrollbar(
+                        child: ListView(
+                      addAutomaticKeepAlives: true,
+                      children: <Widget>[
+                        Expanded(
+                            child: SmartSelect<int>.single(
+                          title: 'Xem theo năm',
+                          choiceItems: optionsYearFilter,
+                          onChange: (state) => setState(() => yearCurrent = state.value),
+                          selectedValue: yearCurrent,
+                          modalType: S2ModalType.popupDialog,
+                          modalHeader: true,
+                          tileBuilder: (context, state) {
+                            return S2Tile.fromState(
+                              state,
+                              isTwoLine: true,
+                            );
+                          },
+                        )),
+                        Expanded(
+                            child: SmartSelect<int>.multiple(
+                          title: 'Xem theo tình trạng',
+                          choiceItems: optionsStatusFilter,
+                          onChange: (state) => setState(() {
+                            statusCurrent = state.value;
+                            pageIndex = 1;
+                          }),
+                          selectedValue: statusCurrent,
+                          choiceType: S2ChoiceType.chips,
+                          modalType: S2ModalType.popupDialog,
+                          modalHeader: true,
+                          tileBuilder: (context, state) {
+                            return S2Tile.fromState(
+                              state,
+                              isTwoLine: true,
+                            );
+                          },
+                        )),
+                        Container(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: DefaultButton(
+                                text: "Xác nhận",
+                                press: () {
+                                  setState(() {
+                                    _keywordForSearchEditingController.text = "";
+                                    listPhieuDeXuat = _getListPhieuDeXuat();
+                                    thongKe = _getThongKe(yearCurrent);
+                                  });
+                                  Navigator.pop(context);
+                                }),
+                          ),
+                        )
+                      ],
+                    ));
+                  },
+                ),
                 child: Stack(
                   clipBehavior: Clip.none,
-                  children: [
-                    Icon(Icons.manage_search, color: kPrimaryColor, size: 40)
-                  ],
+                  children: [Icon(Icons.manage_search, color: kPrimaryColor, size: 40)],
                 ),
               ),
             ),
             thongkeContainer(),
+            searchContainer(),
             Expanded(
               child: NotificationListener<ScrollNotification>(
                   onNotification: (ScrollNotification scrollInfo) {
-                    if (!isLoading &&
-                        scrollInfo.metrics.pixels ==
-                            scrollInfo.metrics.maxScrollExtent) {
+                    if (!isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
                       setState(() {
                         pageIndex = pageIndex + 1;
                         listPhieuDeXuat = _getListPhieuDeXuat();
@@ -152,50 +225,37 @@ class _BodyPageState extends State<Body> {
                     },
                     child: FutureBuilder<PhieuDeXuatModels>(
                       future: listPhieuDeXuat,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<PhieuDeXuatModels> snapshot) {
+                      builder: (BuildContext context, AsyncSnapshot<PhieuDeXuatModels> snapshot) {
                         if (snapshot.hasError)
-                          return DataErrorWidget(
-                              error: snapshot.error.toString());
+                          return DataErrorWidget(error: snapshot.error.toString());
                         else {
-                          if (snapshot.connectionState ==
-                                  ConnectionState.waiting &&
-                              !snapshot.hasData)
+                          if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) &&
+                              !isLoading)
                             return LoadingWidget();
                           else {
-                            if (snapshot.hasData &&
-                                snapshot.data!.totalCount > 0) {
+                            if (snapshot.hasData && snapshot.data!.data.isNotEmpty) {
                               return Column(children: [
                                 Expanded(
                                   child: AnimationLimiter(
                                     child: ListView.separated(
                                       itemCount: snapshot.data!.data.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        var item = snapshot.data!.data
-                                            .elementAt(index);
-                                        return AnimationConfiguration
-                                            .staggeredList(
+                                      itemBuilder: (BuildContext context, int index) {
+                                        var item = snapshot.data!.data.elementAt(index);
+                                        return AnimationConfiguration.staggeredList(
                                           position: index,
-                                          duration:
-                                              const Duration(milliseconds: 375),
+                                          duration: const Duration(milliseconds: 375),
                                           child: SlideAnimation(
-                                            child: FadeInAnimation(
-                                                child: phieuDeXuatItem(item)),
+                                            child: FadeInAnimation(child: phieuDeXuatItem(item)),
                                           ),
                                         );
                                       },
-                                      separatorBuilder:
-                                          (BuildContext context, int index) =>
-                                              const Divider(),
+                                      separatorBuilder: (BuildContext context, int index) => const Divider(),
                                     ),
                                   ),
                                 ),
                               ]);
                             } else {
-                              return NoDataWidget(
-                                  message:
-                                      "Không tìm thấy bất kỳ thông tin nào");
+                              return NoDataWidget(message: "Không tìm thấy phiếu đề xuất liên quan nào !!!");
                             }
                           }
                         }
@@ -229,6 +289,44 @@ class _BodyPageState extends State<Body> {
     );
   }
 
+  Container searchContainer() {
+    return Container(
+      height: 45,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+        child: TextField(
+          controller: _keywordForSearchEditingController,
+          onChanged: (value) {
+            setState(() {
+              if (value.isNotEmpty && value.trim().length > 3) listPhieuDeXuat = _getListPhieuDeXuat();
+            });
+          },
+          decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.grey.shade300,
+              contentPadding: EdgeInsets.all(0),
+              prefixIcon: Icon(
+                Icons.search,
+                color: Colors.grey.shade600,
+              ),
+              suffixIcon: _keywordForSearchEditingController.text.isNotEmpty
+                  ? IconButton(
+                      onPressed: _keywordForSearchEditingController.clear,
+                      icon: Icon(
+                        Icons.clear_rounded,
+                        color: Colors.grey.shade600,
+                        size: 20,
+                      ),
+                    )
+                  : null,
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(50), borderSide: BorderSide.none),
+              hintStyle: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+              hintText: "Nhập từ khóa để tìm kiếm..."),
+        ),
+      ),
+    );
+  }
+
   Container thongkeContainer() {
     return Container(
       height: 40.0,
@@ -237,56 +335,36 @@ class _BodyPageState extends State<Body> {
         padding: EdgeInsets.only(bottom: 10),
         child: FutureBuilder<ThongKeModel>(
           future: thongKe,
-          builder:
-              (BuildContext context, AsyncSnapshot<ThongKeModel> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting &&
-                !snapshot.hasData)
+          builder: (BuildContext context, AsyncSnapshot<ThongKeModel> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData)
               return Text('Đang tải ...');
             else
               return Tags(
                 itemCount: 5,
                 itemBuilder: (int index) {
                   var list = [
-                    {
-                      'value': snapshot.data!.denLuot.toString(),
-                      'text': "Chờ tôi"
-                    },
-                    {
-                      'value': snapshot.data!.dangXuLy.toString(),
-                      'text': "Đang xử lý"
-                    },
-                    {
-                      'value': snapshot.data!.daDuyet.toString(),
-                      'text': "Đã duyệt"
-                    },
-                    {
-                      'value': snapshot.data!.tuChoi.toString(),
-                      'text': "Từ chối"
-                    },
-                    {
-                      'value': snapshot.data!.tongCong.toString(),
-                      'text': "Tổng"
-                    },
+                    {'value': snapshot.data!.denLuot.toString(), 'text': "Chờ tôi"},
+                    {'value': snapshot.data!.dangXuLy.toString(), 'text': "Đang xử lý"},
+                    {'value': snapshot.data!.daDuyet.toString(), 'text': "Đã duyệt"},
+                    {'value': snapshot.data!.tuChoi.toString(), 'text': "Từ chối"},
+                    {'value': snapshot.data!.tongCong.toString(), 'text': "Tổng"},
                   ];
-                  var valueItemTag =
-                      int.parse(list.elementAt(index)['value'].toString());
+                  var valueItemTag = int.parse(list.elementAt(index)['value'].toString());
                   var textItemTag = list.elementAt(index)['text'].toString();
                   return ItemTags(
                     index: index,
-                    title: "$textItemTag " +
-                        (valueItemTag > 0
-                            ? "(${NumberHelper.formatShort(valueItemTag)})"
-                            : ""),
+                    title: "$textItemTag " + (valueItemTag > 0 ? "(${NumberHelper.formatShort(valueItemTag)})" : ""),
                     textStyle: TextStyle(fontSize: 13.0),
                     active: statusCurrent.contains(index),
                     activeColor: kPrimaryColor,
                     color: Colors.white,
+                    pressEnabled: true,
                     onPressed: (i) {
                       setState(() {
-                        if (i.active && !statusCurrent.contains(i.index))
-                          statusCurrent.add(i.index);
-                        if (!i.active && statusCurrent.contains(i.index))
-                          statusCurrent.remove(i.index);
+                        if (i.active && !statusCurrent.contains(i.index)) statusCurrent.add(i.index);
+                        if (!i.active && statusCurrent.contains(i.index)) statusCurrent.remove(i.index);
+
+                        isLoading = false;
                         pageIndex = 1;
                         listPhieuDeXuat = _getListPhieuDeXuat();
                       });
@@ -341,25 +419,17 @@ class _BodyPageState extends State<Body> {
           overflow: TextOverflow.fade,
           softWrap: false,
           maxLines: 1,
-          style: TextStyle(
-              color: kSecondaryColor,
-              fontWeight: FontWeight.normal,
-              fontSize: 12,
-              fontStyle: FontStyle.italic),
+          style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontSize: 12, fontStyle: FontStyle.italic),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              (item.isQuanTrong ? "[QUAN TRỌNG] " : "").toString() +
-                  item.tieuDe.toString(),
+              (item.isQuanTrong ? "[QUAN TRỌNG] " : "").toString() + item.tieuDe.toString(),
               overflow: TextOverflow.fade,
               maxLines: 1,
               softWrap: false,
-              style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.w600),
+              style: TextStyle(color: Colors.black87, fontSize: 15.0, fontWeight: FontWeight.w600),
             ),
             Text.rich(
               TextSpan(
@@ -377,13 +447,7 @@ class _BodyPageState extends State<Body> {
                       width: 3.0,
                     ),
                   ),
-                  TextSpan(
-                      text: StringHelper.toShortName(
-                          item.nguoiTaoInfo.hoTen.toString()),
-                      style: TextStyle(
-                          color: kSecondaryColor,
-                          fontWeight: FontWeight.normal,
-                          fontStyle: FontStyle.italic)),
+                  TextSpan(text: StringHelper.toShortName(item.nguoiTaoInfo.hoTen.toString()), style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
                   WidgetSpan(
                     child: SizedBox(
                       width: 15.0,
@@ -401,12 +465,7 @@ class _BodyPageState extends State<Body> {
                       width: 3.0,
                     ),
                   ),
-                  TextSpan(
-                      text: DateFormat("hh:mm dd/MM/yyyy").format(item.ngayTao),
-                      style: TextStyle(
-                          color: kSecondaryColor,
-                          fontWeight: FontWeight.normal,
-                          fontStyle: FontStyle.italic)),
+                  TextSpan(text: DateFormat("hh:mm dd/MM/yyyy").format(item.ngayTao), style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
                 ],
               ),
             )

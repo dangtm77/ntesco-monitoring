@@ -26,6 +26,12 @@
       "languageVersion": "2.14"
     },
     {
+      "name": "awesome_select",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/awesome_select-6.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
       "name": "badges",
       "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/badges-2.0.3",
       "packageUri": "lib/",
@@ -560,7 +566,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2023-01-10T03:45:21.010684Z",
+  "generated": "2023-01-11T07:53:25.853497Z",
   "generator": "pub",
   "generatorVersion": "2.18.6"
 }

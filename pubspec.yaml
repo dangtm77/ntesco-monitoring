@@ -24,6 +24,7 @@ dependencies:
   hexcolor: ^2.0.5
   flutter_tags: ^0.4.9+1
   badges: ^2.0.3
+  awesome_select: ^6.0.0
 
 dev_dependencies:
   flutter_test:
