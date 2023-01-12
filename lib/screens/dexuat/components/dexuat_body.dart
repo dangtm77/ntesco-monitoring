@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:awesome_select/awesome_select.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
-import 'package:ntesco_smart_monitoring/screens/dexuat/dexuat_detail_screen.dart';
+import 'package:ntesco_smart_monitoring/screens/dexuat/detail_screen.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +30,8 @@ class Body extends StatefulWidget {
 }
 
 class _BodyPageState extends State<Body> {
-  TextEditingController _keywordForSearchEditingController = TextEditingController();
+  TextEditingController _keywordForSearchEditingController =
+      TextEditingController();
 
   late Future<PhieuDeXuatModels> listPhieuDeXuat;
   late Future<ThongKeModel> thongKe;
@@ -59,7 +60,8 @@ class _BodyPageState extends State<Body> {
 
   Future<PhieuDeXuatModels> _getListPhieuDeXuat() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var userCurrent = LoginResponseModel.fromJson(json.decode(prefs.getString('USERCURRENT')!));
+    var userCurrent = LoginResponseModel.fromJson(
+        json.decode(prefs.getString('USERCURRENT')!));
     var sortOptions = [
       {"selector": "tinhTrang", "desc": "false"},
       {"selector": "ngayTao", "desc": "true"}
@@ -89,12 +91,15 @@ class _BodyPageState extends State<Body> {
             statusGroupFilterOptions.add('or');
             break;
           case 4:
-            nguoiTaoGroupFilterOptions.add(['nguoiTao', '=', userCurrent.username]);
+            nguoiTaoGroupFilterOptions
+                .add(['nguoiTao', '=', userCurrent.username]);
             break;
         }
       });
       if (statusGroupFilterOptions.length > 0) {
-        if (statusGroupFilterOptions.last == 'or') statusGroupFilterOptions.removeAt(statusGroupFilterOptions.length - 1);
+        if (statusGroupFilterOptions.last == 'or')
+          statusGroupFilterOptions
+              .removeAt(statusGroupFilterOptions.length - 1);
         filterOptions.add(statusGroupFilterOptions);
       }
 
@@ -113,8 +118,11 @@ class _BodyPageState extends State<Body> {
       });
       if (danhMucGroupFilterOptions.length > 0) {
         if (filterOptions.length > 0) filterOptions.add('and');
-        if (danhMucGroupFilterOptions.last == "or") danhMucGroupFilterOptions.removeAt(danhMucGroupFilterOptions.length - 1);
-        if (danhMucGroupFilterOptions.length > 0) filterOptions.add(danhMucGroupFilterOptions);
+        if (danhMucGroupFilterOptions.last == "or")
+          danhMucGroupFilterOptions
+              .removeAt(danhMucGroupFilterOptions.length - 1);
+        if (danhMucGroupFilterOptions.length > 0)
+          filterOptions.add(danhMucGroupFilterOptions);
       }
     }
 
@@ -122,12 +130,21 @@ class _BodyPageState extends State<Body> {
     if (_keywordForSearchEditingController.text.isNotEmpty) {
       var searchGroupFilterOptions = [];
       if (filterOptions.length > 0) filterOptions.add('and');
-      searchGroupFilterOptions.add(['tieuDe', 'contains', _keywordForSearchEditingController.text.toString()]);
+      searchGroupFilterOptions.add([
+        'tieuDe',
+        'contains',
+        _keywordForSearchEditingController.text.toString()
+      ]);
       filterOptions.add(searchGroupFilterOptions);
     }
 
     print(jsonEncode(filterOptions));
-    var options = new LoadOptionsModel(take: itemPerPage * pageIndex, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+    var options = new LoadOptionsModel(
+        take: itemPerPage * pageIndex,
+        skip: 0,
+        sort: jsonEncode(sortOptions),
+        filter: jsonEncode(filterOptions),
+        requireTotalCount: 'true');
     var response = await getListPhieuDeXuat(yearCurrent, options);
 
     if (response.statusCode == 200) {
@@ -147,7 +164,12 @@ class _BodyPageState extends State<Body> {
       {"selector": "sapXep", "desc": "true"}
     ];
     var filterOptions = [];
-    var options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+    var options = new LoadOptionsModel(
+        take: 0,
+        skip: 0,
+        sort: jsonEncode(sortOptions),
+        filter: jsonEncode(filterOptions),
+        requireTotalCount: 'true');
     var response = await getListDanhMuc(options);
 
     if (response.statusCode == 200) {
@@ -189,7 +211,9 @@ class _BodyPageState extends State<Body> {
             Expanded(
               child: NotificationListener<ScrollNotification>(
                   onNotification: (ScrollNotification scrollInfo) {
-                    if (!isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+                    if (!isLoading &&
+                        scrollInfo.metrics.pixels ==
+                            scrollInfo.metrics.maxScrollExtent) {
                       setState(() {
                         pageIndex = pageIndex + 1;
                         listPhieuDeXuat = _getListPhieuDeXuat();
@@ -207,36 +231,54 @@ class _BodyPageState extends State<Body> {
                     },
                     child: FutureBuilder<PhieuDeXuatModels>(
                       future: listPhieuDeXuat,
-                      builder: (BuildContext context, AsyncSnapshot<PhieuDeXuatModels> snapshot) {
+                      builder: (BuildContext context,
+                          AsyncSnapshot<PhieuDeXuatModels> snapshot) {
                         if (snapshot.hasError)
-                          return DataErrorWidget(error: snapshot.error.toString());
+                          return DataErrorWidget(
+                              error: snapshot.error.toString());
                         else {
-                          if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !isLoading)
+                          if ((snapshot.connectionState ==
+                                      ConnectionState.none ||
+                                  snapshot.connectionState ==
+                                      ConnectionState.waiting ||
+                                  snapshot.connectionState ==
+                                      ConnectionState.active) &&
+                              !isLoading)
                             return LoadingWidget();
                           else {
-                            if (snapshot.hasData && snapshot.data!.data.isNotEmpty) {
+                            if (snapshot.hasData &&
+                                snapshot.data!.data.isNotEmpty) {
                               return Column(children: [
                                 Expanded(
                                   child: AnimationLimiter(
                                     child: ListView.separated(
                                       itemCount: snapshot.data!.data.length,
-                                      itemBuilder: (BuildContext context, int index) {
-                                        var item = snapshot.data!.data.elementAt(index);
-                                        return AnimationConfiguration.staggeredList(
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        var item = snapshot.data!.data
+                                            .elementAt(index);
+                                        return AnimationConfiguration
+                                            .staggeredList(
                                           position: index,
-                                          duration: const Duration(milliseconds: 400),
+                                          duration:
+                                              const Duration(milliseconds: 400),
                                           child: SlideAnimation(
-                                            child: FadeInAnimation(child: phieuDeXuatItem(item)),
+                                            child: FadeInAnimation(
+                                                child: phieuDeXuatItem(item)),
                                           ),
                                         );
                                       },
-                                      separatorBuilder: (BuildContext context, int index) => const Divider(),
+                                      separatorBuilder:
+                                          (BuildContext context, int index) =>
+                                              const Divider(),
                                     ),
                                   ),
                                 ),
                               ]);
                             } else {
-                              return NoDataWidget(message: "Không tìm thấy phiếu đề xuất liên quan nào !!!");
+                              return NoDataWidget(
+                                  message:
+                                      "Không tìm thấy phiếu đề xuất liên quan nào !!!");
                             }
                           }
                         }
@@ -275,24 +317,58 @@ class _BodyPageState extends State<Body> {
       child: TopHeaderSub(
         title: "menu.dexuat".tr(),
         subtitle: "menu.dexuat_subtitle".tr(),
-        button: InkWell(
+        buttonRight: InkWell(
           borderRadius: BorderRadius.circular(15),
+          child: Stack(
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            children: [
+              Icon(Ionicons.filter_circle_outline,
+                  color: kPrimaryColor, size: 35.0)
+            ],
+          ),
           onTap: () => showModalBottomSheet(
             context: context,
             builder: (BuildContext context) {
-              List<S2Choice<int>> optionsYearFilter = [S2Choice<int>(value: 2021, title: 'Năm 2021'), S2Choice<int>(value: 2022, title: 'Năm 2022'), S2Choice<int>(value: 2023, title: 'Năm 2023'), S2Choice<int>(value: 2024, title: 'Năm 2024')];
-              List<S2Choice<int>> optionsStatusFilter = [S2Choice<int>(value: 0, title: 'Chờ tôi duyệt'), S2Choice<int>(value: 1, title: 'Đang xử lý'), S2Choice<int>(value: 2, title: 'Đã phê duyệt'), S2Choice<int>(value: 3, title: 'Bị từ chối'), S2Choice<int>(value: 4, title: 'Phiếu do tôi tạo'), S2Choice<int>(value: 5, title: 'Tất cả phiếu')];
-              Future<List<S2Choice<int>>> optionsDanhMucFilter = _getListDanhMuc();
+              List<S2Choice<int>> optionsYearFilter = [
+                S2Choice<int>(value: 2021, title: 'Năm 2021'),
+                S2Choice<int>(value: 2022, title: 'Năm 2022'),
+                S2Choice<int>(value: 2023, title: 'Năm 2023'),
+                S2Choice<int>(value: 2024, title: 'Năm 2024')
+              ];
+              List<S2Choice<int>> optionsStatusFilter = [
+                S2Choice<int>(value: 0, title: 'Chờ tôi duyệt'),
+                S2Choice<int>(value: 1, title: 'Đang xử lý'),
+                S2Choice<int>(value: 2, title: 'Đã phê duyệt'),
+                S2Choice<int>(value: 3, title: 'Bị từ chối'),
+                S2Choice<int>(value: 4, title: 'Phiếu do tôi tạo'),
+                S2Choice<int>(value: 5, title: 'Tất cả phiếu')
+              ];
+              Future<List<S2Choice<int>>> optionsDanhMucFilter =
+                  _getListDanhMuc();
 
               return Scrollbar(
                 child: ListView(
                   addAutomaticKeepAlives: true,
                   children: [
                     Container(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Text(
+                          "Lọc danh sách phiếu",
+                          style: TextStyle(
+                              color: kPrimaryColor,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    Container(
                       child: SmartSelect<int>.single(
                         title: 'Xem theo năm',
                         choiceItems: optionsYearFilter,
-                        onChange: (state) => setState(() => yearCurrent = state.value),
+                        onChange: (state) =>
+                            setState(() => yearCurrent = state.value),
                         selectedValue: yearCurrent,
                         modalType: S2ModalType.bottomSheet,
                         modalHeader: true,
@@ -326,14 +402,18 @@ class _BodyPageState extends State<Body> {
                               alignment: Alignment.centerLeft,
                               child: S2Text(
                                 text: "Nhóm ${group.name}",
-                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.italic),
                               ),
                             );
                           },
                           modalHeader: true,
                           choiceType: S2ChoiceType.checkboxes,
                           modalType: S2ModalType.bottomSheet,
-                          onChange: (state) => setState(() => danhMucCurrent = state.value),
+                          onChange: (state) =>
+                              setState(() => danhMucCurrent = state.value),
                           tileBuilder: (context, state) {
                             return S2Tile.fromState(
                               state,
@@ -348,7 +428,8 @@ class _BodyPageState extends State<Body> {
                                       ),
                                     )
                                   : null,
-                              isLoading: snapshot.connectionState == ConnectionState.waiting,
+                              isLoading: snapshot.connectionState ==
+                                  ConnectionState.waiting,
                             );
                           },
                         );
@@ -359,7 +440,8 @@ class _BodyPageState extends State<Body> {
                         title: 'Xem theo tình trạng',
                         placeholder: "Vui lòng chọn ít nhất 1 tình trạng",
                         choiceItems: optionsStatusFilter,
-                        onChange: (state) => setState(() => statusCurrent = state.value),
+                        onChange: (state) =>
+                            setState(() => statusCurrent = state.value),
                         selectedValue: statusCurrent,
                         choiceType: S2ChoiceType.chips,
                         modalType: S2ModalType.bottomSheet,
@@ -406,10 +488,6 @@ class _BodyPageState extends State<Body> {
               );
             },
           ),
-          child: Stack(
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            children: [Icon(Ionicons.filter_circle_outline, color: kPrimaryColor, size: 40.0)],
-          ),
         ),
       ),
     );
@@ -448,7 +526,9 @@ class _BodyPageState extends State<Body> {
                       ),
                     )
                   : null,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(50), borderSide: BorderSide.none),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(50),
+                  borderSide: BorderSide.none),
               hintStyle: TextStyle(fontSize: 13, color: Colors.grey.shade600),
               hintText: "Nhập từ khóa để tìm kiếm..."),
         ),
@@ -464,7 +544,8 @@ class _BodyPageState extends State<Body> {
         padding: EdgeInsets.only(bottom: 10),
         child: FutureBuilder<ThongKeModel>(
           future: thongKe,
-          builder: (BuildContext context, AsyncSnapshot<ThongKeModel> snapshot) {
+          builder:
+              (BuildContext context, AsyncSnapshot<ThongKeModel> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting)
               return Text('Đang cập nhật ...');
             else
@@ -472,18 +553,46 @@ class _BodyPageState extends State<Body> {
                 itemCount: 6,
                 itemBuilder: (int index) {
                   var list = [
-                    {'id': 0, 'value': snapshot.data!.denLuot.toString(), 'text': "Chờ tôi duyệt"},
-                    {'id': 1, 'value': snapshot.data!.dangXuLy.toString(), 'text': "Đang xử lý"},
-                    {'id': 2, 'value': snapshot.data!.daDuyet.toString(), 'text': "Đã duyệt"},
-                    {'id': 3, 'value': snapshot.data!.tuChoi.toString(), 'text': "Từ chối"},
-                    {'id': 4, 'value': snapshot.data!.khoiTao.toString(), 'text': "Do tôi tạo"},
-                    {'id': 5, 'value': snapshot.data!.tongCong.toString(), 'text': "Tổng cộng"},
+                    {
+                      'id': 0,
+                      'value': snapshot.data!.denLuot.toString(),
+                      'text': "Chờ tôi duyệt"
+                    },
+                    {
+                      'id': 1,
+                      'value': snapshot.data!.dangXuLy.toString(),
+                      'text': "Đang xử lý"
+                    },
+                    {
+                      'id': 2,
+                      'value': snapshot.data!.daDuyet.toString(),
+                      'text': "Đã duyệt"
+                    },
+                    {
+                      'id': 3,
+                      'value': snapshot.data!.tuChoi.toString(),
+                      'text': "Từ chối"
+                    },
+                    {
+                      'id': 4,
+                      'value': snapshot.data!.khoiTao.toString(),
+                      'text': "Do tôi tạo"
+                    },
+                    {
+                      'id': 5,
+                      'value': snapshot.data!.tongCong.toString(),
+                      'text': "Tổng cộng"
+                    },
                   ];
-                  var valueItemTag = int.parse(list.elementAt(index)['value'].toString());
+                  var valueItemTag =
+                      int.parse(list.elementAt(index)['value'].toString());
                   var textItemTag = list.elementAt(index)['text'].toString();
                   return ItemTags(
                     index: index,
-                    title: "$textItemTag " + (valueItemTag > 0 ? "(${NumberHelper.formatShort(valueItemTag)})" : ""),
+                    title: "$textItemTag " +
+                        (valueItemTag > 0
+                            ? "(${NumberHelper.formatShort(valueItemTag)})"
+                            : ""),
                     textStyle: TextStyle(fontSize: 13.0),
                     active: statusCurrent.contains(index),
                     activeColor: kPrimaryColor,
@@ -491,8 +600,10 @@ class _BodyPageState extends State<Body> {
                     pressEnabled: true,
                     onPressed: (i) {
                       setState(() {
-                        if (i.active && !statusCurrent.contains(i.index)) statusCurrent.add(i.index);
-                        if (!i.active && statusCurrent.contains(i.index)) statusCurrent.remove(i.index);
+                        if (i.active && !statusCurrent.contains(i.index))
+                          statusCurrent.add(i.index);
+                        if (!i.active && statusCurrent.contains(i.index))
+                          statusCurrent.remove(i.index);
 
                         isLoading = false;
                         pageIndex = 1;
@@ -522,7 +633,8 @@ class _BodyPageState extends State<Body> {
         );
         break;
       case 2:
-        _trangThaiIcon = Icon(Ionicons.checkmark_circle_outline, color: Colors.green);
+        _trangThaiIcon =
+            Icon(Ionicons.checkmark_circle_outline, color: Colors.green);
         break;
       case 3:
         _trangThaiIcon = Icon(Icons.block_rounded, color: Colors.red);
@@ -542,7 +654,9 @@ class _BodyPageState extends State<Body> {
             foregroundColor: Colors.white,
             icon: Ionicons.eye_outline,
             label: 'Xem chi tiết',
-            onPressed: (context) => Navigator.pushNamed(context, DeXuatDetailScreen.routeName, arguments: {'id': item.id}),
+            onPressed: (context) => Navigator.pushNamed(
+                context, DeXuatDetailScreen.routeName,
+                arguments: {'id': item.id}),
           ),
         ],
       ),
@@ -566,17 +680,25 @@ class _BodyPageState extends State<Body> {
           overflow: TextOverflow.fade,
           softWrap: false,
           maxLines: 1,
-          style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontSize: 12, fontStyle: FontStyle.italic),
+          style: TextStyle(
+              color: kSecondaryColor,
+              fontWeight: FontWeight.normal,
+              fontSize: 12,
+              fontStyle: FontStyle.italic),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              (item.isQuanTrong ? "[QUAN TRỌNG] " : "").toString() + item.tieuDe.toString(),
+              (item.isQuanTrong ? "[QUAN TRỌNG] " : "").toString() +
+                  item.tieuDe.toString(),
               overflow: TextOverflow.fade,
               maxLines: 1,
               softWrap: false,
-              style: TextStyle(color: Colors.black87, fontSize: 15.0, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                  color: Colors.black87,
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.w600),
             ),
             Text.rich(
               TextSpan(
@@ -594,7 +716,13 @@ class _BodyPageState extends State<Body> {
                       width: 3.0,
                     ),
                   ),
-                  TextSpan(text: StringHelper.toShortName(item.nguoiTaoInfo.hoTen.toString()), style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
+                  TextSpan(
+                      text: StringHelper.toShortName(
+                          item.nguoiTaoInfo.hoTen.toString()),
+                      style: TextStyle(
+                          color: kSecondaryColor,
+                          fontWeight: FontWeight.normal,
+                          fontStyle: FontStyle.italic)),
                   WidgetSpan(
                     child: SizedBox(
                       width: 15.0,
@@ -612,14 +740,20 @@ class _BodyPageState extends State<Body> {
                       width: 3.0,
                     ),
                   ),
-                  TextSpan(text: DateFormat("hh:mm dd/MM/yyyy").format(item.ngayTao), style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
+                  TextSpan(
+                      text: DateFormat("hh:mm dd/MM/yyyy").format(item.ngayTao),
+                      style: TextStyle(
+                          color: kSecondaryColor,
+                          fontWeight: FontWeight.normal,
+                          fontStyle: FontStyle.italic)),
                 ],
               ),
             )
           ],
         ),
         trailing: _trangThaiIcon,
-        onTap: () => Navigator.pushNamed(context, DeXuatDetailScreen.routeName, arguments: {'id': item.id}),
+        onTap: () => Navigator.pushNamed(context, DeXuatDetailScreen.routeName,
+            arguments: {'id': item.id}),
       ),
     );
   }

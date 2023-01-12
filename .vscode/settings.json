@@ -1,6 +1,14 @@
 {
-    "editor.formatOnSave": false,
+    "editor.formatOnSave": true,
     "[dart]": {
-        "editor.formatOnSave": false
-    }
+        "editor.formatOnSave": true,
+        "editor.rulers": [],
+        "editor.wordWrapColumn": 1000, 
+    },
+    "editor.tabSize": 15,
+    "editor.wordWrapColumn": 1000,
+    "editor.minimap.maxColumn": 1000,
+    "editor.wordWrap": "on",
+    "html.format.wrapLineLength": 1200,
+    
 }

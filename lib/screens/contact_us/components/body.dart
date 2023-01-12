@@ -57,7 +57,7 @@ class _BodyPageState extends State<Body> {
             TopHeaderSub(
                 title: "menu.contact_us".tr(),
                 subtitle: "menu.contact_us_subtitle".tr(),
-                button: InkWell(
+                buttonRight: InkWell(
                   borderRadius: BorderRadius.circular(15),
                   onTap: () =>
                       Navigator.pushNamed(context, HomeScreen.routeName),

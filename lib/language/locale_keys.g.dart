@@ -15,6 +15,7 @@ abstract class  LocaleKeys {
   static const menu_home = 'menu.home';
   static const menu_dexuat = 'menu.dexuat';
   static const menu_dexuat_subtitle = 'menu.dexuat_subtitle';
+  static const menu_dexuat_detai_title = 'menu.dexuat_detai_title';
   static const menu_log_out = 'menu.log_out';
   static const menu_settings = 'menu.settings';
   static const menu_alarm = 'menu.alarm';

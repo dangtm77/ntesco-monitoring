@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ionicons/ionicons.dart';
 
 import '../constants.dart';
 import '../size_config.dart';
@@ -26,7 +27,7 @@ class _NotificationBellState extends State<NotificationBell> {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Icon(Icons.notifications_none_rounded, color: kPrimaryColor, size: 40),
+          Icon(Ionicons.notifications_outline, color: kPrimaryColor, size: 25),
           if (totalUnreadNotification != 0)
             Positioned(
               top: -5,
