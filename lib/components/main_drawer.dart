@@ -27,8 +27,7 @@ class _MainDrawerState extends State<MainDrawer> {
 
   Future<LoginResponseModel> _getUserCurrent() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return LoginResponseModel.fromJson(
-        json.decode(prefs.getString('USERCURRENT')!));
+    return LoginResponseModel.fromJson(json.decode(prefs.getString('USERCURRENT')!));
   }
 
   @override

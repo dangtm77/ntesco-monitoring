@@ -18,12 +18,14 @@ class ThongKeModels {
 }
 
 class ThongKeModel {  
+  final int khoiTao;
   final int dangXuLy;
   final int daDuyet;
   final int tuChoi;
   final int denLuot;
   final int tongCong;
   ThongKeModel({ 
+    required this.khoiTao,
     required this.dangXuLy,
     required this.daDuyet,
     required this.tuChoi,
@@ -33,6 +35,7 @@ class ThongKeModel {
  
 factory ThongKeModel.fromJson(dynamic json) {
     return ThongKeModel( 
+        khoiTao: json['khoiTao'],
         dangXuLy: json['dangXuLy'],
         daDuyet: json['daDuyet'],
         tuChoi: json['tuChoi'],

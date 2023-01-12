@@ -10,8 +10,7 @@ class TopHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(15)),
+      padding: EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(15)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -21,12 +20,15 @@ class TopHeader extends StatelessWidget {
             child: Stack(
               clipBehavior: Clip.none,
               children: [
-                Icon(Icons.sort_rounded, color: kPrimaryColor, size: 45)
+                Icon(
+                  Icons.sort_rounded,
+                  color: kPrimaryColor,
+                  size: 45,
+                )
               ],
             ),
           ),
-          Image.asset("assets/images/logofull.png",
-              width: getProportionateScreenWidth(110)),
+          Image.asset("assets/images/logofull.png", width: getProportionateScreenWidth(110)),
           NotificationBell()
         ],
       ),
@@ -38,14 +40,12 @@ class TopHeaderSub extends StatelessWidget {
   final String title;
   final String subtitle;
   final InkWell button;
-  const TopHeaderSub({Key? key, required this.title, required this.subtitle, required this.button})
-      : super(key: key);
+  const TopHeaderSub({Key? key, required this.title, required this.subtitle, required this.button}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(
-          vertical: 10, horizontal: getProportionateScreenWidth(20)),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: getProportionateScreenWidth(20)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -65,11 +65,7 @@ class TopHeaderSub extends StatelessWidget {
           ),
           Column(
             children: [
-              Text(title,
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: kPrimaryColor,
-                      fontWeight: FontWeight.w700)),
+              Text(title, style: TextStyle(fontSize: 20, color: kPrimaryColor, fontWeight: FontWeight.w700)),
               Text(subtitle,
                   style: TextStyle(
                     fontSize: 12,

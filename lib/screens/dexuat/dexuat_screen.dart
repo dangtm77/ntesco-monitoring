@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart'; 
 import '../../size_config.dart';
-import 'components/body.dart';
+import 'components/dexuat_body.dart';
 
 class DeXuatScreen extends StatelessWidget {
   static String routeName = "/dexuat";

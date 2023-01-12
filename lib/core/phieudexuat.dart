@@ -5,41 +5,40 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<http.Response> funcGetListPhieuDeXuat(int year, LoadOptionsModel options) async {
+Future<http.Response> getListPhieuDeXuat(int year, LoadOptionsModel options) async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  var userCurrent = LoginResponseModel.fromJson(
-      json.decode(preferences.getString('USERCURRENT')!));
-  var headerValue = <String, String>{
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ${userCurrent.accessToken}'
-  };
+  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
 
   var api = "v2/dx/PhieuDeXuat";
   var queryParameters = options.toMap();
   queryParameters.addAll({"year": year.toString()});
 
-  final response = await http.get(
-      Uri.https(
-        endPoint,
-        api,
-        queryParameters,
-      ),
-      headers: headerValue); 
+  final response = await http.get(Uri.https(endPoint, api, queryParameters), headers: headerValue);
   return response;
 }
 
-Future<http.Response> funGetThongKe(int year) async {
+
+Future<http.Response> getListDanhMuc(LoadOptionsModel options) async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  var userCurrent = LoginResponseModel.fromJson(
-      json.decode(preferences.getString('USERCURRENT')!));
-  var headerValue = <String, String>{
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ${userCurrent.accessToken}'
-  };
+  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
+
+  var api = "v2/dx/danhmuc/lookup";
+  var queryParameters = options.toMap();
+
+  final response = await http.get(Uri.https(endPoint, api, queryParameters), headers: headerValue);
+  return response;
+}
+
+Future<http.Response> getDetailThongKe(int year) async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
 
   var api = "v2/dx/PhieuDeXuat/ThongKe";
-  var uri =
-      Uri.https(endPoint, api, {"year": year.toString(), "type": "ByAll"});
-  final response = await http.get(uri, headers: headerValue);
+  var queryParameters = {"year": year.toString(), "type": "ByAll"};
+
+  final response = await http.get(Uri.https(endPoint, api, queryParameters), headers: headerValue);
   return response;
 }

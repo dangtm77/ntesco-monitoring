@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/models/Login.dart';
-
-import '../../../size_config.dart';
+import 'package:ntesco_smart_monitoring/size_config.dart';
 
 class HeaderBanner extends StatelessWidget {
   final LoginResponseModel? model;
@@ -15,12 +14,8 @@ class HeaderBanner extends StatelessWidget {
     return Container(
       // height: 90,
       width: double.infinity,
-      margin: EdgeInsets.fromLTRB(
-          getProportionateScreenWidth(20), getProportionateScreenWidth(20), getProportionateScreenWidth(20), 0),
-      padding: EdgeInsets.symmetric(
-        horizontal: getProportionateScreenWidth(20),
-        vertical: getProportionateScreenWidth(15),
-      ),
+      margin: EdgeInsets.fromLTRB(getProportionateScreenWidth(20), getProportionateScreenWidth(20), getProportionateScreenWidth(20), 0),
+      padding: EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20), vertical: getProportionateScreenWidth(15)),
       decoration: BoxDecoration(
         color: kPrimaryColor,
         borderRadius: BorderRadius.circular(20),
