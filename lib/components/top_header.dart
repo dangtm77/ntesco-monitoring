@@ -11,8 +11,7 @@ class TopHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(10.0)),
+      padding: EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(10.0)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -21,11 +20,10 @@ class TopHeader extends StatelessWidget {
             onTap: () => Scaffold.of(context).openDrawer(),
             child: Stack(
               clipBehavior: Clip.none,
-              children: [Icon(Ionicons.apps, color: kPrimaryColor, size: 30)],
+              children: [Icon(Ionicons.grid_outline, color: kPrimaryColor, size: 30)],
             ),
           ),
-          Image.asset("assets/images/logofull.png",
-              width: getProportionateScreenWidth(110)),
+          Image.asset("assets/images/logofull.png", width: getProportionateScreenWidth(110)),
           NotificationBell()
         ],
       ),
@@ -38,20 +36,12 @@ class TopHeaderSub extends StatelessWidget {
   final String subtitle;
   final InkWell? buttonLeft;
   final InkWell? buttonRight;
-  const TopHeaderSub(
-      {Key? key,
-      required this.title,
-      required this.subtitle,
-      this.buttonLeft,
-      this.buttonRight})
-      : super(key: key);
+  const TopHeaderSub({Key? key, required this.title, required this.subtitle, this.buttonLeft, this.buttonRight}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(
-          vertical: getProportionateScreenWidth(5),
-          horizontal: getProportionateScreenWidth(10.0)),
+      padding: EdgeInsets.symmetric(vertical: getProportionateScreenWidth(5), horizontal: getProportionateScreenWidth(10.0)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -61,40 +51,24 @@ class TopHeaderSub extends StatelessWidget {
                 onTap: () => Navigator.pushNamed(context, HomeScreen.routeName),
                 child: Stack(
                   clipBehavior: Clip.none,
-                  children: [
-                    Icon(
-                      Ionicons.chevron_back_outline,
-                      color: kPrimaryColor,
-                      size: 30,
-                    )
-                  ],
+                  children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 35.0)],
                 ),
               ),
           Column(
             children: [
-              Text(title,
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: kPrimaryColor,
-                      fontWeight: FontWeight.w700)),
-              Text(subtitle,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: kSecondaryColor,
-                  )),
+              Text(title, style: TextStyle(fontSize: 20, color: kPrimaryColor, fontWeight: FontWeight.w700)),
+              Text(subtitle, style: TextStyle(fontSize: 12, color: kSecondaryColor)),
             ],
           ),
-          buttonRight ?? Text('')
-          // InkWell(
-          //   borderRadius: BorderRadius.circular(15),
-          //   onTap: () => Navigator.pushNamed(context, HomeScreen.routeName),
-          //   child: Stack(
-          //     clipBehavior: Clip.none,
-          //     children: [
-          //       Icon(Icons.error_outline_rounded, color: kPrimaryColor, size: 40)
-          //     ],
-          //   ),
-          // ),
+          buttonRight ??
+              InkWell(
+                borderRadius: BorderRadius.circular(15),
+                onTap: () => Navigator.pushNamed(context, HomeScreen.routeName),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [Icon(Ionicons.information_circle_outline, color: kPrimaryColor, size: 35.0)],
+                ),
+              )
         ],
       ),
     );

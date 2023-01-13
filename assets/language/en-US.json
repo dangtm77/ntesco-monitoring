@@ -14,14 +14,18 @@
   },
   "menu": {
     "home": "Home", 
-    "dexuat": "Requests",
-    "dexuat_subtitle": "Requests Tracking",
-    "dexuat_detai_title": "Chi tiết thông tin phiếu đề xuất",
+    "phieudexuat": "Requests", 
     "log_out": "Log out",
     "settings": "Settings",
     "alarm": "Alarm",
     "contact_us": "Contact us",
     "contact_us_subtitle": "Contact us - Support - Feedback"
+  },  
+  "phieudexuat":{
+    "title": "Requests",
+    "subtitle": "Requests Tracking",
+    "detail_title": "Detail of request",
+    "detail_subtitle": "Information of request"
   },
   "language_display": "Language display:",
   "hello_message": "Hi, {}\r\n",

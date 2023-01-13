@@ -50,6 +50,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "bottom_navy_bar",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/bottom_navy_bar-6.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "cached_network_image",
       "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/cached_network_image-3.2.1",
       "packageUri": "lib/",
@@ -578,7 +584,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2023-01-12T15:58:25.360756Z",
+  "generated": "2023-01-13T07:39:32.014182Z",
   "generator": "pub",
   "generatorVersion": "2.18.6"
 }

@@ -30,14 +30,18 @@ class CodegenLoader extends AssetLoader{
   },
   "menu": {
     "home": "Home",
-    "dexuat": "Requests",
-    "dexuat_subtitle": "Requests Tracking",
-    "dexuat_detai_title": "Chi tiết thông tin phiếu đề xuất",
+    "phieudexuat": "Requests",
     "log_out": "Log out",
     "settings": "Settings",
     "alarm": "Alarm",
     "contact_us": "Contact us",
     "contact_us_subtitle": "Contact us - Support - Feedback"
+  },
+  "phieudexuat": {
+    "title": "Requests",
+    "subtitle": "Requests Tracking",
+    "detail_title": "Detail of request",
+    "detail_subtitle": "Information of request"
   },
   "language_display": "Language display:",
   "hello_message": "Hi, {}\r\n",
@@ -67,14 +71,18 @@ static const Map<String,dynamic> vi_VN = {
   },
   "menu": {
     "home": "Trang chủ",
-    "dexuat": "Phiếu đề xuất",
-    "dexuat_subtitle": "Theo dõi phiếu đề xuất",
-    "dexuat_detai_title": "Chi tiết thông tin phiếu đề xuất",
+    "phieudexuat": "Phiếu đề xuất",
     "log_out": "Đăng xuất",
     "settings": "Cài đặt",
     "alarm": "Cảnh báo",
     "contact_us": "Liên hệ chúng tôi",
     "contact_us_subtitle": "Liên hệ - Hỗ trợ - Góp ý"
+  },
+  "phieudexuat": {
+    "title": "Phiếu đề xuất",
+    "subtitle": "Theo dõi tình trạng các phiếu đề xuất",
+    "detail_title": "Chi tiết phiếu đề xuất",
+    "detail_subtitle": "Thông tin chi tiết của phiếu đề xuất"
   },
   "language_display": "Ngôn ngữ hiển thị:",
   "hello_message": "Xin chào, {}\r\n",

@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
-import 'package:ntesco_smart_monitoring/core/auth.dart'; 
+import 'package:ntesco_smart_monitoring/core/auth.dart';
 import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
-import 'package:ntesco_smart_monitoring/screens/dexuat/dexuat_screen.dart';
+import 'package:ntesco_smart_monitoring/screens/dexuat/list_of_dexuat_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/signin/signin_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ntesco_smart_monitoring/models/Login.dart';
@@ -38,8 +38,7 @@ class _MainDrawerState extends State<MainDrawer> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: new Theme(
-              data:
-                  Theme.of(context).copyWith(secondaryHeaderColor: Colors.blue),
+              data: Theme.of(context).copyWith(secondaryHeaderColor: Colors.blue),
               child: new CircularProgressIndicator(),
             ),
           );
@@ -54,13 +53,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   margin: EdgeInsets.symmetric(horizontal: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("language_display".tr(),
-                          style: TextStyle(
-                              color: kPrimaryColor,
-                              fontWeight: FontWeight.w600)),
-                      ChangeLanguage()
-                    ],
+                    children: [Text("language_display".tr(), style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600)), ChangeLanguage()],
                   ),
                 ),
                 Container(
@@ -70,36 +63,21 @@ class _MainDrawerState extends State<MainDrawer> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        CircleAvatar(
-                            radius: 80.0,
-                            backgroundColor: kPrimaryColor,
-                            child: CircleAvatar(
-                                radius: 75.0,
-                                backgroundImage: NetworkImage(
-                                    userCurrent!.anhDaiDien.toString()))),
+                        CircleAvatar(radius: 80.0, backgroundColor: kPrimaryColor, child: CircleAvatar(radius: 75.0, backgroundImage: NetworkImage(userCurrent!.anhDaiDien.toString()))),
                         SizedBox(height: 5.0),
                         Text(
                           "${userCurrent.hoTen}",
-                          style: TextStyle(
-                              fontSize: 22.0,
-                              fontWeight: FontWeight.w800,
-                              color: kPrimaryColor),
+                          style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w800, color: kPrimaryColor),
                         ),
                         SizedBox(height: 1.0),
                         Text(
                           "${userCurrent.chucDanh}",
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.w400,
-                              color: kSecondaryColor),
+                          style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400, color: kSecondaryColor),
                         ),
                         SizedBox(height: 1.0),
                         Text(
                           "${userCurrent.phongBan}",
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.w400,
-                              color: kSecondaryColor),
+                          style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400, color: kSecondaryColor),
                         ),
                       ],
                     ),
@@ -109,23 +87,16 @@ class _MainDrawerState extends State<MainDrawer> {
                   height: 20.0,
                 ),
                 ListTile(
-                  onTap: () =>
-                      Navigator.pushNamed(context, HomeScreen.routeName),
+                  onTap: () => Navigator.pushNamed(context, HomeScreen.routeName),
                   leading: Icon(Icons.home_rounded, color: kPrimaryColor),
-                  trailing:
-                      Icon(Icons.arrow_right_rounded, color: kPrimaryColor),
-                  title: Text("menu.home".tr(),
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: kPrimaryColor,
-                          fontWeight: FontWeight.w700)),
+                  trailing: Icon(Icons.arrow_right_rounded, color: kPrimaryColor),
+                  title: Text("menu.home".tr(), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w700)),
                 ),
                 ListTile(
-                  onTap: () => Navigator.pushNamed(context, DeXuatScreen.routeName),
+                  onTap: () => Navigator.pushNamed(context, ListOfDeXuatScreen.routeName),
                   leading: Icon(Icons.bar_chart_rounded, color: kPrimaryColor),
                   trailing: Icon(Icons.arrow_right_rounded, color: kPrimaryColor),
-                  title:
-                      Text("menu.dexuat".tr(), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w700)),
+                  title: Text("menu.phieudexuat".tr(), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w700)),
                 ),
                 /*
                 ListTile(
@@ -152,19 +123,11 @@ class _MainDrawerState extends State<MainDrawer> {
                 */
                 ListTile(
                   onTap: () async {
-                    if (await funcLogOut())
-                      Navigator.pushReplacementNamed(
-                          context, SignInScreen.routeName);
+                    if (await funcLogOut()) Navigator.pushReplacementNamed(context, SignInScreen.routeName);
                   },
-                  leading: Icon(Icons.power_settings_new_rounded,
-                      color: kPrimaryColor),
-                  trailing:
-                      Icon(Icons.arrow_right_rounded, color: kPrimaryColor),
-                  title: Text("menu.log_out".tr(),
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: kPrimaryColor,
-                          fontWeight: FontWeight.w700)),
+                  leading: Icon(Icons.power_settings_new_rounded, color: kPrimaryColor),
+                  trailing: Icon(Icons.arrow_right_rounded, color: kPrimaryColor),
+                  title: Text("menu.log_out".tr(), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w700)),
                 ),
               ],
             ),
