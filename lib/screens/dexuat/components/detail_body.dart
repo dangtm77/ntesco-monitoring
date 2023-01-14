@@ -1,10 +1,15 @@
+import 'dart:convert';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
+import 'package:ntesco_smart_monitoring/core/phieudexuat.dart';
+import 'package:ntesco_smart_monitoring/models/dx/PhieuDeXuat.dart';
+import 'package:ntesco_smart_monitoring/screens/dexuat/components/detail_chung_body.dart';
 import 'package:ntesco_smart_monitoring/screens/dexuat/list_of_dexuat_screen.dart';
 
 class Body extends StatefulWidget {
@@ -21,17 +26,25 @@ class _BodyPageState extends State<Body> {
 
   late int _currentIndex = 0;
   late PageController _pageController;
+  late Future<PhieuDeXuatModel> _phieuDeXuat;
 
   @override
   void initState() {
     _currentIndex = 0;
     _pageController = PageController();
+    _phieuDeXuat = _getDetailPhieuDeXuat();
     super.initState();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  Future<PhieuDeXuatModel> _getDetailPhieuDeXuat() async {
+    var response = await getDetailPhieuDeXuat(id);
+
+    if (response.statusCode == 200)
+      return PhieuDeXuatModel.fromJson(jsonDecode(response.body));
+    else if (response.statusCode == 401)
+      throw response.statusCode;
+    else
+      throw Exception('StatusCode: ${response.statusCode}');
   }
 
   @override
@@ -44,54 +57,74 @@ class _BodyPageState extends State<Body> {
           children: [
             Container(
               child: TopHeaderSub(
-                title: "phieudexuat.detail_title".tr(),
-                subtitle: "phieudexuat.detail_subtitle".tr(),
-                buttonLeft: InkWell(
-                  borderRadius: BorderRadius.circular(15),
-                  onTap: () => Navigator.pushNamed(context, ListOfDeXuatScreen.routeName),
-                  child: Stack(
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 35.0)],
+                  title: "phieudexuat.detail_title".tr(),
+                  subtitle: "phieudexuat.detail_subtitle".tr(),
+                  buttonLeft: InkWell(
+                    borderRadius: BorderRadius.circular(15),
+                    onTap: () => Navigator.pushNamed(context, ListOfDeXuatScreen.routeName),
+                    child: Stack(
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 35.0)],
+                    ),
                   ),
-                ),
-                buttonRight: null,
-              ),
+                  buttonRight: null),
             ),
             Expanded(
-              child: Scaffold(
-                body: SizedBox.expand(
-                  child: PageView(
-                    controller: _pageController,
-                    onPageChanged: ((value) => setState(() => _currentIndex = value)),
-                    children: <Widget>[
-                      Container(color: Colors.blueGrey),
-                      Container(color: Colors.red),
-                      Container(color: Colors.green),
-                      Container(color: Colors.blue),
-                    ],
-                  ),
-                ),
-                bottomNavigationBar: BottomNavyBar(
-                  backgroundColor: Colors.transparent,
-                  itemCornerRadius: 10.0,
-                  containerHeight: 45.0,
-                  selectedIndex: _currentIndex,
-                  onItemSelected: (value) {
-                    setState(() => _currentIndex = value);
-                    _pageController.jumpToPage(value);
-                  },
-                  items: <BottomNavyBarItem>[
-                    BottomNavyBarItem(title: Text('Chung'), icon: Icon(Icons.home), textAlign: TextAlign.center),
-                    BottomNavyBarItem(title: Text('Phê duyệt'), icon: Icon(Icons.apps), textAlign: TextAlign.center),
-                    BottomNavyBarItem(title: Text('Trao đổi'), icon: Icon(Icons.chat_bubble), textAlign: TextAlign.center),
-                    BottomNavyBarItem(title: Text('Khác'), icon: Icon(Icons.settings), textAlign: TextAlign.center),
-                  ],
-                ),
-              ),
+              child: FutureBuilder<PhieuDeXuatModel>(
+                  future: _phieuDeXuat,
+                  builder: (BuildContext context, AsyncSnapshot<PhieuDeXuatModel> snapshot) {
+                    if (snapshot.hasError)
+                      return DataErrorWidget(error: snapshot.error.toString());
+                    else {
+                      if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active))
+                        return LoadingWidget();
+                      else {
+                        if (snapshot.hasData && snapshot.data != null) {
+                          var item = snapshot.data;
+                          return Scaffold(
+                            body: SizedBox.expand(
+                              child: PageView(
+                                controller: _pageController,
+                                onPageChanged: ((value) => setState(() => _currentIndex = value)),
+                                children: <Widget>[
+                                  DetailChungBody(id: id, phieuDeXuat: item),
+                                  Container(color: Colors.red),
+                                  Container(color: Colors.green),
+                                  Container(color: Colors.blue),
+                                ],
+                              ),
+                            ),
+                            bottomNavigationBar: BottomNavyBar(
+                              itemCornerRadius: 10.0,
+                              containerHeight: 45.0,
+                              selectedIndex: _currentIndex,
+                              onItemSelected: (value) {
+                                setState(() => _currentIndex = value);
+                                _pageController.jumpToPage(value);
+                              },
+                              items: <BottomNavyBarItem>[
+                                BottomNavyBarItem(title: Text('Chung'), icon: Icon(Ionicons.reader_outline), textAlign: TextAlign.center),
+                                BottomNavyBarItem(title: Text('Phê duyệt'), icon: Icon(Ionicons.git_branch_outline), textAlign: TextAlign.center),
+                                BottomNavyBarItem(title: Text('Trao đổi'), icon: Icon(Ionicons.chatbubbles_outline), textAlign: TextAlign.center),
+                                BottomNavyBarItem(title: Text('Khác'), icon: Icon(Ionicons.ellipsis_horizontal_circle_outline), textAlign: TextAlign.center),
+                              ],
+                            ),
+                          );
+                        } else {
+                          return NoDataWidget(message: "Không tìm thấy thông tin phiếu đề xuất!!!");
+                        }
+                      }
+                    }
+                  }),
             )
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

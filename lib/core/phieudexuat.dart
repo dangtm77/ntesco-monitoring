@@ -10,7 +10,7 @@ Future<http.Response> getListPhieuDeXuat(int year, LoadOptionsModel options) asy
   var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
   var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
 
-  var api = "v2/dx/PhieuDeXuat";
+  var api = "v2/dx/phieudexuat";
   var queryParameters = options.toMap();
   queryParameters.addAll({"year": year.toString()});
 
@@ -18,6 +18,18 @@ Future<http.Response> getListPhieuDeXuat(int year, LoadOptionsModel options) asy
   return response;
 }
 
+Future<http.Response> getDetailPhieuDeXuat(int id) async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
+
+  var api = "v2/dx/phieudexuat/byid";
+  var queryParameters = new Map<String, dynamic>();
+  queryParameters.addAll({"id": id.toString()});
+
+  final response = await http.get(Uri.https(endPoint, api, queryParameters), headers: headerValue);
+  return response;
+}
 
 Future<http.Response> getListDanhMuc(LoadOptionsModel options) async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
