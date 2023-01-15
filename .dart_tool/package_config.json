@@ -158,6 +158,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "flutter_datetime_picker",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_datetime_picker-1.5.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_localizations",
       "rootUri": "file:///C:/flutter/packages/flutter_localizations",
       "packageUri": "lib/",
@@ -584,7 +590,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2023-01-13T07:39:32.014182Z",
+  "generated": "2023-01-15T15:13:07.803421Z",
   "generator": "pub",
   "generatorVersion": "2.18.6"
 }

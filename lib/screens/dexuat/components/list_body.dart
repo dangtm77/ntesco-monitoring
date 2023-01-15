@@ -20,7 +20,7 @@ import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ntesco_smart_monitoring/models/Login.dart';
 import 'package:ntesco_smart_monitoring/models/dx/DanhMuc.dart';
-import 'package:ntesco_smart_monitoring/models/dx/PhieuDeXuat.dart';
+import 'package:ntesco_smart_monitoring/models/dx/PhieuDeXuatList.dart';
 import 'package:ntesco_smart_monitoring/models/dx/ThongKe.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,7 +32,7 @@ class Body extends StatefulWidget {
 class _BodyPageState extends State<Body> {
   TextEditingController _keywordForSearchEditingController = TextEditingController();
 
-  late Future<PhieuDeXuatModels> listPhieuDeXuat;
+  late Future<PhieuDeXuatListModels> listPhieuDeXuat;
   late Future<ThongKeModel> thongKe;
   late Future<DanhMucModels> listDanhMuc;
   late int yearCurrent = DateTime.now().year;
@@ -57,7 +57,7 @@ class _BodyPageState extends State<Body> {
     super.dispose();
   }
 
-  Future<PhieuDeXuatModels> _getListPhieuDeXuat() async {
+  Future<PhieuDeXuatListModels> _getListPhieuDeXuat() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var userCurrent = LoginResponseModel.fromJson(json.decode(prefs.getString('USERCURRENT')!));
     var sortOptions = [
@@ -131,7 +131,7 @@ class _BodyPageState extends State<Body> {
     var response = await getListPhieuDeXuat(yearCurrent, options);
 
     if (response.statusCode == 200) {
-      var result = PhieuDeXuatModels.fromJson(jsonDecode(response.body));
+      var result = PhieuDeXuatListModels.fromJson(jsonDecode(response.body));
       setState(() {
         isLoading = false;
       });
@@ -205,9 +205,9 @@ class _BodyPageState extends State<Body> {
                         listPhieuDeXuat = _getListPhieuDeXuat();
                       });
                     },
-                    child: FutureBuilder<PhieuDeXuatModels>(
+                    child: FutureBuilder<PhieuDeXuatListModels>(
                       future: listPhieuDeXuat,
-                      builder: (BuildContext context, AsyncSnapshot<PhieuDeXuatModels> snapshot) {
+                      builder: (BuildContext context, AsyncSnapshot<PhieuDeXuatListModels> snapshot) {
                         if (snapshot.hasError)
                           return DataErrorWidget(error: snapshot.error.toString());
                         else {
@@ -522,7 +522,7 @@ class _BodyPageState extends State<Body> {
     );
   }
 
-  Slidable phieuDeXuatItem(PhieuDeXuatModel item) {
+  Slidable phieuDeXuatItem(PhieuDeXuatListModel item) {
     Icon _trangThaiIcon = Icon(Ionicons.hourglass_outline);
     switch (item.tinhTrang.toInt()) {
       case 1:

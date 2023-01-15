@@ -3,14 +3,8 @@ import 'package:ntesco_smart_monitoring/size_config.dart';
 
 const endPoint = "portal-api.ntesco.com";
 
-const kPrimaryColor = Color(0xFF0005493); 
-
+const kPrimaryColor = Color(0xFF0005493);
 const kPrimaryLightColor = Color(0xFFFFECDF);
-const kPrimaryGradientColor = LinearGradient(
-  begin: Alignment.topLeft,
-  end: Alignment.bottomRight,
-  colors: [Color(0xFFFFA53E), Color(0xFFFF7643)],
-);
 const kSecondaryColor = Colors.black87;
 const kTextColor = Color(0xFF757575);
 
@@ -40,7 +34,7 @@ const String kNamelNullError = "Vui lòng nhập tên của bạn";
 const String kPhoneNumberNullError = "Vui lòng nhập số điện thoại của bạn";
 const String kAddressNullError = "Vui lòng nhập địa chỉ của bạn";
 
-final otpInputDecoration = InputDecoration(
+final inputDecoration = InputDecoration(
   contentPadding: EdgeInsets.symmetric(vertical: getProportionateScreenWidth(15)),
   border: outlineInputBorder(),
   focusedBorder: outlineInputBorder(),

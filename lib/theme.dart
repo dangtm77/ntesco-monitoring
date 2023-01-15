@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart'; 
+import 'package:flutter/material.dart';
+import 'package:ntesco_smart_monitoring/constants.dart';
 
 ThemeData theme() {
   return ThemeData(
@@ -7,28 +8,26 @@ ThemeData theme() {
     //appBarTheme: appBarTheme(),
     //textTheme: textTheme(),
     brightness: Brightness.light,
-    //inputDecorationTheme: inputDecorationTheme(),
-    visualDensity: VisualDensity.adaptivePlatformDensity, 
+    inputDecorationTheme: inputDecorationTheme(),
+    visualDensity: VisualDensity.adaptivePlatformDensity,
   );
 }
 
-// InputDecorationTheme inputDecorationTheme() {
-//   OutlineInputBorder outlineInputBorder = OutlineInputBorder(
-//     borderRadius: BorderRadius.circular(15),
-//     borderSide: BorderSide(color: kTextColor),
-//     gapPadding: 10,
-//   );
-//   return InputDecorationTheme(
-//     // If  you are using latest version of flutter then lable text and hint text shown like this
-//     // if you r using flutter less then 1.20.* then maybe this is not working properly
-//     // if we are define our floatingLabelBehavior in our theme then it's not applayed
-//     floatingLabelBehavior: FloatingLabelBehavior.always,
-//     contentPadding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-//     enabledBorder: outlineInputBorder,
-//     focusedBorder: outlineInputBorder,
-//     border: outlineInputBorder,
-//   );
-// }
+InputDecorationTheme inputDecorationTheme() {
+  OutlineInputBorder outlineInputBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(7),
+    borderSide: BorderSide(color: kTextColor),
+    gapPadding: 5,
+  );
+  return InputDecorationTheme(
+    labelStyle: TextStyle(fontSize: 18, color: kPrimaryColor, fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
+    floatingLabelBehavior: FloatingLabelBehavior.always,
+    contentPadding: EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 0.0),
+    enabledBorder: outlineInputBorder,
+    focusedBorder: outlineInputBorder,
+    border: OutlineInputBorder(),
+  );
+}
 
 // TextTheme textTheme() {
 //   return TextTheme(

@@ -14,6 +14,7 @@ Future<void> main() async {
   SharedPreferences pre = await SharedPreferences.getInstance();
   var status = pre.getBool('ViewFirstTime');
   var isLoggedIn = pre.getBool('ISLOGGEDIN');
+  Intl.defaultLocale = 'vi_VN';
   runApp(EasyLocalization(
     child: MyApp(status, isLoggedIn),
     supportedLocales: [
@@ -26,7 +27,8 @@ Future<void> main() async {
     saveLocale: true,
     assetLoader: CodegenLoader(),
   ));
-} 
+}
+
 class MyApp extends StatelessWidget {
   const MyApp(this.status, this.isLoggedIn);
   final bool? status;
@@ -41,9 +43,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'NTesco App' + status.toString(),
       theme: theme(),
-      initialRoute: (status == false || status == null)
-          ? SplashScreen.routeName
-          : ((isLoggedIn == false || isLoggedIn == null) ? SignInScreen.routeName : HomeScreen.routeName),
+      initialRoute: (status == false || status == null) ? SplashScreen.routeName : ((isLoggedIn == false || isLoggedIn == null) ? SignInScreen.routeName : HomeScreen.routeName),
       routes: routes,
     );
   }

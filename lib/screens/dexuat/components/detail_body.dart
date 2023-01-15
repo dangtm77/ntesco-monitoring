@@ -4,11 +4,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/components/state_widget.dart';
-
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/core/phieudexuat.dart';
-import 'package:ntesco_smart_monitoring/models/dx/PhieuDeXuat.dart';
+import 'package:ntesco_smart_monitoring/models/dx/PhieuDeXuatDetail.dart';
 import 'package:ntesco_smart_monitoring/screens/dexuat/components/detail_chung_body.dart';
 import 'package:ntesco_smart_monitoring/screens/dexuat/list_of_dexuat_screen.dart';
 
@@ -26,7 +25,7 @@ class _BodyPageState extends State<Body> {
 
   late int _currentIndex = 0;
   late PageController _pageController;
-  late Future<PhieuDeXuatModel> _phieuDeXuat;
+  late Future<PhieuDeXuatDetailModel> _phieuDeXuat;
 
   @override
   void initState() {
@@ -36,11 +35,11 @@ class _BodyPageState extends State<Body> {
     super.initState();
   }
 
-  Future<PhieuDeXuatModel> _getDetailPhieuDeXuat() async {
+  Future<PhieuDeXuatDetailModel> _getDetailPhieuDeXuat() async {
     var response = await getDetailPhieuDeXuat(id);
 
     if (response.statusCode == 200)
-      return PhieuDeXuatModel.fromJson(jsonDecode(response.body));
+      return PhieuDeXuatDetailModel.fromJson(jsonDecode(response.body));
     else if (response.statusCode == 401)
       throw response.statusCode;
     else
@@ -70,9 +69,9 @@ class _BodyPageState extends State<Body> {
                   buttonRight: null),
             ),
             Expanded(
-              child: FutureBuilder<PhieuDeXuatModel>(
+              child: FutureBuilder<PhieuDeXuatDetailModel>(
                   future: _phieuDeXuat,
-                  builder: (BuildContext context, AsyncSnapshot<PhieuDeXuatModel> snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot<PhieuDeXuatDetailModel> snapshot) {
                     if (snapshot.hasError)
                       return DataErrorWidget(error: snapshot.error.toString());
                     else {

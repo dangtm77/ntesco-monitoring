@@ -1,11 +1,13 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-
-import 'package:ntesco_smart_monitoring/models/dx/PhieuDeXuat.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:ionicons/ionicons.dart';
+import 'package:ntesco_smart_monitoring/constants.dart';
+import 'package:ntesco_smart_monitoring/models/dx/PhieuDeXuatDetail.dart';
 
 class DetailChungBody extends StatefulWidget {
   final int id;
-  final PhieuDeXuatModel? phieuDeXuat;
+  final PhieuDeXuatDetailModel? phieuDeXuat;
 
   const DetailChungBody({Key? key, required this.id, this.phieuDeXuat}) : super(key: key);
 
@@ -15,16 +17,25 @@ class DetailChungBody extends StatefulWidget {
 
 class _DetailChungBodyPageState extends State<DetailChungBody> {
   final int id;
-  final PhieuDeXuatModel? phieuDeXuat;
+  final PhieuDeXuatDetailModel? phieuDeXuat;
 
   _DetailChungBodyPageState(this.id, this.phieuDeXuat);
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _tieuDeController = TextEditingController();
+  final TextEditingController _mucDichController = TextEditingController();
+  final TextEditingController _noiDungController = TextEditingController();
 
+  final TextEditingController _tuNgayController = TextEditingController();
+  final TextEditingController _denNgayController = TextEditingController();
   @override
   void initState() {
     _tieuDeController.text = phieuDeXuat!.tieuDe;
+    _mucDichController.text = phieuDeXuat!.mucDich;
+    _noiDungController.text = phieuDeXuat!.noiDung;
+
+    _tuNgayController.text = DateFormat('HH:mm dd/MM/yyyy').format(phieuDeXuat!.tuNgay);
+    _denNgayController.text = DateFormat('HH:mm dd/MM/yyyy').format(phieuDeXuat!.denNgay);
     super.initState();
   }
 
@@ -39,37 +50,97 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
             children: [
               TextFormField(
                 controller: _tieuDeController,
+                maxLines: 3,
+                minLines: 1,
                 decoration: InputDecoration(
-                  hintText: 'What do people call you?',
-                  labelText: 'Name *',
-                  fillColor: Colors.grey,
-                  border: OutlineInputBorder(),
+                  labelText: phieuDeXuat!.tieuDeLabel,
                 ),
               ),
-              const SizedBox(height: 15),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        hintText: "CVV",
-                        border: OutlineInputBorder(),
-                      ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _mucDichController,
+                maxLines: 5,
+                minLines: 1,
+                decoration: InputDecoration(
+                  labelText: phieuDeXuat!.mucDichLabel,
+                  hintText: phieuDeXuat!.mucDichLabel,
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _noiDungController,
+                maxLines: 5,
+                minLines: 1,
+                decoration: InputDecoration(
+                  labelText: phieuDeXuat!.noiDungLabel,
+                  hintText: phieuDeXuat!.noiDungLabel,
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _tuNgayController,
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: phieuDeXuat!.tuNgayLabel,
+                  hintText: phieuDeXuat!.tuNgayLabel,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      Ionicons.calendar_outline,
+                      color: kPrimaryColor,
                     ),
+                    onPressed: () {},
                   ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    child: TextFormField(
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        hintText: "MM/YY",
-                        border: OutlineInputBorder(),
-                      ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _denNgayController,
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: phieuDeXuat!.denNgayLabel,
+                  hintText: phieuDeXuat!.denNgayLabel,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      Ionicons.calendar_outline,
+                      color: kPrimaryColor,
                     ),
+                    onPressed: () async {
+                      DatePicker.showDateTimePicker(
+                        context,
+                        currentTime: DateTime.now(),
+                        locale: LocaleType.vi,
+                        onConfirm: (date) {
+                          print('confirm $date');
+                        },
+                      );
+                    },
                   ),
-                ],
+                ),
               )
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: TextFormField(
+              //         decoration: InputDecoration(
+              //             labelText: phieuDeXuat!.tuNgayLabel,
+              //             hintText: phieuDeXuat!.tuNgayLabel,
+              //             suffixIcon: Icon(
+              //               Icons.search,
+              //               color: Colors.grey,
+              //             )),
+              //       ),
+              //     ),
+              //     const SizedBox(width: 10),
+              //     Expanded(
+              //       child: TextFormField(
+              //         decoration: InputDecoration(
+              //           labelText: phieuDeXuat!.denNgayLabel,
+              //           hintText: phieuDeXuat!.denNgayLabel,
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
               // ElevatedButton(
               //   onPressed: () {
               //     // Validate returns true if the form is valid, or false otherwise.
