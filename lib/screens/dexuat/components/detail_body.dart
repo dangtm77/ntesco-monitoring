@@ -37,7 +37,7 @@ class _BodyPageState extends State<Body> {
 
   Future<PhieuDeXuatDetailModel> _getDetailPhieuDeXuat() async {
     var response = await getDetailPhieuDeXuat(id);
-
+    print(response.body);
     if (response.statusCode == 200)
       return PhieuDeXuatDetailModel.fromJson(jsonDecode(response.body));
     else if (response.statusCode == 401)
