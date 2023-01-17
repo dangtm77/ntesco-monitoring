@@ -9,6 +9,8 @@ import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/core/phieudexuat.dart';
 import 'package:ntesco_smart_monitoring/models/dx/PhieuDeXuatDetail.dart';
 import 'package:ntesco_smart_monitoring/screens/dexuat/components/detail_chung_body.dart';
+import 'package:ntesco_smart_monitoring/screens/dexuat/components/detail_thaoluan_body.dart';
+import 'package:ntesco_smart_monitoring/screens/dexuat/components/detail_theodoi_body.dart';
 import 'package:ntesco_smart_monitoring/screens/dexuat/list_of_dexuat_screen.dart';
 
 class Body extends StatefulWidget {
@@ -37,7 +39,6 @@ class _BodyPageState extends State<Body> {
 
   Future<PhieuDeXuatDetailModel> _getDetailPhieuDeXuat() async {
     var response = await getDetailPhieuDeXuat(id);
-    print(response.body);
     if (response.statusCode == 200)
       return PhieuDeXuatDetailModel.fromJson(jsonDecode(response.body));
     else if (response.statusCode == 401)
@@ -56,25 +57,26 @@ class _BodyPageState extends State<Body> {
           children: [
             Container(
               child: TopHeaderSub(
-                  title: "phieudexuat.detail_title".tr(),
-                  subtitle: "phieudexuat.detail_subtitle".tr(),
-                  buttonLeft: InkWell(
-                    borderRadius: BorderRadius.circular(15),
-                    onTap: () => Navigator.pushNamed(context, ListOfDeXuatScreen.routeName),
-                    child: Stack(
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 35.0)],
-                    ),
+                title: "phieudexuat.detail_title".tr(),
+                subtitle: "phieudexuat.detail_subtitle".tr(),
+                button: InkWell(
+                  borderRadius: BorderRadius.circular(15),
+                  onTap: () => Navigator.pushNamed(context, ListOfDeXuatScreen.routeName),
+                  child: Stack(
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 35.0)],
                   ),
-                  buttonRight: null),
+                ),
+              ),
             ),
             Expanded(
               child: FutureBuilder<PhieuDeXuatDetailModel>(
                   future: _phieuDeXuat,
                   builder: (BuildContext context, AsyncSnapshot<PhieuDeXuatDetailModel> snapshot) {
-                    if (snapshot.hasError)
+                    if (snapshot.hasError) {
+                      print(snapshot);
                       return DataErrorWidget(error: snapshot.error.toString());
-                    else {
+                    } else {
                       if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active))
                         return LoadingWidget();
                       else {
@@ -87,9 +89,9 @@ class _BodyPageState extends State<Body> {
                                 onPageChanged: ((value) => setState(() => _currentIndex = value)),
                                 children: <Widget>[
                                   DetailChungBody(id: id, phieuDeXuat: item),
-                                  Container(color: Colors.red),
-                                  Container(color: Colors.green),
-                                  Container(color: Colors.blue),
+                                  DetailTheoDoiBody(id: id, phieuDeXuat: item),
+                                  DetailThaoLuanBody(id: id, phieuDeXuat: item),
+                                  //Container(color: Colors.blue),
                                 ],
                               ),
                             ),
@@ -105,7 +107,7 @@ class _BodyPageState extends State<Body> {
                                 BottomNavyBarItem(title: Text('Chung'), icon: Icon(Ionicons.reader_outline), textAlign: TextAlign.center),
                                 BottomNavyBarItem(title: Text('Phê duyệt'), icon: Icon(Ionicons.git_branch_outline), textAlign: TextAlign.center),
                                 BottomNavyBarItem(title: Text('Trao đổi'), icon: Icon(Ionicons.chatbubbles_outline), textAlign: TextAlign.center),
-                                BottomNavyBarItem(title: Text('Khác'), icon: Icon(Ionicons.ellipsis_horizontal_circle_outline), textAlign: TextAlign.center),
+                                //BottomNavyBarItem(title: Text('Khác'), icon: Icon(Ionicons.ellipsis_horizontal_circle_outline), textAlign: TextAlign.center),
                               ],
                             ),
                           );

@@ -1,7 +1,10 @@
+// ignore_for_file: unnecessary_statements
+
 import 'dart:convert';
 import 'dart:ui';
 import 'package:awesome_select/awesome_select.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/screens/dexuat/detail_of_dexuat_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
@@ -120,12 +123,16 @@ class _BodyPageState extends State<Body> {
     }
 
     //FILTER BY KEYWORD
-    if (_keywordForSearchEditingController.text.isNotEmpty) {
+    if (_keywordForSearchEditingController.text.isNotEmpty && _keywordForSearchEditingController.text.length > 3) {
       var searchGroupFilterOptions = [];
       if (filterOptions.length > 0) filterOptions.add('and');
       searchGroupFilterOptions.add(['tieuDe', 'contains', _keywordForSearchEditingController.text.toString()]);
+      searchGroupFilterOptions.add('or');
+      searchGroupFilterOptions.add(['id', '=', int.parse(_keywordForSearchEditingController.text.toString())]);
       filterOptions.add(searchGroupFilterOptions);
     }
+
+    print(jsonEncode(filterOptions));
     var options = new LoadOptionsModel(take: itemPerPage * pageIndex, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
     var response = await getListPhieuDeXuat(yearCurrent, options);
 
@@ -183,68 +190,9 @@ class _BodyPageState extends State<Body> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _header(context),
-            //topHeaderContainer(),
-            //thongkeContainer(),
-            //searchContainer(),
-            _search(context),
-            Expanded(
-              child: NotificationListener<ScrollNotification>(
-                  onNotification: (ScrollNotification scrollInfo) {
-                    if (!isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-                      setState(() {
-                        pageIndex = pageIndex + 1;
-                        listPhieuDeXuat = _getListPhieuDeXuat();
-                        isLoading = true;
-                      });
-                    }
-                    return true;
-                  },
-                  child: new RefreshIndicator(
-                    onRefresh: () async {
-                      setState(() {
-                        isLoading = false;
-                        listPhieuDeXuat = _getListPhieuDeXuat();
-                      });
-                    },
-                    child: FutureBuilder<PhieuDeXuatListModels>(
-                      future: listPhieuDeXuat,
-                      builder: (BuildContext context, AsyncSnapshot<PhieuDeXuatListModels> snapshot) {
-                        if (snapshot.hasError)
-                          return DataErrorWidget(error: snapshot.error.toString());
-                        else {
-                          if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !isLoading)
-                            return LoadingWidget();
-                          else {
-                            if (snapshot.hasData && snapshot.data!.data.isNotEmpty) {
-                              return Column(children: [
-                                Expanded(
-                                  child: AnimationLimiter(
-                                    child: ListView.separated(
-                                      itemCount: snapshot.data!.data.length,
-                                      itemBuilder: (BuildContext context, int index) {
-                                        var item = snapshot.data!.data.elementAt(index);
-                                        return AnimationConfiguration.staggeredList(
-                                          position: index,
-                                          duration: const Duration(milliseconds: 400),
-                                          child: SlideAnimation(
-                                            child: FadeInAnimation(child: phieuDeXuatItem(item)),
-                                          ),
-                                        );
-                                      },
-                                      separatorBuilder: (BuildContext context, int index) => const Divider(),
-                                    ),
-                                  ),
-                                ),
-                              ]);
-                            } else {
-                              return NoDataWidget(message: "Không tìm thấy phiếu đề xuất liên quan nào !!!");
-                            }
-                          }
-                        }
-                      },
-                    ),
-                  )),
-            ),
+            _searchBar(context),
+            _thongKePanel(context),
+            _listAll(context),
             Container(
               height: isLoading ? 30.0 : 0,
               color: Colors.transparent,
@@ -271,213 +219,19 @@ class _BodyPageState extends State<Body> {
     );
   }
 
-  Widget _circularContainer(double height, Color color, {Color borderColor = Colors.transparent, double borderWidth = 2}) {
-    return Container(
-      height: height,
-      width: height,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: color,
-        border: Border.all(color: borderColor, width: borderWidth),
-      ),
-    );
-  }
-
   Widget _header(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    return ClipRRect(
-      borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50), bottomRight: Radius.circular(50)),
-      child: Container(
-          height: 80,
-          width: width,
-          decoration: BoxDecoration(
-            color: Colors.orange,
-          ),
-          child: Stack(
-            fit: StackFit.expand,
-            alignment: Alignment.center,
-            children: <Widget>[
-              Positioned(top: 10, right: -120, child: _circularContainer(300, Colors.orangeAccent)),
-              Positioned(top: -60, left: -65, child: _circularContainer(width * .5, Colors.orange)),
-              Positioned(top: -230, right: -30, child: _circularContainer(width * .7, Colors.transparent, borderColor: Colors.white38)),
-              Positioned(
-                top: 10,
-                left: 0,
-                child: Container(
-                  width: width,
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      IconButton(
-                        icon: Icon(Ionicons.chevron_back_circle_outline, color: Colors.white.withOpacity(0.9), size: 35),
-                        onPressed: () => Navigator.pushNamed(context, HomeScreen.routeName),
-                      ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Column(
-                          children: [
-                            Text("phieudexuat.title".tr(), style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w600)),
-                            Text("phieudexuat.subtitle".tr(), style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w500)),
-                          ],
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Ionicons.filter_circle_outline, color: Colors.white.withOpacity(0.9), size: 35),
-                        onPressed: () => showModalBottomSheet(
-                          context: context,
-                          builder: (BuildContext context) {
-                            List<S2Choice<int>> optionsYearFilter = [S2Choice<int>(value: 2021, title: 'Năm 2021'), S2Choice<int>(value: 2022, title: 'Năm 2022'), S2Choice<int>(value: 2023, title: 'Năm 2023'), S2Choice<int>(value: 2024, title: 'Năm 2024')];
-                            List<S2Choice<int>> optionsStatusFilter = [S2Choice<int>(value: 0, title: 'Chờ tôi duyệt'), S2Choice<int>(value: 1, title: 'Đang xử lý'), S2Choice<int>(value: 2, title: 'Đã phê duyệt'), S2Choice<int>(value: 3, title: 'Bị từ chối'), S2Choice<int>(value: 4, title: 'Phiếu do tôi tạo'), S2Choice<int>(value: 5, title: 'Tất cả phiếu')];
-                            Future<List<S2Choice<int>>> optionsDanhMucFilter = _getListDanhMuc();
-
-                            return Scrollbar(
-                              child: ListView(
-                                addAutomaticKeepAlives: true,
-                                children: [
-                                  Container(
-                                    alignment: Alignment.center,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Text(
-                                        "Lọc danh sách phiếu",
-                                        style: TextStyle(color: kPrimaryColor, fontSize: 20.0, fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    child: SmartSelect<int>.single(
-                                      title: 'Xem theo năm',
-                                      choiceItems: optionsYearFilter,
-                                      onChange: (state) => setState(() => yearCurrent = state.value),
-                                      selectedValue: yearCurrent,
-                                      modalType: S2ModalType.bottomSheet,
-                                      modalHeader: true,
-                                      tileBuilder: (context, state) {
-                                        return S2Tile.fromState(state, isTwoLine: true);
-                                      },
-                                    ),
-                                  ),
-                                  FutureBuilder<List<S2Choice<int>>>(
-                                    initialData: [],
-                                    future: optionsDanhMucFilter,
-                                    builder: (context, snapshot) {
-                                      return SmartSelect<int>.multiple(
-                                        title: 'Xem theo danh mục',
-                                        placeholder: "Vui lòng chọn ít nhất 1 danh mục",
-                                        modalFilter: true,
-                                        //selectedChoice: [],
-                                        selectedValue: danhMucCurrent,
-                                        choiceItems: snapshot.data,
-                                        choiceGrouped: true,
-                                        groupBuilder: (context, state, group) {
-                                          return StickyHeader(
-                                            header: state.groupHeader(group),
-                                            content: state.groupChoices(group),
-                                          );
-                                        },
-                                        groupHeaderBuilder: (context, state, group) {
-                                          return Container(
-                                            color: kPrimaryColor,
-                                            padding: const EdgeInsets.all(15),
-                                            alignment: Alignment.centerLeft,
-                                            child: S2Text(
-                                              text: "Nhóm ${group.name}",
-                                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
-                                            ),
-                                          );
-                                        },
-                                        modalHeader: true,
-                                        choiceType: S2ChoiceType.checkboxes,
-                                        modalType: S2ModalType.bottomSheet,
-                                        onChange: (state) => setState(() => danhMucCurrent = state.value),
-                                        tileBuilder: (context, state) {
-                                          return S2Tile.fromState(
-                                            state,
-                                            isTwoLine: true,
-                                            trailing: state.selected.length > 0
-                                                ? CircleAvatar(
-                                                    radius: 15,
-                                                    backgroundColor: kPrimaryColor,
-                                                    child: Text(
-                                                      '${state.selected.length}',
-                                                      style: TextStyle(color: Colors.white),
-                                                    ),
-                                                  )
-                                                : null,
-                                            isLoading: snapshot.connectionState == ConnectionState.waiting,
-                                          );
-                                        },
-                                      );
-                                    },
-                                  ),
-                                  Container(
-                                    child: SmartSelect<int>.multiple(
-                                      title: 'Xem theo tình trạng',
-                                      placeholder: "Vui lòng chọn ít nhất 1 tình trạng",
-                                      choiceItems: optionsStatusFilter,
-                                      onChange: (state) => setState(() => statusCurrent = state.value),
-                                      selectedValue: statusCurrent,
-                                      choiceType: S2ChoiceType.chips,
-                                      modalType: S2ModalType.bottomSheet,
-                                      modalHeader: true,
-                                      tileBuilder: (context, state) {
-                                        return S2Tile.fromState(
-                                          state,
-                                          isTwoLine: true,
-                                          trailing: state.selected.length > 0
-                                              ? CircleAvatar(
-                                                  radius: 15,
-                                                  backgroundColor: kPrimaryColor,
-                                                  child: Text(
-                                                    '${state.selected.length}',
-                                                    style: TextStyle(color: Colors.white),
-                                                  ),
-                                                )
-                                              : null,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  Container(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: DefaultButton(
-                                        text: "Xác nhận",
-                                        press: () {
-                                          print(danhMucCurrent);
-                                          setState(() {
-                                            _keywordForSearchEditingController.text = "";
-                                            listPhieuDeXuat = _getListPhieuDeXuat();
-                                            thongKe = _getThongKe(yearCurrent);
-                                            pageIndex = 1;
-                                            isLoading = false;
-                                          });
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          )),
+    return TopHeaderSub(
+      title: "phieudexuat.title".tr(),
+      subtitle: "phieudexuat.subtitle".tr(),
     );
   }
 
-  Widget _search(BuildContext context) {
+  Widget _searchBar(BuildContext context) {
     return Container(
-      height: 45,
+      width: MediaQuery.of(context).size.width,
+      height: 40,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
+        padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 5.0),
         child: TextField(
           controller: _keywordForSearchEditingController,
           onChanged: (value) {
@@ -490,33 +244,193 @@ class _BodyPageState extends State<Body> {
           },
           decoration: InputDecoration(
               filled: true,
-              fillColor: Colors.grey.shade300,
-              contentPadding: EdgeInsets.all(0),
-              prefixIcon: Icon(
-                Icons.search,
-                color: Colors.grey.shade600,
-              ),
-              suffixIcon: _keywordForSearchEditingController.text.isNotEmpty
-                  ? IconButton(
-                      onPressed: _keywordForSearchEditingController.clear,
+              fillColor: Colors.grey.shade100,
+              contentPadding: EdgeInsets.all(0.0),
+              prefixIcon: Icon(Ionicons.search, size: 20, color: Colors.grey.shade600),
+              suffixIcon: Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    if (_keywordForSearchEditingController.text.isNotEmpty)
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _keywordForSearchEditingController.clear();
+                            isLoading = false;
+                            listPhieuDeXuat = _getListPhieuDeXuat();
+                          });
+                        },
+                        icon: Icon(Ionicons.close_circle, color: Colors.grey.shade500, size: 20),
+                      ),
+                    IconButton(
+                      onPressed: () => showModalBottomSheet(builder: (BuildContext context) => _filterPanel(context), context: context),
                       icon: Icon(
-                        Icons.clear_rounded,
-                        color: Colors.grey.shade600,
+                        Ionicons.filter,
+                        color: (danhMucCurrent.length > 0 || statusCurrent.length > 0) ? kPrimaryColor : Colors.grey.shade500,
                         size: 20,
                       ),
-                    )
-                  : null,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(50), borderSide: BorderSide.none),
-              hintStyle: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                    ),
+                  ],
+                ),
+              ),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+              hintStyle: TextStyle(fontSize: 15, color: Colors.grey.shade500),
               hintText: "Nhập từ khóa để tìm kiếm..."),
         ),
       ),
     );
   }
 
-  Container thongkeContainer() {
+  Widget _filterPanel(BuildContext context) {
+    List<S2Choice<int>> optionsYearFilter = [
+      S2Choice<int>(value: 2021, title: 'Năm 2021'),
+      S2Choice<int>(value: 2022, title: 'Năm 2022'),
+      S2Choice<int>(value: 2023, title: 'Năm 2023'),
+      S2Choice<int>(value: 2024, title: 'Năm 2024'),
+    ];
+    List<S2Choice<int>> optionsStatusFilter = [
+      S2Choice<int>(value: 0, title: 'Chờ tôi duyệt'),
+      S2Choice<int>(value: 1, title: 'Đang xử lý'),
+      S2Choice<int>(value: 2, title: 'Đã phê duyệt'),
+      S2Choice<int>(value: 3, title: 'Bị từ chối'),
+      S2Choice<int>(value: 4, title: 'Phiếu do tôi tạo'),
+      S2Choice<int>(value: 5, title: 'Tất cả phiếu'),
+    ];
+    Future<List<S2Choice<int>>> optionsDanhMucFilter = _getListDanhMuc();
+
+    return Scrollbar(
+      child: ListView(
+        addAutomaticKeepAlives: true,
+        children: [
+          Container(
+            alignment: Alignment.center,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text("Lọc danh sách phiếu", style: TextStyle(color: kPrimaryColor, fontSize: 20.0, fontWeight: FontWeight.bold)),
+            ),
+          ),
+          Container(
+            child: SmartSelect<int>.single(
+              title: 'Xem theo năm',
+              choiceItems: optionsYearFilter,
+              onChange: (state) => setState(() => yearCurrent = state.value),
+              selectedValue: yearCurrent,
+              modalType: S2ModalType.bottomSheet,
+              modalHeader: true,
+              tileBuilder: (context, state) {
+                return S2Tile.fromState(state, isTwoLine: true);
+              },
+            ),
+          ),
+          FutureBuilder<List<S2Choice<int>>>(
+            initialData: [],
+            future: optionsDanhMucFilter,
+            builder: (context, snapshot) {
+              return SmartSelect<int>.multiple(
+                title: 'Xem theo danh mục',
+                placeholder: "Vui lòng chọn ít nhất 1 danh mục",
+                modalFilter: true,
+                //selectedChoice: [],
+                selectedValue: danhMucCurrent,
+                choiceItems: snapshot.data,
+                choiceGrouped: true,
+                groupBuilder: (context, state, group) {
+                  return StickyHeader(
+                    header: state.groupHeader(group),
+                    content: state.groupChoices(group),
+                  );
+                },
+                groupHeaderBuilder: (context, state, group) {
+                  return Container(
+                    color: kPrimaryColor,
+                    padding: const EdgeInsets.all(15),
+                    alignment: Alignment.centerLeft,
+                    child: S2Text(
+                      text: "Nhóm ${group.name}",
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                    ),
+                  );
+                },
+                modalHeader: true,
+                choiceType: S2ChoiceType.checkboxes,
+                modalType: S2ModalType.bottomSheet,
+                onChange: (state) => setState(() => danhMucCurrent = state.value),
+                tileBuilder: (context, state) {
+                  return S2Tile.fromState(
+                    state,
+                    isTwoLine: true,
+                    trailing: state.selected.length > 0
+                        ? CircleAvatar(
+                            radius: 15,
+                            backgroundColor: kPrimaryColor,
+                            child: Text(
+                              '${state.selected.length}',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          )
+                        : null,
+                    isLoading: snapshot.connectionState == ConnectionState.waiting,
+                  );
+                },
+              );
+            },
+          ),
+          Container(
+            child: SmartSelect<int>.multiple(
+              title: 'Xem theo tình trạng',
+              placeholder: "Vui lòng chọn ít nhất 1 tình trạng",
+              choiceItems: optionsStatusFilter,
+              onChange: (state) => setState(() => statusCurrent = state.value),
+              selectedValue: statusCurrent,
+              choiceType: S2ChoiceType.chips,
+              modalType: S2ModalType.bottomSheet,
+              modalHeader: true,
+              tileBuilder: (context, state) {
+                return S2Tile.fromState(
+                  state,
+                  isTwoLine: true,
+                  trailing: state.selected.length > 0
+                      ? CircleAvatar(
+                          radius: 15,
+                          backgroundColor: kPrimaryColor,
+                          child: Text(
+                            '${state.selected.length}',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        )
+                      : null,
+                );
+              },
+            ),
+          ),
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: DefaultButton(
+                text: "Xác nhận",
+                press: () {
+                  setState(() {
+                    _keywordForSearchEditingController.text = "";
+                    listPhieuDeXuat = _getListPhieuDeXuat();
+                    thongKe = _getThongKe(yearCurrent);
+                    pageIndex = 1;
+                    isLoading = false;
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _thongKePanel(BuildContext context) {
     return Container(
-      height: 40.0,
+      height: 45.0,
       color: Colors.transparent,
       child: Padding(
         padding: EdgeInsets.only(bottom: 10),
@@ -570,13 +484,76 @@ class _BodyPageState extends State<Body> {
     );
   }
 
-  Slidable phieuDeXuatItem(PhieuDeXuatListModel item) {
-    Icon _trangThaiIcon = Icon(Ionicons.hourglass_outline);
+  Widget _listAll(BuildContext context) {
+    return Expanded(
+      child: NotificationListener<ScrollNotification>(
+          onNotification: (ScrollNotification scrollInfo) {
+            if (!isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+              setState(() {
+                pageIndex = pageIndex + 1;
+                listPhieuDeXuat = _getListPhieuDeXuat();
+                isLoading = true;
+              });
+            }
+            return true;
+          },
+          child: new RefreshIndicator(
+            onRefresh: () async {
+              setState(() {
+                isLoading = false;
+                listPhieuDeXuat = _getListPhieuDeXuat();
+              });
+            },
+            child: FutureBuilder<PhieuDeXuatListModels>(
+              future: listPhieuDeXuat,
+              builder: (BuildContext context, AsyncSnapshot<PhieuDeXuatListModels> snapshot) {
+                if (snapshot.hasError)
+                  return DataErrorWidget(error: snapshot.error.toString());
+                else {
+                  if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !isLoading)
+                    return LoadingWidget();
+                  else {
+                    if (snapshot.hasData && snapshot.data!.data.isNotEmpty) {
+                      return Column(children: [
+                        Expanded(
+                          child: AnimationLimiter(
+                            child: ListView.separated(
+                              itemCount: snapshot.data!.data.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                var item = snapshot.data!.data.elementAt(index);
+                                return AnimationConfiguration.staggeredList(
+                                  position: index,
+                                  duration: const Duration(milliseconds: 400),
+                                  child: SlideAnimation(
+                                    child: FadeInAnimation(child: _item(item)),
+                                  ),
+                                );
+                              },
+                              separatorBuilder: (BuildContext context, int index) => const Divider(),
+                            ),
+                          ),
+                        ),
+                      ]);
+                    } else {
+                      return NoDataWidget(message: "Không tìm thấy phiếu đề xuất liên quan nào !!!");
+                    }
+                  }
+                }
+              },
+            ),
+          )),
+    );
+  }
+
+  Widget _item(PhieuDeXuatListModel item) {
+    Widget _trangThaiIcon = Icon(Ionicons.hourglass_outline);
     switch (item.tinhTrang.toInt()) {
       case 1:
-        _trangThaiIcon = Icon(
-          Ionicons.timer_outline,
-          color: Colors.amber,
+        _trangThaiIcon = Column(
+          children: [
+            Icon(Ionicons.timer_outline, color: Colors.amber),
+            Text(item.tienDo, style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 13.0)),
+          ],
         );
         break;
       case 2:
@@ -624,7 +601,7 @@ class _BodyPageState extends State<Body> {
           overflow: TextOverflow.fade,
           softWrap: false,
           maxLines: 1,
-          style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontSize: 12, fontStyle: FontStyle.italic),
+          style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontSize: 13, fontStyle: FontStyle.italic),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -636,41 +613,22 @@ class _BodyPageState extends State<Body> {
               softWrap: false,
               style: TextStyle(color: Colors.black87, fontSize: 15.0, fontWeight: FontWeight.w600),
             ),
+            SizedBox(height: 5.0),
             Text.rich(
               TextSpan(
                 style: TextStyle(fontSize: 12),
                 children: [
-                  WidgetSpan(
-                    child: Icon(
-                      Icons.person_add_alt,
-                      size: 15.0,
-                      color: kSecondaryColor,
-                    ),
-                  ),
-                  WidgetSpan(
-                    child: SizedBox(
-                      width: 3.0,
-                    ),
-                  ),
-                  TextSpan(text: StringHelper.toShortName(item.nguoiTaoInfo.hoTen.toString()), style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
-                  WidgetSpan(
-                    child: SizedBox(
-                      width: 15.0,
-                    ),
-                  ),
-                  WidgetSpan(
-                    child: Icon(
-                      Icons.event_available,
-                      size: 15.0,
-                      color: kSecondaryColor,
-                    ),
-                  ),
-                  WidgetSpan(
-                    child: SizedBox(
-                      width: 3.0,
-                    ),
-                  ),
-                  TextSpan(text: DateFormat("hh:mm dd/MM/yyyy").format(item.ngayTao), style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
+                  WidgetSpan(child: Icon(Icons.tag, size: 15.0, color: kSecondaryColor)),
+                  WidgetSpan(child: SizedBox(width: 2.0)),
+                  TextSpan(text: item.id.toString(), style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
+                  WidgetSpan(child: SizedBox(width: 10.0)),
+                  WidgetSpan(child: Icon(Icons.person, size: 15.0, color: kSecondaryColor)),
+                  WidgetSpan(child: SizedBox(width: 2.0)),
+                  TextSpan(text: item.nguoiTaoInfo.hoTen.toString(), style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
+                  WidgetSpan(child: SizedBox(width: 10.0)),
+                  WidgetSpan(child: Icon(Icons.event, size: 15.0, color: kSecondaryColor)),
+                  WidgetSpan(child: SizedBox(width: 2.0)),
+                  TextSpan(text: DateFormat("hh:mm dd/MM").format(item.ngayTao), style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
                 ],
               ),
             )

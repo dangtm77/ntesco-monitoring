@@ -4,11 +4,11 @@ import 'package:ntesco_smart_monitoring/constants.dart';
 ThemeData theme() {
   return ThemeData(
     scaffoldBackgroundColor: Colors.white,
-    fontFamily: "Quicksand",
+    fontFamily: "WorkSans",
     //appBarTheme: appBarTheme(),
     //textTheme: textTheme(),
     brightness: Brightness.light,
-    inputDecorationTheme: inputDecorationTheme(),
+    //inputDecorationTheme: inputDecorationTheme(),
     visualDensity: VisualDensity.adaptivePlatformDensity,
   );
 }

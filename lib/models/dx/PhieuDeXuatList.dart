@@ -29,6 +29,7 @@ class PhieuDeXuatListModel {
   final DateTime tuNgay;
   final DateTime denNgay;
   final int isDenLuot;
+  final String tienDo;
 
   PhieuDeXuatListModel({
     required this.id,
@@ -43,6 +44,7 @@ class PhieuDeXuatListModel {
     required this.tuNgay,
     required this.denNgay,
     required this.isDenLuot,
+    required this.tienDo,
   });
 
   factory PhieuDeXuatListModel.fromJson(dynamic json) {
@@ -59,6 +61,7 @@ class PhieuDeXuatListModel {
       isDenLuot: json['isDenLuot'],
       tuNgay: DateTime.parse((json['tuNgay'])),
       denNgay: DateTime.parse((json['denNgay'])),
+      tienDo: json['tienDo'],
     );
   }
 }

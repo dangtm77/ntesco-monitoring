@@ -74,7 +74,7 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
               decoration: InputDecoration(
                 labelText: phieuDeXuat!.formConfig.tieuDeLabel.toString(),
                 hintText: phieuDeXuat!.formConfig.tieuDeLabel.toString(),
-              ),
+              ).applyDefaults(inputDecorationTheme()),
             ),
             Visibility(
               visible: phieuDeXuat!.formConfig.mucDichLabel != null,
@@ -87,9 +87,9 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
                     maxLines: 5,
                     minLines: 1,
                     decoration: InputDecoration(
-                      labelText: phieuDeXuat!.formConfig.mucDichLabel.toString(),
                       hintText: phieuDeXuat!.formConfig.mucDichLabel.toString(),
-                    ),
+                      labelText: phieuDeXuat!.formConfig.mucDichLabel.toString(),
+                    ).applyDefaults(inputDecorationTheme()),
                   ),
                 ],
               ),
@@ -106,7 +106,7 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
                   decoration: InputDecoration(
                     labelText: phieuDeXuat!.formConfig.noiDungLabel.toString(),
                     hintText: phieuDeXuat!.formConfig.noiDungLabel.toString(),
-                  ),
+                  ).applyDefaults(inputDecorationTheme()),
                 ),
               ]),
             ),
@@ -121,7 +121,7 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
                     labelText: phieuDeXuat!.formConfig.tuNgayLabel.toString(),
                     hintText: phieuDeXuat!.formConfig.tuNgayLabel.toString(),
                     suffixIcon: Icon(Ionicons.calendar_outline, color: kPrimaryColor),
-                  ),
+                  ).applyDefaults(inputDecorationTheme()),
                 ),
               ]),
             ),
@@ -136,7 +136,7 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
                     labelText: phieuDeXuat!.formConfig.denNgayLabel.toString(),
                     hintText: phieuDeXuat!.formConfig.denNgayLabel.toString(),
                     suffixIcon: Icon(Ionicons.calendar_outline, color: kPrimaryColor),
-                  ),
+                  ).applyDefaults(inputDecorationTheme()),
                 ),
               ]),
             ),
@@ -150,7 +150,7 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
                   decoration: InputDecoration(
                     labelText: phieuDeXuat!.formConfig.giaTriLabel.toString(),
                     hintText: phieuDeXuat!.formConfig.giaTriLabel.toString(),
-                  ),
+                  ).applyDefaults(inputDecorationTheme()),
                 ),
               ]),
             ),
@@ -164,7 +164,7 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
                   decoration: InputDecoration(
                     labelText: phieuDeXuat!.formConfig.giaTri001Label.toString(),
                     hintText: phieuDeXuat!.formConfig.giaTri001Label.toString(),
-                  ),
+                  ).applyDefaults(inputDecorationTheme()),
                 ),
               ]),
             ),
@@ -178,7 +178,7 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
                   decoration: InputDecoration(
                     labelText: phieuDeXuat!.formConfig.giaTri002Label.toString(),
                     hintText: phieuDeXuat!.formConfig.giaTri002Label.toString(),
-                  ),
+                  ).applyDefaults(inputDecorationTheme()),
                 ),
               ]),
             ),
@@ -192,7 +192,7 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
                   decoration: InputDecoration(
                     labelText: phieuDeXuat!.formConfig.optionValue001Label.toString(),
                     hintText: phieuDeXuat!.formConfig.optionValue001Label.toString(),
-                  ),
+                  ).applyDefaults(inputDecorationTheme()),
                 ),
               ]),
             ),
@@ -206,7 +206,7 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
                   decoration: InputDecoration(
                     labelText: phieuDeXuat!.formConfig.optionValue002Label.toString(),
                     hintText: phieuDeXuat!.formConfig.optionValue002Label.toString(),
-                  ),
+                  ).applyDefaults(inputDecorationTheme()),
                 ),
               ]),
             ),
@@ -220,7 +220,7 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
                   decoration: InputDecoration(
                     labelText: phieuDeXuat!.formConfig.optionValue003Label.toString(),
                     hintText: phieuDeXuat!.formConfig.optionValue003Label.toString(),
-                  ),
+                  ).applyDefaults(inputDecorationTheme()),
                 ),
               ]),
             ),
@@ -234,7 +234,7 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
                   decoration: InputDecoration(
                     labelText: phieuDeXuat!.formConfig.optionValue004Label.toString(),
                     hintText: phieuDeXuat!.formConfig.optionValue004Label.toString(),
-                  ),
+                  ).applyDefaults(inputDecorationTheme()),
                 ),
               ]),
             ),
@@ -248,7 +248,7 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
                   decoration: InputDecoration(
                     labelText: phieuDeXuat!.formConfig.optionValue005Label.toString(),
                     hintText: phieuDeXuat!.formConfig.optionValue005Label.toString(),
-                  ),
+                  ).applyDefaults(inputDecorationTheme()),
                 ),
               ]),
             ),
@@ -262,18 +262,18 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
                   decoration: InputDecoration(
                     labelText: phieuDeXuat!.formConfig.optionValue006Label.toString(),
                     hintText: phieuDeXuat!.formConfig.optionValue006Label.toString(),
-                  ),
+                  ).applyDefaults(inputDecorationTheme()),
                 ),
               ]),
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Text('Mức độ quan trọng'),
                 Checkbox(
                   value: phieuDeXuat!.isQuanTrong,
                   onChanged: (bool? value) {},
-                ), //Checkbox
+                ),
+                Text('Mức độ quan trọng'), //Checkbox
               ], //<Widget>[]
             ),
 
@@ -293,6 +293,22 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
           ],
         ),
       ),
+    );
+  }
+
+  InputDecorationTheme inputDecorationTheme() {
+    OutlineInputBorder outlineInputBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(7),
+      borderSide: BorderSide(color: kTextColor),
+      gapPadding: 5,
+    );
+    return InputDecorationTheme(
+      labelStyle: TextStyle(fontSize: 18, color: kPrimaryColor, fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
+      floatingLabelBehavior: FloatingLabelBehavior.always,
+      contentPadding: EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 0.0),
+      enabledBorder: outlineInputBorder,
+      focusedBorder: outlineInputBorder,
+      border: OutlineInputBorder(),
     );
   }
 

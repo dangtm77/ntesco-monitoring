@@ -18,6 +18,19 @@ Future<http.Response> getListPhieuDeXuat(int year, LoadOptionsModel options) asy
   return response;
 }
 
+Future<http.Response> getListTheoDoi(int id, LoadOptionsModel options) async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
+
+  var api = "v2/dx/phieudexuat/theodoi";
+  var queryParameters = options.toMap();
+  queryParameters.addAll({"id": id.toString()});
+
+  final response = await http.get(Uri.https(endPoint, api, queryParameters), headers: headerValue);
+  return response;
+}
+
 Future<http.Response> getDetailPhieuDeXuat(int id) async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
   var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));

@@ -34,41 +34,38 @@ class TopHeader extends StatelessWidget {
 class TopHeaderSub extends StatelessWidget {
   final String title;
   final String subtitle;
-  final InkWell? buttonLeft;
-  final InkWell? buttonRight;
-  const TopHeaderSub({Key? key, required this.title, required this.subtitle, this.buttonLeft, this.buttonRight}) : super(key: key);
+  final InkWell? button;
+  const TopHeaderSub({Key? key, required this.title, required this.subtitle, this.button}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: getProportionateScreenWidth(5), horizontal: getProportionateScreenWidth(10.0)),
+      padding: EdgeInsets.symmetric(
+        vertical: getProportionateScreenWidth(5),
+        horizontal: getProportionateScreenWidth(10.0),
+      ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          buttonLeft ??
+          button ??
               InkWell(
                 borderRadius: BorderRadius.circular(15),
                 onTap: () => Navigator.pushNamed(context, HomeScreen.routeName),
                 child: Stack(
                   clipBehavior: Clip.none,
-                  children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 35.0)],
+                  children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
                 ),
               ),
-          Column(
-            children: [
-              Text(title, style: TextStyle(fontSize: 20, color: kPrimaryColor, fontWeight: FontWeight.w700)),
-              Text(subtitle, style: TextStyle(fontSize: 12, color: kSecondaryColor)),
-            ],
-          ),
-          buttonRight ??
-              InkWell(
-                borderRadius: BorderRadius.circular(15),
-                onTap: () => Navigator.pushNamed(context, HomeScreen.routeName),
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [Icon(Ionicons.information_circle_outline, color: kPrimaryColor, size: 35.0)],
-                ),
-              )
+          Padding(
+            padding: EdgeInsets.only(left: 10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: TextStyle(fontSize: 18, color: kPrimaryColor, fontWeight: FontWeight.w700)),
+                Text(subtitle, style: TextStyle(fontSize: 12, color: kSecondaryColor)),
+              ],
+            ),
+          )
         ],
       ),
     );
