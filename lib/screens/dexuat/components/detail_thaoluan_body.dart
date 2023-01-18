@@ -121,17 +121,18 @@ class _DetailThaoLuanBodyPageState extends State<DetailThaoLuanBody> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Chat(
-        showUserAvatars: true,
-        showUserNames: true,
-        messages: _messages,
-        // onAttachmentPressed: _handleAttachmentPressed,
-        // onMessageTap: _handleMessageTap,
-        // onPreviewDataFetched: _handlePreviewDataFetched,
-        onSendPressed: (p0) {},
-        user: _user,
-        theme: const DefaultChatTheme(),
-      ),
+      // child: Chat(
+      //   showUserAvatars: true,
+      //   showUserNames: true,
+      //   messages: _messages,
+      //   // onAttachmentPressed: _handleAttachmentPressed,
+      //   // onMessageTap: _handleMessageTap,
+      //   // onPreviewDataFetched: _handlePreviewDataFetched,
+      //   onSendPressed: (p0) {},
+      //   user: _user,
+      //   theme: const DefaultChatTheme(),
+      // ),
+      child: Center(child: Text("Đang cập nhật...")),
     );
   }
 

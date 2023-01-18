@@ -601,7 +601,7 @@ class _BodyPageState extends State<Body> {
           overflow: TextOverflow.fade,
           softWrap: false,
           maxLines: 1,
-          style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontSize: 13, fontStyle: FontStyle.italic),
+          style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontSize: 13, fontStyle: FontStyle.normal),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -611,9 +611,9 @@ class _BodyPageState extends State<Body> {
               overflow: TextOverflow.fade,
               maxLines: 1,
               softWrap: false,
-              style: TextStyle(color: Colors.black87, fontSize: 15.0, fontWeight: FontWeight.w600),
+              style: TextStyle(color: Colors.black87, fontSize: 16.0, fontWeight: FontWeight.w700),
             ),
-            SizedBox(height: 5.0),
+            SizedBox(height: 3.0),
             Text.rich(
               TextSpan(
                 style: TextStyle(fontSize: 12),
@@ -624,7 +624,7 @@ class _BodyPageState extends State<Body> {
                   WidgetSpan(child: SizedBox(width: 10.0)),
                   WidgetSpan(child: Icon(Icons.person, size: 15.0, color: kSecondaryColor)),
                   WidgetSpan(child: SizedBox(width: 2.0)),
-                  TextSpan(text: item.nguoiTaoInfo.hoTen.toString(), style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
+                  TextSpan(text: StringHelper.toShortName(item.nguoiTaoInfo.hoTen.toString()), style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
                   WidgetSpan(child: SizedBox(width: 10.0)),
                   WidgetSpan(child: Icon(Icons.event, size: 15.0, color: kSecondaryColor)),
                   WidgetSpan(child: SizedBox(width: 2.0)),

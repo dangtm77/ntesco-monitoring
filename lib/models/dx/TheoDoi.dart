@@ -3,7 +3,7 @@ import 'package:ntesco_smart_monitoring/models/NguoiDung.dart';
 
 class TheoDoiModels {
   final int totalCount;
-  final List<TheoDoiModels> data;
+  final List<TheoDoiModel> data;
   TheoDoiModels({
     required this.totalCount,
     required this.data,
@@ -48,7 +48,7 @@ class TheoDoiModel {
       isDuyet: json['isDuyet'],
       ghiChu: json['ghiChu'],
       thuTu: json['thuTu'],
-      ngayCapNhat: json['ngayCapNhat'],
+      ngayCapNhat: json['ngayCapNhat'] != null ? DateTime.parse(json['ngayCapNhat']) : null,
       isDenLuot: json['isDenLuot'],
     );
   }

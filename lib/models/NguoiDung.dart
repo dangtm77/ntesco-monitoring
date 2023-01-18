@@ -1,6 +1,6 @@
 import 'dart:convert';
-  
-class NguoiDungModel { 
+
+class NguoiDungModel {
   //String? username;
   String? anhDaiDien;
   String? hoTen;
@@ -11,11 +11,11 @@ class NguoiDungModel {
   //String? idPhongBan;
   //String? idChucDanh;
   //String? noiCongTac;
-  //String? phongBan;
-  //String? chucDanh; 
+  String? phongBan;
+  String? chucDanh;
 
   NguoiDungModel(
-      { 
+      {
       //this.username,
       this.anhDaiDien,
       this.hoTen,
@@ -26,12 +26,11 @@ class NguoiDungModel {
       // this.idPhongBan,
       // this.idChucDanh,
       // this.noiCongTac,
-      // this.phongBan,
-      // this.chucDanh 
-      });
+      this.phongBan,
+      this.chucDanh});
 
   factory NguoiDungModel.fromJson(Map<String, dynamic> json) {
-    return NguoiDungModel( 
+    return NguoiDungModel(
       //username: json["userName"] != null ? json["userName"] : "",
       anhDaiDien: json["anhDaiDien"] != null ? json["anhDaiDien"] : "",
       hoTen: json["hoTen"] != null ? json["hoTen"] : "",
@@ -42,15 +41,15 @@ class NguoiDungModel {
       // idPhongBan: json["idPhongBan"] != null ? json["idPhongBan"] : "",
       // idChucDanh: json["idChucDanh"] != null ? json["idChucDanh"] : "",
       // noiCongTac: json["noiCongTac"] != null ? json["noiCongTac"] : "",
-      // phongBan: json["phongBan"] != null ? json["phongBan"] : "",
-      // chucDanh: json["chucDanh"] != null ? json["chucDanh"] : "", 
+      phongBan: json["phongBan"] != null ? json["phongBan"] : "",
+      chucDanh: json["chucDanh"] != null ? json["chucDanh"] : "",
     );
   }
 
   Map<String, dynamic> toMap() {
-    return { 
+    return {
       //'userName': username,
-      'anhDaiDien':anhDaiDien, 
+      'anhDaiDien': anhDaiDien,
       'hoTen': hoTen,
       // 'ngaySinh': ngaySinh,
       // 'email': email,
@@ -60,7 +59,7 @@ class NguoiDungModel {
       // 'idChucDanh': idChucDanh,
       // 'noiCongTac': noiCongTac,
       // 'phongBan': phongBan,
-      // 'chucDanh': chucDanh, 
+      // 'chucDanh': chucDanh,
     };
   }
 

@@ -66,15 +66,24 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
         child: ListView(
           padding: const EdgeInsets.all(10),
           children: [
-            TextFormField(
-              controller: _tieuDeController,
-              readOnly: true,
-              maxLines: 3,
-              minLines: 1,
-              decoration: InputDecoration(
-                labelText: phieuDeXuat!.formConfig.tieuDeLabel.toString(),
-                hintText: phieuDeXuat!.formConfig.tieuDeLabel.toString(),
-              ).applyDefaults(inputDecorationTheme()),
+            Text("THÔNG TIN CHUNG", style: TextStyle(color: kTextColor, fontWeight: FontWeight.w700, fontSize: 20.0)),
+            Visibility(
+              visible: phieuDeXuat!.formConfig.tieuDeLabel != null,
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _tieuDeController,
+                    readOnly: true,
+                    maxLines: 3,
+                    minLines: 1,
+                    decoration: InputDecoration(
+                      labelText: phieuDeXuat!.formConfig.tieuDeLabel.toString(),
+                      hintText: phieuDeXuat!.formConfig.tieuDeLabel.toString(),
+                    ).applyDefaults(inputDecorationTheme()),
+                  ),
+                ],
+              ),
             ),
             Visibility(
               visible: phieuDeXuat!.formConfig.mucDichLabel != null,
@@ -140,6 +149,8 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
                 ),
               ]),
             ),
+            const SizedBox(height: 20),
+            Text("THÔNG TIN KHÁC", style: TextStyle(color: kTextColor, fontWeight: FontWeight.w700, fontSize: 20.0)),
             Visibility(
               visible: phieuDeXuat!.formConfig.giaTriLabel != null,
               child: Column(children: [
