@@ -41,7 +41,9 @@ class CodegenLoader extends AssetLoader{
     "title": "Requests",
     "subtitle": "Requests Tracking",
     "detail_title": "Detail of request",
-    "detail_subtitle": "Information of request"
+    "detail_subtitle": "Information of request",
+    "create_title": "Create new request",
+    "create_subtitle": "Create and new information of request"
   },
   "language_display": "Language display:",
   "hello_message": "Hi, {}\r\n",
@@ -82,7 +84,9 @@ static const Map<String,dynamic> vi_VN = {
     "title": "Phiếu đề xuất",
     "subtitle": "Theo dõi tình trạng các phiếu đề xuất",
     "detail_title": "Chi tiết phiếu đề xuất",
-    "detail_subtitle": "Thông tin chi tiết của phiếu đề xuất"
+    "detail_subtitle": "Thông tin chi tiết của phiếu đề xuất",
+    "create_title": "Tạo mới phiếu đề xuất",
+    "create_subtitle": "Khởi tạo và gửi phiếu đề xuất"
   },
   "language_display": "Ngôn ngữ hiển thị:",
   "hello_message": "Xin chào, {}\r\n",

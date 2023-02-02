@@ -39,18 +39,14 @@ class _BodyPageState extends State<Body> {
           children: [
             Container(
               child: TopHeaderSub(
-                title: "phieudexuat.detail_title".tr(),
-                subtitle: "phieudexuat.detail_subtitle".tr(),
+                title: "phieudexuat.create_title".tr(),
+                subtitle: "phieudexuat.create_subtitle".tr(),
                 buttonLeft: InkWell(
                   borderRadius: BorderRadius.circular(15),
-                  onTap: () => Navigator.pushNamed(
-                      context, ListOfDeXuatScreen.routeName),
+                  onTap: () => Navigator.pushNamed(context, ListOfDeXuatScreen.routeName),
                   child: Stack(
                     clipBehavior: Clip.none,
-                    children: [
-                      Icon(Ionicons.chevron_back_outline,
-                          color: kPrimaryColor, size: 30.0)
-                    ],
+                    children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
                   ),
                 ),
               ),

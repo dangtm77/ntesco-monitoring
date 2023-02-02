@@ -13,19 +13,21 @@
     "pattern": "{} invalid"
   },
   "menu": {
-    "home": "Home", 
-    "phieudexuat": "Requests", 
+    "home": "Home",
+    "phieudexuat": "Requests",
     "log_out": "Log out",
     "settings": "Settings",
     "alarm": "Alarm",
     "contact_us": "Contact us",
     "contact_us_subtitle": "Contact us - Support - Feedback"
-  },  
-  "phieudexuat":{
+  },
+  "phieudexuat": {
     "title": "Requests",
     "subtitle": "Requests Tracking",
     "detail_title": "Detail of request",
-    "detail_subtitle": "Information of request"
+    "detail_subtitle": "Information of request",
+    "create_title": "Create new request",
+    "create_subtitle": "Create and new information of request"
   },
   "language_display": "Language display:",
   "hello_message": "Hi, {}\r\n",

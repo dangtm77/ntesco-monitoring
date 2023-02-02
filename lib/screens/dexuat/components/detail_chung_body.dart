@@ -314,9 +314,13 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
       gapPadding: 5,
     );
     return InputDecorationTheme(
-      labelStyle: TextStyle(fontSize: 18, color: kPrimaryColor, fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
+      labelStyle: TextStyle(
+        fontSize: 18,
+        color: kPrimaryColor,
+        fontWeight: FontWeight.w600,
+      ),
       floatingLabelBehavior: FloatingLabelBehavior.always,
-      contentPadding: EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 0.0),
+      contentPadding: EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 0.0),
       enabledBorder: outlineInputBorder,
       focusedBorder: outlineInputBorder,
       border: OutlineInputBorder(),

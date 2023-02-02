@@ -24,6 +24,8 @@ abstract class  LocaleKeys {
   static const phieudexuat_subtitle = 'phieudexuat.subtitle';
   static const phieudexuat_detail_title = 'phieudexuat.detail_title';
   static const phieudexuat_detail_subtitle = 'phieudexuat.detail_subtitle';
+  static const phieudexuat_create_title = 'phieudexuat.create_title';
+  static const phieudexuat_create_subtitle = 'phieudexuat.create_subtitle';
   static const phieudexuat = 'phieudexuat';
   static const language_display = 'language_display';
   static const hello_message = 'hello_message';
