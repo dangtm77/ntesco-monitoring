@@ -21,12 +21,14 @@ class DanhMucModel {
   final String tieuDe;
   final String moTa;
   final String nhomDanhMuc;
+  final String loaiQuyTrinh;
   final int sapXep;
   DanhMucModel({
     required this.id,
     required this.tieuDe,
     required this.moTa,
     required this.nhomDanhMuc,
+    required this.loaiQuyTrinh,
     required this.sapXep,
   });
   factory DanhMucModel.fromJson(dynamic json) {
@@ -35,6 +37,11 @@ class DanhMucModel {
       tieuDe: json['tieuDe'],
       moTa: json['moTa'],
       nhomDanhMuc: json['nhomDanhMuc'],
+      loaiQuyTrinh: json['loaiQuyTrinh'] == "MotNguoi"
+          ? "Chỉ 1 người duyệt"
+          : (json['loaiQuyTrinh'] == "TuanTu"
+              ? "Duyệt lần lượt"
+              : "Duyệt đồng thời"),
       sapXep: json['sapXep'],
     );
   }

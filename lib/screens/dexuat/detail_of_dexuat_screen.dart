@@ -9,7 +9,8 @@ class DetailOfDeXuatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, dynamic>{}) as Map;
+    final arguments = (ModalRoute.of(context)?.settings.arguments ??
+        <String, dynamic>{}) as Map;
     int id = int.parse(arguments['id'].toString());
     return Scaffold(drawerScrimColor: Colors.transparent, body: Body(id: id));
   }

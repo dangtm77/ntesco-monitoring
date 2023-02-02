@@ -4,12 +4,11 @@ import 'dart:convert';
 import 'dart:ui';
 import 'package:awesome_select/awesome_select.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:hexcolor/hexcolor.dart';
+import 'package:grouped_list/grouped_list.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
+import 'package:ntesco_smart_monitoring/screens/dexuat/create_dexuat_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/dexuat/detail_of_dexuat_screen.dart';
-import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
 import 'package:sticky_headers/sticky_headers.dart';
-import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_tags/flutter_tags.dart';
@@ -34,7 +33,8 @@ class Body extends StatefulWidget {
 }
 
 class _BodyPageState extends State<Body> {
-  TextEditingController _keywordForSearchEditingController = TextEditingController();
+  TextEditingController _keywordForSearchEditingController =
+      TextEditingController();
 
   late Future<PhieuDeXuatListModels> listPhieuDeXuat;
   late Future<ThongKeModel> thongKe;
@@ -63,7 +63,8 @@ class _BodyPageState extends State<Body> {
 
   Future<PhieuDeXuatListModels> _getListPhieuDeXuat() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var userCurrent = LoginResponseModel.fromJson(json.decode(prefs.getString('USERCURRENT')!));
+    var userCurrent = LoginResponseModel.fromJson(
+        json.decode(prefs.getString('USERCURRENT')!));
     var sortOptions = [
       {"selector": "tinhTrang", "desc": "false"},
       {"selector": "ngayTao", "desc": "true"}
@@ -93,12 +94,15 @@ class _BodyPageState extends State<Body> {
             statusGroupFilterOptions.add('or');
             break;
           case 4:
-            nguoiTaoGroupFilterOptions.add(['nguoiTao', '=', userCurrent.username]);
+            nguoiTaoGroupFilterOptions
+                .add(['nguoiTao', '=', userCurrent.username]);
             break;
         }
       });
       if (statusGroupFilterOptions.length > 0) {
-        if (statusGroupFilterOptions.last == 'or') statusGroupFilterOptions.removeAt(statusGroupFilterOptions.length - 1);
+        if (statusGroupFilterOptions.last == 'or')
+          statusGroupFilterOptions
+              .removeAt(statusGroupFilterOptions.length - 1);
         filterOptions.add(statusGroupFilterOptions);
       }
 
@@ -117,23 +121,40 @@ class _BodyPageState extends State<Body> {
       });
       if (danhMucGroupFilterOptions.length > 0) {
         if (filterOptions.length > 0) filterOptions.add('and');
-        if (danhMucGroupFilterOptions.last == "or") danhMucGroupFilterOptions.removeAt(danhMucGroupFilterOptions.length - 1);
-        if (danhMucGroupFilterOptions.length > 0) filterOptions.add(danhMucGroupFilterOptions);
+        if (danhMucGroupFilterOptions.last == "or")
+          danhMucGroupFilterOptions
+              .removeAt(danhMucGroupFilterOptions.length - 1);
+        if (danhMucGroupFilterOptions.length > 0)
+          filterOptions.add(danhMucGroupFilterOptions);
       }
     }
 
     //FILTER BY KEYWORD
-    if (_keywordForSearchEditingController.text.isNotEmpty && _keywordForSearchEditingController.text.length > 3) {
+    if (_keywordForSearchEditingController.text.isNotEmpty &&
+        _keywordForSearchEditingController.text.length > 3) {
       var searchGroupFilterOptions = [];
       if (filterOptions.length > 0) filterOptions.add('and');
-      searchGroupFilterOptions.add(['tieuDe', 'contains', _keywordForSearchEditingController.text.toString()]);
+      searchGroupFilterOptions.add([
+        'tieuDe',
+        'contains',
+        _keywordForSearchEditingController.text.toString()
+      ]);
       searchGroupFilterOptions.add('or');
-      searchGroupFilterOptions.add(['id', '=', int.parse(_keywordForSearchEditingController.text.toString())]);
+      searchGroupFilterOptions.add([
+        'id',
+        '=',
+        int.parse(_keywordForSearchEditingController.text.toString())
+      ]);
       filterOptions.add(searchGroupFilterOptions);
     }
 
     print(jsonEncode(filterOptions));
-    var options = new LoadOptionsModel(take: itemPerPage * pageIndex, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+    var options = new LoadOptionsModel(
+        take: itemPerPage * pageIndex,
+        skip: 0,
+        sort: jsonEncode(sortOptions),
+        filter: jsonEncode(filterOptions),
+        requireTotalCount: 'true');
     var response = await getListPhieuDeXuat(yearCurrent, options);
 
     if (response.statusCode == 200) {
@@ -148,12 +169,17 @@ class _BodyPageState extends State<Body> {
       throw Exception('StatusCode: ${response.statusCode}');
   }
 
-  Future<List<S2Choice<int>>> _getListDanhMuc() async {
+  Future<List<S2Choice<int>>> _getListDanhMucForSelect() async {
     var sortOptions = [
       {"selector": "sapXep", "desc": "true"}
     ];
     var filterOptions = [];
-    var options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+    var options = new LoadOptionsModel(
+        take: 0,
+        skip: 0,
+        sort: jsonEncode(sortOptions),
+        filter: jsonEncode(filterOptions),
+        requireTotalCount: 'true');
     var response = await getListDanhMuc(options);
 
     if (response.statusCode == 200) {
@@ -165,6 +191,29 @@ class _BodyPageState extends State<Body> {
         title: (index, item) => item.tieuDe,
         group: (index, item) => item.nhomDanhMuc,
       );
+    } else if (response.statusCode == 401)
+      throw response.statusCode;
+    else
+      throw Exception('StatusCode: ${response.statusCode}');
+  }
+
+  Future<DanhMucModels> _getListDanhMucForCreate() async {
+    var sortOptions = [
+      {"selector": "nhomDanhMuc", "desc": "false"},
+      {"selector": "sapXep", "desc": "false"}
+    ];
+    var filterOptions = [];
+    var options = new LoadOptionsModel(
+        take: 0,
+        skip: 0,
+        sort: jsonEncode(sortOptions),
+        filter: jsonEncode(filterOptions),
+        requireTotalCount: 'true');
+    var response = await getListDanhMuc(options);
+
+    if (response.statusCode == 200) {
+      var result = DanhMucModels.fromJson(jsonDecode(response.body));
+      return result;
     } else if (response.statusCode == 401)
       throw response.statusCode;
     else
@@ -223,6 +272,24 @@ class _BodyPageState extends State<Body> {
     return TopHeaderSub(
       title: "phieudexuat.title".tr(),
       subtitle: "phieudexuat.subtitle".tr(),
+      buttonRight: InkWell(
+        borderRadius: BorderRadius.circular(15),
+        onTap: () => showModalBottomSheet(
+          builder: (BuildContext context) => _selectPanelForCreate(context),
+          context: context,
+        ),
+        //Navigator.pushNamed(context, CreateDeXuatScreen.routeName),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Icon(
+              Ionicons.add_outline,
+              color: kPrimaryColor,
+              size: 30.0,
+            )
+          ],
+        ),
+      ),
     );
   }
 
@@ -246,7 +313,8 @@ class _BodyPageState extends State<Body> {
               filled: true,
               fillColor: Colors.grey.shade100,
               contentPadding: EdgeInsets.all(0.0),
-              prefixIcon: Icon(Ionicons.search, size: 20, color: Colors.grey.shade600),
+              prefixIcon:
+                  Icon(Ionicons.search, size: 20, color: Colors.grey.shade600),
               suffixIcon: Padding(
                 padding: const EdgeInsets.all(0.0),
                 child: Row(
@@ -262,20 +330,29 @@ class _BodyPageState extends State<Body> {
                             listPhieuDeXuat = _getListPhieuDeXuat();
                           });
                         },
-                        icon: Icon(Ionicons.close_circle, color: Colors.grey.shade500, size: 20),
+                        icon: Icon(Ionicons.close_circle,
+                            color: Colors.grey.shade500, size: 20),
                       ),
                     IconButton(
-                      onPressed: () => showModalBottomSheet(builder: (BuildContext context) => _filterPanel(context), context: context),
+                      onPressed: () => showModalBottomSheet(
+                          builder: (BuildContext context) =>
+                              _filterPanel(context),
+                          context: context),
                       icon: Icon(
                         Ionicons.filter,
-                        color: (danhMucCurrent.length > 0 || statusCurrent.length > 0) ? kPrimaryColor : Colors.grey.shade500,
+                        color: (danhMucCurrent.length > 0 ||
+                                statusCurrent.length > 0)
+                            ? kPrimaryColor
+                            : Colors.grey.shade500,
                         size: 20,
                       ),
                     ),
                   ],
                 ),
               ),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none),
               hintStyle: TextStyle(fontSize: 15, color: Colors.grey.shade500),
               hintText: "Nhập từ khóa để tìm kiếm..."),
         ),
@@ -298,7 +375,8 @@ class _BodyPageState extends State<Body> {
       S2Choice<int>(value: 4, title: 'Phiếu do tôi tạo'),
       S2Choice<int>(value: 5, title: 'Tất cả phiếu'),
     ];
-    Future<List<S2Choice<int>>> optionsDanhMucFilter = _getListDanhMuc();
+    Future<List<S2Choice<int>>> optionsDanhMucFilter =
+        _getListDanhMucForSelect();
 
     return Scrollbar(
       child: ListView(
@@ -308,7 +386,11 @@ class _BodyPageState extends State<Body> {
             alignment: Alignment.center,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Text("Lọc danh sách phiếu", style: TextStyle(color: kPrimaryColor, fontSize: 20.0, fontWeight: FontWeight.bold)),
+              child: Text("Lọc danh sách phiếu",
+                  style: TextStyle(
+                      color: kPrimaryColor,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold)),
             ),
           ),
           Container(
@@ -349,14 +431,18 @@ class _BodyPageState extends State<Body> {
                     alignment: Alignment.centerLeft,
                     child: S2Text(
                       text: "Nhóm ${group.name}",
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic),
                     ),
                   );
                 },
                 modalHeader: true,
                 choiceType: S2ChoiceType.checkboxes,
                 modalType: S2ModalType.bottomSheet,
-                onChange: (state) => setState(() => danhMucCurrent = state.value),
+                onChange: (state) =>
+                    setState(() => danhMucCurrent = state.value),
                 tileBuilder: (context, state) {
                   return S2Tile.fromState(
                     state,
@@ -371,7 +457,8 @@ class _BodyPageState extends State<Body> {
                             ),
                           )
                         : null,
-                    isLoading: snapshot.connectionState == ConnectionState.waiting,
+                    isLoading:
+                        snapshot.connectionState == ConnectionState.waiting,
                   );
                 },
               );
@@ -436,48 +523,85 @@ class _BodyPageState extends State<Body> {
         padding: EdgeInsets.only(bottom: 10),
         child: FutureBuilder<ThongKeModel>(
           future: thongKe,
-          builder: (BuildContext context, AsyncSnapshot<ThongKeModel> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting)
-              return Text('Đang cập nhật ...');
-            else
-              return Tags(
-                itemCount: 6,
-                itemBuilder: (int index) {
-                  var list = [
-                    {'id': 0, 'value': snapshot.data!.denLuot.toString(), 'text': "Chờ tôi duyệt"},
-                    {'id': 1, 'value': snapshot.data!.dangXuLy.toString(), 'text': "Đang xử lý"},
-                    {'id': 2, 'value': snapshot.data!.daDuyet.toString(), 'text': "Đã duyệt"},
-                    {'id': 3, 'value': snapshot.data!.tuChoi.toString(), 'text': "Từ chối"},
-                    {'id': 4, 'value': snapshot.data!.khoiTao.toString(), 'text': "Do tôi tạo"},
-                    {'id': 5, 'value': snapshot.data!.tongCong.toString(), 'text': "Tổng cộng"},
-                  ];
-                  var valueItemTag = int.parse(list.elementAt(index)['value'].toString());
-                  var textItemTag = list.elementAt(index)['text'].toString();
-                  return ItemTags(
-                    index: index,
-                    title: "$textItemTag " + (valueItemTag > 0 ? "(${NumberHelper.formatShort(valueItemTag)})" : ""),
-                    textStyle: TextStyle(fontSize: 13.0),
-                    active: statusCurrent.contains(index),
-                    activeColor: kPrimaryColor,
-                    color: Colors.white,
-                    pressEnabled: true,
-                    onPressed: (i) {
-                      setState(() {
-                        if (i.active && !statusCurrent.contains(i.index)) statusCurrent.add(i.index);
-                        if (!i.active && statusCurrent.contains(i.index)) statusCurrent.remove(i.index);
+          builder:
+              (BuildContext context, AsyncSnapshot<ThongKeModel> snapshot) {
+            if (snapshot.hasError)
+              return DataErrorWidget(error: snapshot.error.toString());
+            else {
+              if (snapshot.connectionState == ConnectionState.none ||
+                  snapshot.connectionState == ConnectionState.waiting ||
+                  snapshot.connectionState == ConnectionState.active)
+                return Text('Đang cập nhật ...');
+              else
+                return Tags(
+                  itemCount: 6,
+                  itemBuilder: (int index) {
+                    var list = [
+                      {
+                        'id': 0,
+                        'value': snapshot.data!.denLuot.toString(),
+                        'text': "Chờ tôi duyệt"
+                      },
+                      {
+                        'id': 1,
+                        'value': snapshot.data!.dangXuLy.toString(),
+                        'text': "Đang xử lý"
+                      },
+                      {
+                        'id': 2,
+                        'value': snapshot.data!.daDuyet.toString(),
+                        'text': "Đã duyệt"
+                      },
+                      {
+                        'id': 3,
+                        'value': snapshot.data!.tuChoi.toString(),
+                        'text': "Từ chối"
+                      },
+                      {
+                        'id': 4,
+                        'value': snapshot.data!.khoiTao.toString(),
+                        'text': "Do tôi tạo"
+                      },
+                      {
+                        'id': 5,
+                        'value': snapshot.data!.tongCong.toString(),
+                        'text': "Tổng cộng"
+                      },
+                    ];
+                    var valueItemTag =
+                        int.parse(list.elementAt(index)['value'].toString());
+                    var textItemTag = list.elementAt(index)['text'].toString();
+                    return ItemTags(
+                      index: index,
+                      title: "$textItemTag " +
+                          (valueItemTag > 0
+                              ? "(${NumberHelper.formatShort(valueItemTag)})"
+                              : ""),
+                      textStyle: TextStyle(fontSize: 13.0),
+                      active: statusCurrent.contains(index),
+                      activeColor: kPrimaryColor,
+                      color: Colors.white,
+                      pressEnabled: true,
+                      onPressed: (i) {
+                        setState(() {
+                          if (i.active && !statusCurrent.contains(i.index))
+                            statusCurrent.add(i.index);
+                          if (!i.active && statusCurrent.contains(i.index))
+                            statusCurrent.remove(i.index);
 
-                        isLoading = false;
-                        pageIndex = 1;
-                        listPhieuDeXuat = _getListPhieuDeXuat();
-                      });
-                    },
-                  );
-                },
-                horizontalScroll: true,
-                spacing: 4,
-                symmetry: false,
-                alignment: WrapAlignment.spaceBetween,
-              );
+                          isLoading = false;
+                          pageIndex = 1;
+                          listPhieuDeXuat = _getListPhieuDeXuat();
+                        });
+                      },
+                    );
+                  },
+                  horizontalScroll: true,
+                  spacing: 4,
+                  symmetry: false,
+                  alignment: WrapAlignment.spaceBetween,
+                );
+            }
           },
         ),
       ),
@@ -488,7 +612,9 @@ class _BodyPageState extends State<Body> {
     return Expanded(
       child: NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification scrollInfo) {
-            if (!isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+            if (!isLoading &&
+                scrollInfo.metrics.pixels ==
+                    scrollInfo.metrics.maxScrollExtent) {
               setState(() {
                 pageIndex = pageIndex + 1;
                 listPhieuDeXuat = _getListPhieuDeXuat();
@@ -506,11 +632,15 @@ class _BodyPageState extends State<Body> {
             },
             child: FutureBuilder<PhieuDeXuatListModels>(
               future: listPhieuDeXuat,
-              builder: (BuildContext context, AsyncSnapshot<PhieuDeXuatListModels> snapshot) {
+              builder: (BuildContext context,
+                  AsyncSnapshot<PhieuDeXuatListModels> snapshot) {
                 if (snapshot.hasError)
                   return DataErrorWidget(error: snapshot.error.toString());
                 else {
-                  if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !isLoading)
+                  if ((snapshot.connectionState == ConnectionState.none ||
+                          snapshot.connectionState == ConnectionState.waiting ||
+                          snapshot.connectionState == ConnectionState.active) &&
+                      !isLoading)
                     return LoadingWidget();
                   else {
                     if (snapshot.hasData && snapshot.data!.data.isNotEmpty) {
@@ -529,13 +659,17 @@ class _BodyPageState extends State<Body> {
                                   ),
                                 );
                               },
-                              separatorBuilder: (BuildContext context, int index) => const Divider(),
+                              separatorBuilder:
+                                  (BuildContext context, int index) =>
+                                      const Divider(),
                             ),
                           ),
                         ),
                       ]);
                     } else {
-                      return NoDataWidget(message: "Không tìm thấy phiếu đề xuất liên quan nào !!!");
+                      return NoDataWidget(
+                          message:
+                              "Không tìm thấy phiếu đề xuất liên quan nào !!!");
                     }
                   }
                 }
@@ -552,12 +686,17 @@ class _BodyPageState extends State<Body> {
         _trangThaiIcon = Column(
           children: [
             Icon(Ionicons.timer_outline, color: Colors.amber),
-            Text(item.tienDo, style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 13.0)),
+            Text(item.tienDo,
+                style: TextStyle(
+                    color: Colors.amber,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13.0)),
           ],
         );
         break;
       case 2:
-        _trangThaiIcon = Icon(Ionicons.checkmark_circle_outline, color: Colors.green);
+        _trangThaiIcon =
+            Icon(Ionicons.checkmark_circle_outline, color: Colors.green);
         break;
       case 3:
         _trangThaiIcon = Icon(Icons.block_rounded, color: Colors.red);
@@ -577,7 +716,9 @@ class _BodyPageState extends State<Body> {
             foregroundColor: Colors.white,
             icon: Ionicons.eye_outline,
             label: 'Xem chi tiết',
-            onPressed: (context) => Navigator.pushNamed(context, DetailOfDeXuatScreen.routeName, arguments: {'id': item.id}),
+            onPressed: (context) => Navigator.pushNamed(
+                context, DetailOfDeXuatScreen.routeName,
+                arguments: {'id': item.id}),
           ),
         ],
       ),
@@ -601,41 +742,187 @@ class _BodyPageState extends State<Body> {
           overflow: TextOverflow.fade,
           softWrap: false,
           maxLines: 1,
-          style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontSize: 13, fontStyle: FontStyle.normal),
+          style: TextStyle(
+              color: kSecondaryColor,
+              fontWeight: FontWeight.normal,
+              fontSize: 13,
+              fontStyle: FontStyle.normal),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              (item.isQuanTrong ? "[QUAN TRỌNG] " : "").toString() + item.tieuDe.toString(),
-              overflow: TextOverflow.fade,
-              maxLines: 1,
-              softWrap: false,
-              style: TextStyle(color: Colors.black87, fontSize: 16.0, fontWeight: FontWeight.w700),
-            ),
+                (item.isQuanTrong ? "[QUAN TRỌNG] " : "").toString() +
+                    item.tieuDe.toString(),
+                overflow: TextOverflow.fade,
+                maxLines: 1,
+                softWrap: false,
+                style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w700)),
             SizedBox(height: 3.0),
             Text.rich(
               TextSpan(
                 style: TextStyle(fontSize: 12),
                 children: [
-                  WidgetSpan(child: Icon(Icons.tag, size: 15.0, color: kSecondaryColor)),
+                  WidgetSpan(
+                    child: Icon(
+                      Icons.tag,
+                      size: 15.0,
+                      color: kSecondaryColor,
+                    ),
+                  ),
                   WidgetSpan(child: SizedBox(width: 2.0)),
-                  TextSpan(text: item.id.toString(), style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
+                  TextSpan(
+                    text: item.id.toString(),
+                    style: TextStyle(
+                      color: kSecondaryColor,
+                      fontWeight: FontWeight.normal,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
                   WidgetSpan(child: SizedBox(width: 10.0)),
-                  WidgetSpan(child: Icon(Icons.person, size: 15.0, color: kSecondaryColor)),
+                  WidgetSpan(
+                    child: Icon(
+                      Icons.person,
+                      size: 15.0,
+                      color: kSecondaryColor,
+                    ),
+                  ),
                   WidgetSpan(child: SizedBox(width: 2.0)),
-                  TextSpan(text: StringHelper.toShortName(item.nguoiTaoInfo.hoTen.toString()), style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
+                  TextSpan(
+                      text: StringHelper.toShortName(
+                          item.nguoiTaoInfo.hoTen.toString()),
+                      style: TextStyle(
+                          color: kSecondaryColor,
+                          fontWeight: FontWeight.normal,
+                          fontStyle: FontStyle.italic)),
                   WidgetSpan(child: SizedBox(width: 10.0)),
-                  WidgetSpan(child: Icon(Icons.event, size: 15.0, color: kSecondaryColor)),
+                  WidgetSpan(
+                      child: Icon(
+                    Icons.event,
+                    size: 15.0,
+                    color: kSecondaryColor,
+                  )),
                   WidgetSpan(child: SizedBox(width: 2.0)),
-                  TextSpan(text: DateFormat("hh:mm dd/MM").format(item.ngayTao), style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
+                  TextSpan(
+                    text: DateFormat("hh:mm dd/MM").format(item.ngayTao),
+                    style: TextStyle(
+                      color: kSecondaryColor,
+                      fontWeight: FontWeight.normal,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
                 ],
               ),
             )
           ],
         ),
         trailing: _trangThaiIcon,
-        onTap: () => Navigator.pushNamed(context, DetailOfDeXuatScreen.routeName, arguments: {'id': item.id}),
+        onTap: () => Navigator.pushNamed(
+            context, DetailOfDeXuatScreen.routeName,
+            arguments: {'id': item.id}),
+      ),
+    );
+  }
+
+  Widget _selectPanelForCreate(BuildContext context) {
+    Future<DanhMucModels> listDanhMuc = _getListDanhMucForCreate();
+    return Scrollbar(
+      child: Column(
+        children: [
+          Container(
+            alignment: Alignment.center,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                "Chọn danh mục cần đề xuất...",
+                style: TextStyle(
+                  color: kPrimaryColor,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<DanhMucModels>(
+              future: listDanhMuc,
+              builder: (BuildContext context,
+                  AsyncSnapshot<DanhMucModels> snapshot) {
+                if (snapshot.hasError)
+                  return DataErrorWidget(error: snapshot.error.toString());
+                else {
+                  if (snapshot.connectionState == ConnectionState.none ||
+                      snapshot.connectionState == ConnectionState.waiting ||
+                      snapshot.connectionState == ConnectionState.active)
+                    return LoadingWidget();
+                  else {
+                    if (snapshot.hasData && snapshot.data!.data.isNotEmpty) {
+                      return AnimationLimiter(
+                        child: GroupedListView<dynamic, String>(
+                          elements: snapshot.data!.data,
+                          groupBy: (element) => element.nhomDanhMuc,
+                          groupSeparatorBuilder: (String value) => Container(
+                            width: MediaQuery.of(context).size.width,
+                            color: kPrimaryColor,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
+                              child: Text(
+                                "Nhóm $value".toUpperCase(),
+                                textAlign: TextAlign.left,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          itemBuilder: (context, dynamic element) => ListTile(
+                            title: Text(
+                              element.tieuDe.toString(),
+                              style: const TextStyle(
+                                fontSize: 15.0,
+                                color: kPrimaryColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 5),
+                                Text(element.moTa.toString(),
+                                    style: const TextStyle(fontSize: 13.0)),
+                                SizedBox(height: 5),
+                                Text(
+                                    "Loại quy trình ${element.loaiQuyTrinh.toString().toLowerCase()}",
+                                    style: const TextStyle(fontSize: 13.0))
+                              ],
+                            ),
+                            trailing: Icon(Ionicons.arrow_redo_outline,
+                                color: kSecondaryColor, size: 18.0),
+                            onTap: () => Navigator.pushNamed(
+                                context, CreateDeXuatScreen.routeName,
+                                arguments: {'id': element.id}),
+                          ), // optional
+                          order: GroupedListOrder.ASC,
+                          separator: const Divider(color: kPrimaryColor),
+                          floatingHeader: true, useStickyGroupSeparators: true,
+                        ),
+                      );
+                    } else {
+                      return NoDataWidget(
+                          message:
+                              "Không tìm thấy phiếu đề xuất liên quan nào !!!");
+                    }
+                  }
+                }
+              },
+            ),
+          )
+        ],
       ),
     );
   }

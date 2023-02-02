@@ -254,6 +254,12 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "grouped_list",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/grouped_list-5.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "hexcolor",
       "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/hexcolor-2.0.7",
       "packageUri": "lib/",
@@ -680,7 +686,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2023-01-18T01:44:53.726803Z",
+  "generated": "2023-02-02T08:35:34.178070Z",
   "generator": "pub",
   "generatorVersion": "2.18.6"
 }

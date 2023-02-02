@@ -59,12 +59,19 @@ class _BodyPageState extends State<Body> {
               child: TopHeaderSub(
                 title: "phieudexuat.detail_title".tr(),
                 subtitle: "phieudexuat.detail_subtitle".tr(),
-                button: InkWell(
+                buttonLeft: InkWell(
                   borderRadius: BorderRadius.circular(15),
-                  onTap: () => Navigator.pushNamed(context, ListOfDeXuatScreen.routeName),
+                  onTap: () => Navigator.pushNamed(
+                      context, ListOfDeXuatScreen.routeName),
                   child: Stack(
                     clipBehavior: Clip.antiAliasWithSaveLayer,
-                    children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 35.0)],
+                    children: [
+                      Icon(
+                        Ionicons.chevron_back_outline,
+                        color: kPrimaryColor,
+                        size: 35.0,
+                      )
+                    ],
                   ),
                 ),
               ),
@@ -72,12 +79,15 @@ class _BodyPageState extends State<Body> {
             Expanded(
               child: FutureBuilder<PhieuDeXuatDetailModel>(
                   future: _phieuDeXuat,
-                  builder: (BuildContext context, AsyncSnapshot<PhieuDeXuatDetailModel> snapshot) {
+                  builder: (BuildContext context,
+                      AsyncSnapshot<PhieuDeXuatDetailModel> snapshot) {
                     if (snapshot.hasError) {
                       print(snapshot);
                       return DataErrorWidget(error: snapshot.error.toString());
                     } else {
-                      if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active))
+                      if ((snapshot.connectionState == ConnectionState.none ||
+                          snapshot.connectionState == ConnectionState.waiting ||
+                          snapshot.connectionState == ConnectionState.active))
                         return LoadingWidget();
                       else {
                         if (snapshot.hasData && snapshot.data != null) {
@@ -86,7 +96,8 @@ class _BodyPageState extends State<Body> {
                             body: SizedBox.expand(
                               child: PageView(
                                 controller: _pageController,
-                                onPageChanged: ((value) => setState(() => _currentIndex = value)),
+                                onPageChanged: ((value) =>
+                                    setState(() => _currentIndex = value)),
                                 children: <Widget>[
                                   DetailChungBody(id: id, phieuDeXuat: item),
                                   DetailTheoDoiBody(id: id, phieuDeXuat: item),
@@ -104,15 +115,26 @@ class _BodyPageState extends State<Body> {
                                 _pageController.jumpToPage(value);
                               },
                               items: <BottomNavyBarItem>[
-                                BottomNavyBarItem(title: Text('Chung'), icon: Icon(Ionicons.reader_outline), textAlign: TextAlign.center),
-                                BottomNavyBarItem(title: Text('Phê duyệt'), icon: Icon(Ionicons.git_branch_outline), textAlign: TextAlign.center),
-                                BottomNavyBarItem(title: Text('Trao đổi'), icon: Icon(Ionicons.chatbubbles_outline), textAlign: TextAlign.center),
+                                BottomNavyBarItem(
+                                    title: Text('Chung'),
+                                    icon: Icon(Ionicons.reader_outline),
+                                    textAlign: TextAlign.center),
+                                BottomNavyBarItem(
+                                    title: Text('Phê duyệt'),
+                                    icon: Icon(Ionicons.git_branch_outline),
+                                    textAlign: TextAlign.center),
+                                BottomNavyBarItem(
+                                    title: Text('Trao đổi'),
+                                    icon: Icon(Ionicons.chatbubbles_outline),
+                                    textAlign: TextAlign.center),
                                 //BottomNavyBarItem(title: Text('Khác'), icon: Icon(Ionicons.ellipsis_horizontal_circle_outline), textAlign: TextAlign.center),
                               ],
                             ),
                           );
                         } else {
-                          return NoDataWidget(message: "Không tìm thấy thông tin phiếu đề xuất!!!");
+                          return NoDataWidget(
+                              message:
+                                  "Không tìm thấy thông tin phiếu đề xuất!!!");
                         }
                       }
                     }
