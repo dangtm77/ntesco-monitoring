@@ -54,7 +54,9 @@ class CodegenLoader extends AssetLoader{
     "nodata": "Not found",
     "nodata_subtitle": "Try again or contact to administrator...",
     "error": "An error is occurring",
-    "error_subtitle": "Please contact to administrator to support..."
+    "error_subtitle": "Please contact to administrator to support...",
+    "no_connection": "No connection to internet",
+    "no_connection_subtitle": "Please check your device's internet connection status..."
   }
 };
 static const Map<String,dynamic> vi_VN = {
@@ -97,7 +99,9 @@ static const Map<String,dynamic> vi_VN = {
     "nodata": "Không tìm thấy dữ liệu",
     "nodata_subtitle": "Vui lòng thử lại hoặc liên hệ quản trị viên...",
     "error": "Đang có lỗi xảy ra",
-    "error_subtitle": "Vui lòng liên hệ đến quản trị viên để khắc phục..."
+    "error_subtitle": "Vui lòng liên hệ đến quản trị viên để khắc phục...",
+    "no_connection": "Không có kết nối internet",
+    "no_connection_subtitle": "Vui lòng kiểm tra lại kết nối internet của thiết bị..."
   }
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"en_US": en_US, "vi_VN": vi_VN};

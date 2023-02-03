@@ -11,7 +11,7 @@ import 'package:ntesco_smart_monitoring/models/dx/PhieuDeXuatDetail.dart';
 import 'package:ntesco_smart_monitoring/screens/dexuat/components/detail_chung_body.dart';
 import 'package:ntesco_smart_monitoring/screens/dexuat/components/detail_thaoluan_body.dart';
 import 'package:ntesco_smart_monitoring/screens/dexuat/components/detail_theodoi_body.dart';
-import 'package:ntesco_smart_monitoring/screens/dexuat/list_of_dexuat_screen.dart';
+import 'package:ntesco_smart_monitoring/screens/dexuat/dexuat_screen.dart';
 
 class Body extends StatefulWidget {
   final int id;

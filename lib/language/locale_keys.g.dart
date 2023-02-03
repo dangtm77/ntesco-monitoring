@@ -36,6 +36,8 @@ abstract class  LocaleKeys {
   static const state_nodata_subtitle = 'state.nodata_subtitle';
   static const state_error = 'state.error';
   static const state_error_subtitle = 'state.error_subtitle';
+  static const state_no_connection = 'state.no_connection';
+  static const state_no_connection_subtitle = 'state.no_connection_subtitle';
   static const state = 'state';
 
 }

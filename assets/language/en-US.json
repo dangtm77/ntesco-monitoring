@@ -38,6 +38,8 @@
     "nodata": "Not found",
     "nodata_subtitle": "Try again or contact to administrator...",
     "error": "An error is occurring",
-    "error_subtitle": "Please contact to administrator to support..."
+    "error_subtitle": "Please contact to administrator to support...",
+    "no_connection": "No connection to internet",
+    "no_connection_subtitle": "Please check your device's internet connection status..."
   }
 }

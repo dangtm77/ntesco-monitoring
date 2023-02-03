@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/core/auth.dart';
 import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
-import 'package:ntesco_smart_monitoring/screens/dexuat/list_of_dexuat_screen.dart';
+import 'package:ntesco_smart_monitoring/screens/dexuat/dexuat_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/signin/signin_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ntesco_smart_monitoring/models/Login.dart';

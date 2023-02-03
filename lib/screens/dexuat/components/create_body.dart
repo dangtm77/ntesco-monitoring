@@ -5,19 +5,21 @@ import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
-import 'package:ntesco_smart_monitoring/screens/dexuat/list_of_dexuat_screen.dart';
+import 'package:ntesco_smart_monitoring/models/dx/DanhMuc.dart';
+import 'package:ntesco_smart_monitoring/screens/dexuat/components/create_form.dart';
+import 'package:ntesco_smart_monitoring/screens/dexuat/dexuat_screen.dart';
 
 class Body extends StatefulWidget {
-  final int id;
-  Body({Key? key, required this.id}) : super(key: key);
+  final DanhMucModel danhmuc;
+  Body({Key? key, required this.danhmuc}) : super(key: key);
 
   @override
-  _BodyPageState createState() => new _BodyPageState(id);
+  _BodyPageState createState() => new _BodyPageState(danhmuc);
 }
 
 class _BodyPageState extends State<Body> {
-  final int id;
-  _BodyPageState(this.id);
+  final DanhMucModel danhmuc;
+  _BodyPageState(this.danhmuc);
 
   @override
   void initState() {
@@ -36,26 +38,24 @@ class _BodyPageState extends State<Body> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              child: TopHeaderSub(
-                title: "phieudexuat.create_title".tr(),
-                subtitle: "phieudexuat.create_subtitle".tr(),
-                buttonLeft: InkWell(
-                  borderRadius: BorderRadius.circular(15),
-                  onTap: () => Navigator.pushNamed(context, ListOfDeXuatScreen.routeName),
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-                child: Center(
-              child: Text(id.toString()),
-            ))
-          ],
+          children: [_header(), CreateForm(danhmuc: danhmuc)],
+        ),
+      ),
+    );
+  }
+
+  Widget _header() {
+    return Container(
+      child: TopHeaderSub(
+        title: "phieudexuat.create_title".tr(),
+        subtitle: danhmuc.tieuDe.toString(),
+        buttonLeft: InkWell(
+          borderRadius: BorderRadius.circular(15),
+          onTap: () => Navigator.pushNamed(context, ListOfDeXuatScreen.routeName),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
+          ),
         ),
       ),
     );

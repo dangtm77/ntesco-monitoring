@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ntesco_smart_monitoring/core/auth.dart';
 import 'package:ntesco_smart_monitoring/screens/signin/signin_screen.dart';
+import 'package:provider/provider.dart';
 import '../constants.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -101,21 +102,24 @@ class LoadingWidget extends StatelessWidget {
   }
 }
 
-class NoDataWidget extends StatefulWidget {
-  final String message;
-  const NoDataWidget({
-    Key? key,
-    required this.message,
-  }) : super(key: key);
-
+class NoDataWidget extends StatelessWidget {
+  final String? message;
+  const NoDataWidget({Key? key, this.message}) : super(key: key);
   @override
-  _NoDataWidgetState createState() => _NoDataWidgetState(message);
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text("404", style: TextStyle(fontSize: 60, fontWeight: FontWeight.w800, color: Colors.redAccent)),
+        Text(message ?? "state.nodata".tr().toUpperCase(), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: kPrimaryColor)),
+        Text("state.nodata_subtitle".tr(), style: TextStyle(fontSize: 13, color: kSecondaryColor, fontStyle: FontStyle.italic)),
+      ],
+    );
+  }
 }
 
-class _NoDataWidgetState extends State<NoDataWidget> {
-  final String message;
-  _NoDataWidgetState(this.message);
-
+class NoConnectionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -123,9 +127,9 @@ class _NoDataWidgetState extends State<NoDataWidget> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         //Icon(Icons.warning_amber_rounded, size: 50, color: Colors.redAccent),
-        Text("404", style: TextStyle(fontSize: 60, fontWeight: FontWeight.w800, color: Colors.redAccent)),
-        Text("state.nodata".tr().toUpperCase(), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: kPrimaryColor)),
-        Text("state.nodata_subtitle".tr(), style: TextStyle(fontSize: 13, color: kSecondaryColor, fontStyle: FontStyle.italic)),
+        Text("502", style: TextStyle(fontSize: 60, fontWeight: FontWeight.w800, color: Colors.redAccent)),
+        Text("state.no_connection".tr().toUpperCase(), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: kPrimaryColor)),
+        Text("state.no_connection_subtitle".tr(), style: TextStyle(fontSize: 13, color: kSecondaryColor, fontStyle: FontStyle.italic)),
       ],
     );
   }

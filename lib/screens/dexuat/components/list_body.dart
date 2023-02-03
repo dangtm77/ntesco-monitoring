@@ -1,31 +1,34 @@
-// ignore_for_file: unnecessary_statements
-
+import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
+
 import 'package:awesome_select/awesome_select.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:grouped_list/grouped_list.dart';
-import 'package:ntesco_smart_monitoring/components/top_header.dart';
-import 'package:ntesco_smart_monitoring/screens/dexuat/create_dexuat_screen.dart';
-import 'package:ntesco_smart_monitoring/screens/dexuat/detail_of_dexuat_screen.dart';
-import 'package:sticky_headers/sticky_headers.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_tags/flutter_tags.dart';
+import 'package:grouped_list/grouped_list.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:ntesco_smart_monitoring/helper/network.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sticky_headers/sticky_headers.dart';
+
 import 'package:ntesco_smart_monitoring/components/default_button.dart';
 import 'package:ntesco_smart_monitoring/components/state_widget.dart';
+import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/core/phieudexuat.dart';
 import 'package:ntesco_smart_monitoring/helper/number.dart';
 import 'package:ntesco_smart_monitoring/helper/string.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:ntesco_smart_monitoring/models/Login.dart';
 import 'package:ntesco_smart_monitoring/models/dx/DanhMuc.dart';
 import 'package:ntesco_smart_monitoring/models/dx/PhieuDeXuatList.dart';
 import 'package:ntesco_smart_monitoring/models/dx/ThongKe.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ntesco_smart_monitoring/screens/dexuat/dexuat_screen.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -46,13 +49,22 @@ class _BodyPageState extends State<Body> {
   late int pageIndex = 1;
   late int itemPerPage = 15;
   late bool isLoading = false;
-
+  //Biến check thiết bị có kết nối với internet hay không
+  late bool isOnline = false;
   @override
   void initState() {
     _keywordForSearchEditingController.text = "";
     listPhieuDeXuat = _getListPhieuDeXuat();
     thongKe = _getThongKe(yearCurrent);
     super.initState();
+
+    NetworkHelper.instance.initialise();
+    NetworkHelper.instance.myStream.listen((rs) {
+      var result = rs.keys.toList()[0];
+      setState(() {
+        isOnline = (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile) ? true : false;
+      });
+    });
   }
 
   @override
@@ -207,8 +219,8 @@ class _BodyPageState extends State<Body> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _header(context),
-            _searchBar(context),
-            _thongKePanel(context),
+            isOnline ? _searchBar(context) : SizedBox.shrink(),
+            isOnline ? _thongKePanel(context) : SizedBox.shrink(),
             _listAll(context),
             Container(
               height: isLoading ? 30.0 : 0,
@@ -240,24 +252,19 @@ class _BodyPageState extends State<Body> {
     return TopHeaderSub(
       title: "phieudexuat.title".tr(),
       subtitle: "phieudexuat.subtitle".tr(),
-      buttonRight: InkWell(
-        borderRadius: BorderRadius.circular(15),
-        onTap: () => showModalBottomSheet(
-          builder: (BuildContext context) => _selectPanelForCreate(context),
-          context: context,
-        ),
-        //Navigator.pushNamed(context, CreateDeXuatScreen.routeName),
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Icon(
-              Ionicons.add_outline,
-              color: kPrimaryColor,
-              size: 30.0,
+      buttonRight: isOnline
+          ? InkWell(
+              borderRadius: BorderRadius.circular(15),
+              onTap: () => showModalBottomSheet(
+                builder: (BuildContext context) => _selectPanelForCreate(context),
+                context: context,
+              ),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [Icon(Ionicons.add_outline, color: kPrimaryColor, size: 30.0)],
+              ),
             )
-          ],
-        ),
-      ),
+          : null,
     );
   }
 
@@ -319,12 +326,11 @@ class _BodyPageState extends State<Body> {
   }
 
   Widget _filterPanel(BuildContext context) {
-    List<S2Choice<int>> optionsYearFilter = [
-      S2Choice<int>(value: 2021, title: 'Năm 2021'),
-      S2Choice<int>(value: 2022, title: 'Năm 2022'),
-      S2Choice<int>(value: 2023, title: 'Năm 2023'),
-      S2Choice<int>(value: 2024, title: 'Năm 2024'),
-    ];
+    List<S2Choice<int>> optionsYearFilter = [];
+    for (var i = 2019; i <= DateTime.now().year; i++) {
+      optionsYearFilter.add(S2Choice<int>(value: i, title: 'Năm $i'));
+    }
+
     List<S2Choice<int>> optionsStatusFilter = [
       S2Choice<int>(value: 0, title: 'Chờ tôi duyệt'),
       S2Choice<int>(value: 1, title: 'Đang xử lý'),
@@ -473,10 +479,10 @@ class _BodyPageState extends State<Body> {
           future: thongKe,
           builder: (BuildContext context, AsyncSnapshot<ThongKeModel> snapshot) {
             if (snapshot.hasError)
-              return DataErrorWidget(error: snapshot.error.toString());
+              return Text('Có lỗi trong quá trình tải thống kê...');
             else {
               if (snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active)
-                return Text('Đang cập nhật ...');
+                return Text('Đang tải dữ liệu ...');
               else
                 return Tags(
                   itemCount: 6,
@@ -524,64 +530,67 @@ class _BodyPageState extends State<Body> {
   }
 
   Widget _listAll(BuildContext context) {
-    return Expanded(
-      child: NotificationListener<ScrollNotification>(
-          onNotification: (ScrollNotification scrollInfo) {
-            if (!isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-              setState(() {
-                pageIndex = pageIndex + 1;
-                listPhieuDeXuat = _getListPhieuDeXuat();
-                isLoading = true;
-              });
-            }
-            return true;
-          },
-          child: new RefreshIndicator(
-            onRefresh: () async {
-              setState(() {
-                isLoading = false;
-                listPhieuDeXuat = _getListPhieuDeXuat();
-              });
+    if (isOnline) {
+      setState(() {});
+      return Expanded(
+        child: NotificationListener<ScrollNotification>(
+            onNotification: (ScrollNotification scrollInfo) {
+              if (!isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+                setState(() {
+                  pageIndex = pageIndex + 1;
+                  listPhieuDeXuat = _getListPhieuDeXuat();
+                  isLoading = true;
+                });
+              }
+              return true;
             },
-            child: FutureBuilder<PhieuDeXuatListModels>(
-              future: listPhieuDeXuat,
-              builder: (BuildContext context, AsyncSnapshot<PhieuDeXuatListModels> snapshot) {
-                if (snapshot.hasError)
-                  return DataErrorWidget(error: snapshot.error.toString());
-                else {
-                  if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !isLoading)
-                    return LoadingWidget();
+            child: new RefreshIndicator(
+              onRefresh: () async {
+                setState(() {
+                  isLoading = false;
+                  listPhieuDeXuat = _getListPhieuDeXuat();
+                });
+              },
+              child: FutureBuilder<PhieuDeXuatListModels>(
+                future: listPhieuDeXuat,
+                builder: (BuildContext context, AsyncSnapshot<PhieuDeXuatListModels> snapshot) {
+                  if (snapshot.hasError)
+                    return DataErrorWidget(error: snapshot.error.toString());
                   else {
-                    if (snapshot.hasData && snapshot.data!.data.isNotEmpty) {
-                      return Column(children: [
-                        Expanded(
-                          child: AnimationLimiter(
-                            child: ListView.separated(
-                              itemCount: snapshot.data!.data.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                var item = snapshot.data!.data.elementAt(index);
-                                return AnimationConfiguration.staggeredList(
-                                  position: index,
-                                  duration: const Duration(milliseconds: 400),
-                                  child: SlideAnimation(
-                                    child: FadeInAnimation(child: _item(item)),
-                                  ),
-                                );
-                              },
-                              separatorBuilder: (BuildContext context, int index) => const Divider(),
+                    if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !isLoading)
+                      return LoadingWidget();
+                    else {
+                      if (snapshot.hasData && snapshot.data!.data.isNotEmpty) {
+                        return Column(children: [
+                          Expanded(
+                            child: AnimationLimiter(
+                              child: ListView.separated(
+                                itemCount: snapshot.data!.data.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  var item = snapshot.data!.data.elementAt(index);
+                                  return AnimationConfiguration.staggeredList(
+                                    position: index,
+                                    duration: const Duration(milliseconds: 400),
+                                    child: SlideAnimation(
+                                      child: FadeInAnimation(child: _item(item)),
+                                    ),
+                                  );
+                                },
+                                separatorBuilder: (BuildContext context, int index) => const Divider(),
+                              ),
                             ),
                           ),
-                        ),
-                      ]);
-                    } else {
-                      return NoDataWidget(message: "Không tìm thấy phiếu đề xuất liên quan nào !!!");
+                        ]);
+                      } else
+                        return NoDataWidget(message: "Không tìm thấy phiếu đề xuất nào liên quan đến bạn !!!");
                     }
                   }
-                }
-              },
-            ),
-          )),
-    );
+                },
+              ),
+            )),
+      );
+    } else
+      return Expanded(child: NoConnectionWidget());
   }
 
   Widget _item(PhieuDeXuatListModel item) {
@@ -651,13 +660,7 @@ class _BodyPageState extends State<Body> {
               TextSpan(
                 style: TextStyle(fontSize: 12),
                 children: [
-                  WidgetSpan(
-                    child: Icon(
-                      Icons.tag,
-                      size: 15.0,
-                      color: kSecondaryColor,
-                    ),
-                  ),
+                  WidgetSpan(child: Icon(Icons.tag, size: 15.0, color: kSecondaryColor)),
                   WidgetSpan(child: SizedBox(width: 2.0)),
                   TextSpan(
                     text: item.id.toString(),
@@ -678,12 +681,7 @@ class _BodyPageState extends State<Body> {
                   WidgetSpan(child: SizedBox(width: 2.0)),
                   TextSpan(text: StringHelper.toShortName(item.nguoiTaoInfo.hoTen.toString()), style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
                   WidgetSpan(child: SizedBox(width: 10.0)),
-                  WidgetSpan(
-                      child: Icon(
-                    Icons.event,
-                    size: 15.0,
-                    color: kSecondaryColor,
-                  )),
+                  WidgetSpan(child: Icon(Icons.event, size: 15.0, color: kSecondaryColor)),
                   WidgetSpan(child: SizedBox(width: 2.0)),
                   TextSpan(
                     text: DateFormat("hh:mm dd/MM").format(item.ngayTao),
@@ -763,21 +761,20 @@ class _BodyPageState extends State<Body> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [SizedBox(height: 5), Text(element.moTa.toString(), style: const TextStyle(fontSize: 13.0)), SizedBox(height: 5), Text("Loại quy trình ${element.loaiQuyTrinh.toString().toLowerCase()}", style: const TextStyle(fontSize: 13.0))],
+                            subtitle: Text(
+                              "${element.moTa.toString()} - Loại quy trình ${element.loaiQuyTrinh.toString().toLowerCase()}",
+                              style: const TextStyle(fontSize: 13.0),
                             ),
                             trailing: Icon(Ionicons.arrow_redo_outline, color: kSecondaryColor, size: 18.0),
-                            onTap: () => Navigator.pushNamed(context, CreateDeXuatScreen.routeName, arguments: {'id': element.id}),
+                            onTap: () => Navigator.pushNamed(context, CreateDeXuatScreen.routeName, arguments: {'danhmuc': element}),
                           ), // optional
                           order: GroupedListOrder.ASC,
                           separator: const Divider(color: kPrimaryColor),
                           floatingHeader: true, useStickyGroupSeparators: true,
                         ),
                       );
-                    } else {
+                    } else
                       return NoDataWidget(message: "Không tìm thấy phiếu đề xuất liên quan nào !!!");
-                    }
                   }
                 }
               },

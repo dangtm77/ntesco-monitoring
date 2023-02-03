@@ -25,6 +25,7 @@ MERGED from [:sqflite] D:\01. Github\ntesco-monitoring\build\sqflite\intermediat
 MERGED from [:url_launcher_android] D:\01. Github\ntesco-monitoring\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-16:12
 MERGED from [:path_provider_android] D:\01. Github\ntesco-monitoring\build\path_provider_android\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-9:12
 MERGED from [:dynamic_color] D:\01. Github\ntesco-monitoring\build\dynamic_color\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-9:12
+MERGED from [:connectivity_plus] D:\01. Github\ntesco-monitoring\build\connectivity_plus\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.window:window-java:1.0.0-beta04] C:\Users\dangtm.TAYHO\.gradle\caches\transforms-3\823aa1f71c1a0ca1e2b6fe57b0433b43\transformed\jetified-window-java-1.0.0-beta04\AndroidManifest.xml:17:1-23:12
 MERGED from [androidx.window:window:1.0.0-beta04] C:\Users\dangtm.TAYHO\.gradle\caches\transforms-3\97426a1ec74b433be6f73d0aff383bdf\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:17:1-33:12
 MERGED from [androidx.fragment:fragment:1.1.0] C:\Users\dangtm.TAYHO\.gradle\caches\transforms-3\3aa2594a4f87034576e5a52a4459db5b\transformed\fragment-1.1.0\AndroidManifest.xml:17:1-24:12
@@ -75,6 +76,8 @@ MERGED from [:path_provider_android] D:\01. Github\ntesco-monitoring\build\path_
 MERGED from [:path_provider_android] D:\01. Github\ntesco-monitoring\build\path_provider_android\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-7:41
 MERGED from [:dynamic_color] D:\01. Github\ntesco-monitoring\build\dynamic_color\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-7:41
 MERGED from [:dynamic_color] D:\01. Github\ntesco-monitoring\build\dynamic_color\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-7:41
+MERGED from [:connectivity_plus] D:\01. Github\ntesco-monitoring\build\connectivity_plus\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-7:41
+MERGED from [:connectivity_plus] D:\01. Github\ntesco-monitoring\build\connectivity_plus\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-7:41
 MERGED from [androidx.window:window-java:1.0.0-beta04] C:\Users\dangtm.TAYHO\.gradle\caches\transforms-3\823aa1f71c1a0ca1e2b6fe57b0433b43\transformed\jetified-window-java-1.0.0-beta04\AndroidManifest.xml:19:5-21:41
 MERGED from [androidx.window:window-java:1.0.0-beta04] C:\Users\dangtm.TAYHO\.gradle\caches\transforms-3\823aa1f71c1a0ca1e2b6fe57b0433b43\transformed\jetified-window-java-1.0.0-beta04\AndroidManifest.xml:19:5-21:41
 MERGED from [androidx.window:window:1.0.0-beta04] C:\Users\dangtm.TAYHO\.gradle\caches\transforms-3\97426a1ec74b433be6f73d0aff383bdf\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:20:5-22:41
@@ -129,6 +132,10 @@ ADDED from [:url_launcher_android] D:\01. Github\ntesco-monitoring\build\url_lau
 		ADDED from [:url_launcher_android] D:\01. Github\ntesco-monitoring\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:13:13-71
 	android:name
 		ADDED from [:url_launcher_android] D:\01. Github\ntesco-monitoring\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:11:13-74
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from [:connectivity_plus] D:\01. Github\ntesco-monitoring\build\connectivity_plus\intermediates\merged_manifest\debug\AndroidManifest.xml:9:5-79
+	android:name
+		ADDED from [:connectivity_plus] D:\01. Github\ntesco-monitoring\build\connectivity_plus\intermediates\merged_manifest\debug\AndroidManifest.xml:9:22-76
 uses-library#androidx.window.extensions
 ADDED from [androidx.window:window:1.0.0-beta04] C:\Users\dangtm.TAYHO\.gradle\caches\transforms-3\97426a1ec74b433be6f73d0aff383bdf\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:25:9-27:40
 	android:required

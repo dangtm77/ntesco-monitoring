@@ -1,5 +1,6 @@
 // ignore_for_file: unnecessary_null_comparison
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -107,7 +108,7 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
                     ),
                   ]);
                 } else {
-                  return NoDataWidget(message: "Không tìm thấy phiếu đề xuất liên quan nào !!!");
+                  return NoDataWidget();
                 }
               }
             }
@@ -154,46 +155,54 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       CircleAvatar(
-                        radius: 20.0,
-                        backgroundImage: NetworkImage(
-                          item.nguoiDuyetInfo.anhDaiDien.toString(),
-                        ),
+                        radius: 18.0,
+                        backgroundImage: NetworkImage(item.nguoiDuyetInfo.anhDaiDien.toString()),
                       ),
                     ],
                   ),
                 ),
                 title: Text(
                   item.nguoiDuyetInfo.hoTen.toString(),
+                  textAlign: TextAlign.left,
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: kPrimaryColor),
+                ),
+                subtitle: Text(
+                  "${item.nguoiDuyetInfo.chucDanh.toString()} - ${item.nguoiDuyetInfo.phongBan.toString()}",
+                  textAlign: TextAlign.left,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic, color: kTextColor),
+                ),
+              ))
+          : null,
+      startChild: (index % 2 != 0)
+          ? Container(
+              alignment: Alignment.centerRight,
+              child: ListTile(
+                trailing: Container(
+                  padding: EdgeInsets.only(left: 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 18.0,
+                        backgroundImage: NetworkImage(item.nguoiDuyetInfo.anhDaiDien.toString()),
+                      ),
+                    ],
+                  ),
+                ),
+                title: Text(
+                  item.nguoiDuyetInfo.hoTen.toString(),
+                  textAlign: TextAlign.right,
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: kPrimaryColor),
                 ),
                 subtitle: Text(
                   "${item.nguoiDuyetInfo.chucDanh.toString()} - ${item.nguoiDuyetInfo.phongBan.toString()}",
                   overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.right,
                   style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic, color: kTextColor),
                 ),
               ))
-
-          //   child: Container(
-          //     padding: EdgeInsets.only(left: 0),
-          //     child: Column(
-          //       crossAxisAlignment: CrossAxisAlignment.center,
-          //       mainAxisAlignment: MainAxisAlignment.center,
-          //       children: [
-          //         CircleAvatar(
-          //             radius: 30.0,
-          //             backgroundImage: NetworkImage(
-          //               item.nguoiDuyetInfo.anhDaiDien.toString(),
-          //             )),
-          //       ],
-          //     ),
-          //   ),
-          // )
-          : null,
-      startChild: (index % 2 != 0)
-          ? Container(
-              alignment: Alignment.centerRight,
-              child: Text(item.nguoiDuyet),
-            )
           : null,
     );
   }

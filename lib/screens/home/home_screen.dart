@@ -10,9 +10,7 @@ class HomeScreen extends StatelessWidget {
     SizeConfig().init(context);
     return Scaffold(
       drawerScrimColor: Colors.transparent,
-      drawer: Drawer(
-        child: MainDrawer(),
-      ),
+      drawer: Drawer(child: MainDrawer()),
       body: Body(),
     );
   }
