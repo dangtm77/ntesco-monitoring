@@ -74,8 +74,6 @@ class _MyAppState extends State<MyApp> {
   bool isOnline = false;
 
   void initState() {
-    super.initState();
-
     _networkConnectivity.initialise();
     _networkConnectivity.myStream.listen((source) {
       setState(() {
@@ -89,6 +87,7 @@ class _MyAppState extends State<MyApp> {
         }
       });
     });
+    super.initState();
   }
 
   @override

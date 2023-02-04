@@ -66,7 +66,7 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
         child: ListView(
           padding: const EdgeInsets.all(10),
           children: [
-            Text("THÔNG TIN CHUNG", style: TextStyle(color: kTextColor, fontWeight: FontWeight.w700, fontSize: 20.0)),
+            Text("THÔNG TIN CHUNG", style: TextStyle(color: kTextColor, fontWeight: FontWeight.w700, fontSize: 18.0)),
             Visibility(
               visible: phieuDeXuat!.formConfig.tieuDeLabel != null,
               child: Column(
@@ -150,7 +150,7 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
               ]),
             ),
             const SizedBox(height: 20),
-            Text("THÔNG TIN KHÁC", style: TextStyle(color: kTextColor, fontWeight: FontWeight.w700, fontSize: 20.0)),
+            Text("THÔNG TIN KHÁC", style: TextStyle(color: kTextColor, fontWeight: FontWeight.w700, fontSize: 18.0)),
             Visibility(
               visible: phieuDeXuat!.formConfig.giaTriLabel != null,
               child: Column(children: [

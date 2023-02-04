@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:ionicons/ionicons.dart';
+import 'package:ntesco_smart_monitoring/components/top_header.dart';
+import 'package:ntesco_smart_monitoring/constants.dart';
+import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ntesco_smart_monitoring/models/Login.dart';
-import '../../../size_config.dart';
 import 'dart:convert';
 
-import '../../../components/top_header.dart';
 import 'banner.dart';
 
 class Body extends StatefulWidget {
@@ -23,8 +25,7 @@ class _BodyPageState extends State<Body> {
 
   Future<LoginResponseModel> _getUserCurrent() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return LoginResponseModel.fromJson(
-        json.decode(prefs.getString('USERCURRENT')!));
+    return LoginResponseModel.fromJson(json.decode(prefs.getString('USERCURRENT')!));
   }
 
   Future<void> _refreshUserCurrent() async {
@@ -46,22 +47,20 @@ class _BodyPageState extends State<Body> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
                     child: new Theme(
-                      data:
-                          Theme.of(context).copyWith(secondaryHeaderColor: Colors.blue),
+                      data: Theme.of(context).copyWith(secondaryHeaderColor: Colors.blue),
                       child: new CircularProgressIndicator(),
                     ),
                   );
                 }
                 LoginResponseModel? userCurrent = snapshot.data;
                 return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(height: getProportionateScreenHeight(15)),
-                      TopHeader(),
-                      SizedBox(height: getProportionateScreenHeight(10)),
-                      HeaderBanner(model: userCurrent)
-                    ],
-                  ),
+                  scrollDirection: Axis.vertical,
+                  child: Column(children: [
+                    SizedBox(height: getProportionateScreenHeight(15)),
+                    TopHeader(),
+                    SizedBox(height: getProportionateScreenHeight(10)),
+                    HeaderBanner(model: userCurrent),
+                  ]),
                 );
               })),
     );

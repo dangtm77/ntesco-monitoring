@@ -64,6 +64,7 @@ class _BodyPageState extends State<Body> {
       setState(() {
         isOnline = (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile) ? true : false;
       });
+      setState(() {});
     });
   }
 
@@ -530,67 +531,66 @@ class _BodyPageState extends State<Body> {
   }
 
   Widget _listAll(BuildContext context) {
-    if (isOnline) {
-      setState(() {});
-      return Expanded(
-        child: NotificationListener<ScrollNotification>(
-            onNotification: (ScrollNotification scrollInfo) {
-              if (!isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-                setState(() {
-                  pageIndex = pageIndex + 1;
-                  listPhieuDeXuat = _getListPhieuDeXuat();
-                  isLoading = true;
-                });
-              }
-              return true;
-            },
-            child: new RefreshIndicator(
-              onRefresh: () async {
-                setState(() {
-                  isLoading = false;
-                  listPhieuDeXuat = _getListPhieuDeXuat();
-                });
-              },
-              child: FutureBuilder<PhieuDeXuatListModels>(
-                future: listPhieuDeXuat,
-                builder: (BuildContext context, AsyncSnapshot<PhieuDeXuatListModels> snapshot) {
-                  if (snapshot.hasError)
-                    return DataErrorWidget(error: snapshot.error.toString());
-                  else {
-                    if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !isLoading)
-                      return LoadingWidget();
+    return Expanded(
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (ScrollNotification scrollInfo) {
+          if (!isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+            setState(() {
+              pageIndex = pageIndex + 1;
+              listPhieuDeXuat = _getListPhieuDeXuat();
+              isLoading = true;
+            });
+          }
+          return true;
+        },
+        child: (isOnline)
+            ? RefreshIndicator(
+                onRefresh: () async {
+                  setState(() {
+                    isLoading = false;
+                    listPhieuDeXuat = _getListPhieuDeXuat();
+                  });
+                },
+                child: FutureBuilder<PhieuDeXuatListModels>(
+                  future: listPhieuDeXuat,
+                  builder: (BuildContext context, AsyncSnapshot<PhieuDeXuatListModels> snapshot) {
+                    if (snapshot.hasError)
+                      return DataErrorWidget(error: snapshot.error.toString());
                     else {
-                      if (snapshot.hasData && snapshot.data!.data.isNotEmpty) {
-                        return Column(children: [
-                          Expanded(
-                            child: AnimationLimiter(
-                              child: ListView.separated(
-                                itemCount: snapshot.data!.data.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  var item = snapshot.data!.data.elementAt(index);
-                                  return AnimationConfiguration.staggeredList(
-                                    position: index,
-                                    duration: const Duration(milliseconds: 400),
-                                    child: SlideAnimation(
-                                      child: FadeInAnimation(child: _item(item)),
-                                    ),
-                                  );
-                                },
-                                separatorBuilder: (BuildContext context, int index) => const Divider(),
+                      if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !isLoading)
+                        return LoadingWidget();
+                      else {
+                        if (snapshot.hasData && snapshot.data!.data.isNotEmpty) {
+                          return Column(children: [
+                            Expanded(
+                              child: AnimationLimiter(
+                                child: ListView.separated(
+                                  itemCount: snapshot.data!.data.length,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    var item = snapshot.data!.data.elementAt(index);
+                                    return AnimationConfiguration.staggeredList(
+                                      position: index,
+                                      duration: const Duration(milliseconds: 400),
+                                      child: SlideAnimation(
+                                        child: FadeInAnimation(child: _item(item)),
+                                      ),
+                                    );
+                                  },
+                                  separatorBuilder: (BuildContext context, int index) => const Divider(),
+                                ),
                               ),
                             ),
-                          ),
-                        ]);
-                      } else
-                        return NoDataWidget(message: "Không tìm thấy phiếu đề xuất nào liên quan đến bạn !!!");
+                          ]);
+                        } else
+                          return NoDataWidget(message: "Không tìm thấy phiếu đề xuất nào liên quan đến bạn !!!");
+                      }
                     }
-                  }
-                },
-              ),
-            )),
-      );
-    } else
-      return Expanded(child: NoConnectionWidget());
+                  },
+                ),
+              )
+            : NoConnectionWidget(),
+      ),
+    );
   }
 
   Widget _item(PhieuDeXuatListModel item) {
@@ -649,12 +649,18 @@ class _BodyPageState extends State<Body> {
           overflow: TextOverflow.fade,
           softWrap: false,
           maxLines: 1,
-          style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontSize: 13, fontStyle: FontStyle.normal),
+          style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontSize: 12, fontStyle: FontStyle.normal),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text((item.isQuanTrong ? "[QUAN TRỌNG] " : "").toString() + item.tieuDe.toString(), overflow: TextOverflow.fade, maxLines: 1, softWrap: false, style: TextStyle(color: Colors.black87, fontSize: 16.0, fontWeight: FontWeight.w700)),
+            Text(
+              (item.isQuanTrong ? "[QUAN TRỌNG] " : "").toString() + item.tieuDe.toString(),
+              overflow: TextOverflow.fade,
+              maxLines: 1,
+              softWrap: false,
+              style: TextStyle(color: Colors.black87, fontSize: 14.0, fontWeight: FontWeight.w700),
+            ),
             SizedBox(height: 3.0),
             Text.rich(
               TextSpan(
@@ -668,20 +674,27 @@ class _BodyPageState extends State<Body> {
                       color: kSecondaryColor,
                       fontWeight: FontWeight.normal,
                       fontStyle: FontStyle.italic,
+                      fontSize: 12,
                     ),
                   ),
                   WidgetSpan(child: SizedBox(width: 10.0)),
                   WidgetSpan(
-                    child: Icon(
-                      Icons.person,
-                      size: 15.0,
-                      color: kSecondaryColor,
-                    ),
+                    child: Icon(Icons.person, size: 15.0, color: kSecondaryColor),
                   ),
                   WidgetSpan(child: SizedBox(width: 2.0)),
-                  TextSpan(text: StringHelper.toShortName(item.nguoiTaoInfo.hoTen.toString()), style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
+                  TextSpan(
+                    text: StringHelper.toShortName(item.nguoiTaoInfo.hoTen.toString()),
+                    style: TextStyle(
+                      color: kSecondaryColor,
+                      fontWeight: FontWeight.normal,
+                      fontStyle: FontStyle.italic,
+                      fontSize: 12,
+                    ),
+                  ),
                   WidgetSpan(child: SizedBox(width: 10.0)),
-                  WidgetSpan(child: Icon(Icons.event, size: 15.0, color: kSecondaryColor)),
+                  WidgetSpan(
+                    child: Icon(Icons.event, size: 15.0, color: kSecondaryColor),
+                  ),
                   WidgetSpan(child: SizedBox(width: 2.0)),
                   TextSpan(
                     text: DateFormat("hh:mm dd/MM").format(item.ngayTao),
@@ -689,6 +702,7 @@ class _BodyPageState extends State<Body> {
                       color: kSecondaryColor,
                       fontWeight: FontWeight.normal,
                       fontStyle: FontStyle.italic,
+                      fontSize: 12,
                     ),
                   ),
                 ],

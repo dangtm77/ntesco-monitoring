@@ -38,6 +38,8 @@
     "nodata": "Không tìm thấy dữ liệu",
     "nodata_subtitle": "Vui lòng thử lại hoặc liên hệ quản trị viên...",
     "error": "Đang có lỗi xảy ra",
-    "error_subtitle": "Vui lòng liên hệ đến quản trị viên để khắc phục..."
+    "error_subtitle": "Vui lòng liên hệ đến quản trị viên để khắc phục...",
+    "no_connection": "Không có kết nối internet",
+    "no_connection_subtitle": "Vui lòng kiểm tra lại kết nối internet của thiết bị..."
   }
 }

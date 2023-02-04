@@ -12,24 +12,17 @@ class HeaderBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // height: 90,
       width: double.infinity,
       margin: EdgeInsets.fromLTRB(getProportionateScreenWidth(20), getProportionateScreenWidth(20), getProportionateScreenWidth(20), 0),
       padding: EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20), vertical: getProportionateScreenWidth(15)),
-      decoration: BoxDecoration(
-        color: kPrimaryColor,
-        borderRadius: BorderRadius.circular(20),
-      ),
+      decoration: BoxDecoration(color: kPrimaryColor, borderRadius: BorderRadius.circular(20)),
       child: Text.rich(
         TextSpan(
           style: TextStyle(color: Colors.white),
           children: [
             TextSpan(
               text: "hello_message".tr(args: [model!.hoTen.toString()]).toString(),
-              style: TextStyle(
-                fontSize: getProportionateScreenWidth(20),
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: getProportionateScreenWidth(20), fontWeight: FontWeight.bold),
             ),
             WidgetSpan(child: SizedBox(height: 20)),
             TextSpan(text: "welcome_message".tr()),

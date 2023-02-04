@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/core/auth.dart';
 import 'package:ntesco_smart_monitoring/screens/signin/signin_screen.dart';
 import 'package:provider/provider.dart';
@@ -126,9 +127,9 @@ class NoConnectionWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        //Icon(Icons.warning_amber_rounded, size: 50, color: Colors.redAccent),
-        Text("502", style: TextStyle(fontSize: 60, fontWeight: FontWeight.w800, color: Colors.redAccent)),
-        Text("state.no_connection".tr().toUpperCase(), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: kPrimaryColor)),
+        Icon(Icons.wifi_off_outlined, size: 100, color: Colors.redAccent),
+        //Text("502", style: TextStyle(fontSize: 60, fontWeight: FontWeight.w800, color: Colors.redAccent)),
+        Text("state.no_connection".tr().toUpperCase(), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Colors.redAccent)),
         Text("state.no_connection_subtitle".tr(), style: TextStyle(fontSize: 13, color: kSecondaryColor, fontStyle: FontStyle.italic)),
       ],
     );
