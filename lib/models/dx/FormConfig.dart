@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 class FormConfigModel {
   final int id;
   final String tieuDeLabel;
@@ -50,5 +51,10 @@ class FormConfigModel {
       optionValue005Label: json['optionValue005Label'],
       optionValue006Label: json['optionValue006Label'],
     );
+  }
+
+  @override
+  String toString() {
+    return 'FormConfigModel(id: $id, tieuDeLabel: $tieuDeLabel, mucDichLabel: $mucDichLabel, noiDungLabel: $noiDungLabel, tuNgayLabel: $tuNgayLabel, denNgayLabel: $denNgayLabel, giaTriLabel: $giaTriLabel, giaTri001Label: $giaTri001Label, giaTri002Label: $giaTri002Label, optionValue001Label: $optionValue001Label, optionValue002Label: $optionValue002Label, optionValue003Label: $optionValue003Label, optionValue004Label: $optionValue004Label, optionValue005Label: $optionValue005Label, optionValue006Label: $optionValue006Label)';
   }
 }

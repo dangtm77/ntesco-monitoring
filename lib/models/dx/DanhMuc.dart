@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:ntesco_smart_monitoring/models/dx/FormConfig.dart';
@@ -45,5 +46,10 @@ class DanhMucModel {
       sapXep: json['sapXep'],
       formConfig: FormConfigModel.fromJson(json['formConfig']),
     );
+  }
+
+  @override
+  String toString() {
+    return 'DanhMucModel(id: $id, tieuDe: $tieuDe, moTa: $moTa, nhomDanhMuc: $nhomDanhMuc, loaiQuyTrinh: $loaiQuyTrinh, sapXep: $sapXep, formConfig: $formConfig)';
   }
 }

@@ -2,12 +2,14 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/core/phieudexuat.dart';
+import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/dx/PhieuDeXuatDetail.dart';
 import 'package:ntesco_smart_monitoring/models/dx/TheoDoi.dart';
@@ -150,15 +152,14 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
               child: ListTile(
                 leading: Container(
                   padding: EdgeInsets.only(left: 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        radius: 18.0,
-                        backgroundImage: NetworkImage(item.nguoiDuyetInfo.anhDaiDien.toString()),
-                      ),
-                    ],
+                  child: Badge(
+                    showBadge: item.ghiChu.isNotEmpty,
+                    padding: EdgeInsets.all(5.0),
+                    badgeContent: Icon(Icons.insert_comment_sharp, color: Colors.white, size: 13),
+                    child: CircleAvatar(
+                      radius: 18.0,
+                      backgroundImage: NetworkImage(item.nguoiDuyetInfo.anhDaiDien.toString()),
+                    ),
                   ),
                 ),
                 title: Text(
@@ -180,15 +181,14 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
               child: ListTile(
                 trailing: Container(
                   padding: EdgeInsets.only(left: 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        radius: 18.0,
-                        backgroundImage: NetworkImage(item.nguoiDuyetInfo.anhDaiDien.toString()),
-                      ),
-                    ],
+                  child: Badge(
+                    showBadge: item.ghiChu.isNotEmpty,
+                    padding: EdgeInsets.all(5.0),
+                    badgeContent: Icon(Icons.insert_comment_sharp, color: Colors.white, size: 13),
+                    child: CircleAvatar(
+                      radius: 18.0,
+                      backgroundImage: NetworkImage(item.nguoiDuyetInfo.anhDaiDien.toString()),
+                    ),
                   ),
                 ),
                 title: Text(
@@ -202,7 +202,9 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
                   textAlign: TextAlign.right,
                   style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic, color: kTextColor),
                 ),
-              ))
+                onTap: (() => Util.showNotification(context, item.ghiChu, Colors.red)),
+              ),
+            )
           : null,
     );
   }

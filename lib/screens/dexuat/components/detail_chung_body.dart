@@ -1,5 +1,4 @@
 // ignore_for_file: unnecessary_null_comparison
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
@@ -66,7 +65,16 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
         child: ListView(
           padding: const EdgeInsets.all(10),
           children: [
-            Text("THÔNG TIN CHUNG", style: TextStyle(color: kTextColor, fontWeight: FontWeight.w700, fontSize: 18.0)),
+            Text(
+              "THÔNG TIN CHUNG",
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                color: kPrimaryColor,
+                fontWeight: FontWeight.w700,
+                fontSize: 15.0,
+              ),
+            ),
+            Divider(color: kPrimaryColor.withOpacity(0.7), height: 5, thickness: 3),
             Visibility(
               visible: phieuDeXuat!.formConfig.tieuDeLabel != null,
               child: Column(
@@ -150,7 +158,16 @@ class _DetailChungBodyPageState extends State<DetailChungBody> {
               ]),
             ),
             const SizedBox(height: 20),
-            Text("THÔNG TIN KHÁC", style: TextStyle(color: kTextColor, fontWeight: FontWeight.w700, fontSize: 18.0)),
+            Text(
+              "THÔNG TIN KHÁC",
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                color: kPrimaryColor,
+                fontWeight: FontWeight.w700,
+                fontSize: 15.0,
+              ),
+            ),
+            Divider(color: kPrimaryColor.withOpacity(0.7), height: 5, thickness: 3),
             Visibility(
               visible: phieuDeXuat!.formConfig.giaTriLabel != null,
               child: Column(children: [
