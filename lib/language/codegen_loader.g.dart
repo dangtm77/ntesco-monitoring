@@ -31,6 +31,7 @@ class CodegenLoader extends AssetLoader{
   "menu": {
     "home": "Home",
     "phieudexuat": "Requests",
+    "maintenance": "Maintenance",
     "log_out": "Log out",
     "settings": "Settings",
     "alarm": "Alarm",
@@ -76,6 +77,7 @@ static const Map<String,dynamic> vi_VN = {
   "menu": {
     "home": "Trang chủ",
     "phieudexuat": "Phiếu đề xuất",
+    "maintenance": "Bảo trì dự án",
     "log_out": "Đăng xuất",
     "settings": "Cài đặt",
     "alarm": "Cảnh báo",

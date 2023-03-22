@@ -14,6 +14,7 @@ abstract class  LocaleKeys {
   static const validation = 'validation';
   static const menu_home = 'menu.home';
   static const menu_phieudexuat = 'menu.phieudexuat';
+  static const menu_maintenance = 'menu.maintenance';
   static const menu_log_out = 'menu.log_out';
   static const menu_settings = 'menu.settings';
   static const menu_alarm = 'menu.alarm';

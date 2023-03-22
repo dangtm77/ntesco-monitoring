@@ -22,10 +22,13 @@ class HeaderBanner extends StatelessWidget {
           children: [
             TextSpan(
               text: "hello_message".tr(args: [model!.hoTen.toString()]).toString(),
-              style: TextStyle(fontSize: getProportionateScreenWidth(20), fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.bold),
             ),
-            WidgetSpan(child: SizedBox(height: 20)),
-            TextSpan(text: "welcome_message".tr()),
+            WidgetSpan(child: SizedBox(height: getProportionateScreenHeight(20))),
+            TextSpan(
+              text: "welcome_message".tr().toString(),
+              style: TextStyle(fontSize: getProportionateScreenWidth(10)),
+            )
           ],
         ),
       ),

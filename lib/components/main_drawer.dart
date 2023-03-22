@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/core/auth.dart';
 import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/dexuat/dexuat_screen.dart';
+import 'package:ntesco_smart_monitoring/screens/maintenance/maintenance_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/signin/signin_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ntesco_smart_monitoring/models/Login.dart';
@@ -97,6 +99,12 @@ class _MainDrawerState extends State<MainDrawer> {
                   leading: Icon(Icons.bar_chart_rounded, color: kPrimaryColor),
                   trailing: Icon(Icons.arrow_right_rounded, color: kPrimaryColor),
                   title: Text("menu.phieudexuat".tr(), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w700)),
+                ),
+                ListTile(
+                  onTap: () => Navigator.pushNamed(context, MaintenanceScreen.routeName),
+                  leading: Icon(Ionicons.build_outline, color: kPrimaryColor),
+                  trailing: Icon(Icons.arrow_right_rounded, color: kPrimaryColor),
+                  title: Text("menu.maintenance".tr(), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w700)),
                 ),
                 /*
                 ListTile(
