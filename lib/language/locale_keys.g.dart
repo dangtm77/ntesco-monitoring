@@ -28,6 +28,13 @@ abstract class  LocaleKeys {
   static const phieudexuat_create_title = 'phieudexuat.create_title';
   static const phieudexuat_create_subtitle = 'phieudexuat.create_subtitle';
   static const phieudexuat = 'phieudexuat';
+  static const maintenance_title = 'maintenance.title';
+  static const maintenance_subtitle = 'maintenance.subtitle';
+  static const maintenance_plan_title = 'maintenance.plan_title';
+  static const maintenance_plan_subtitle = 'maintenance.plan_subtitle';
+  static const maintenance_defect_analysis_title = 'maintenance.defect_analysis_title';
+  static const maintenance_defect_analysis_subtitle = 'maintenance.defect_analysis_subtitle';
+  static const maintenance = 'maintenance';
   static const language_display = 'language_display';
   static const hello_message = 'hello_message';
   static const welcome_message = 'welcome_message';

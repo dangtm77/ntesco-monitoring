@@ -15,6 +15,7 @@
   "menu": {
     "home": "Home",
     "phieudexuat": "Requests",
+    "maintenance": "Maintenance",
     "log_out": "Log out",
     "settings": "Settings",
     "alarm": "Alarm",

@@ -11,8 +11,7 @@ class TopHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(10.0)),
+      padding: EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(10.0)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -21,13 +20,10 @@ class TopHeader extends StatelessWidget {
             onTap: () => Scaffold.of(context).openDrawer(),
             child: Stack(
               clipBehavior: Clip.none,
-              children: [
-                Icon(Ionicons.grid_outline, color: kPrimaryColor, size: 30)
-              ],
+              children: [Icon(Ionicons.grid_outline, color: kPrimaryColor, size: 30)],
             ),
           ),
-          Image.asset("assets/images/logofull.png",
-              width: getProportionateScreenWidth(110)),
+          Image.asset("assets/images/logofull.png", width: getProportionateScreenWidth(110)),
           NotificationBell()
         ],
       ),
@@ -57,9 +53,7 @@ class TopHeaderSub extends StatelessWidget {
         horizontal: getProportionateScreenWidth(10.0),
       ),
       child: Row(
-        mainAxisAlignment: buttonRight == null
-            ? MainAxisAlignment.start
-            : MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: buttonRight == null ? MainAxisAlignment.start : MainAxisAlignment.spaceBetween,
         children: [
           buttonLeft ??
               InkWell(
@@ -67,26 +61,16 @@ class TopHeaderSub extends StatelessWidget {
                 onTap: () => Navigator.pushNamed(context, HomeScreen.routeName),
                 child: Stack(
                   clipBehavior: Clip.none,
-                  children: [
-                    Icon(Ionicons.chevron_back_outline,
-                        color: kPrimaryColor, size: 30.0)
-                  ],
+                  children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
                 ),
               ),
           Padding(
             padding: EdgeInsets.only(left: 10.0),
             child: Column(
-              crossAxisAlignment: buttonRight == null
-                  ? CrossAxisAlignment.start
-                  : CrossAxisAlignment.center,
+              crossAxisAlignment: buttonRight == null ? CrossAxisAlignment.start : CrossAxisAlignment.center,
               children: [
-                Text(title,
-                    style: TextStyle(
-                        fontSize: 18,
-                        color: kPrimaryColor,
-                        fontWeight: FontWeight.w700)),
-                Text(subtitle,
-                    style: TextStyle(fontSize: 12, color: kSecondaryColor)),
+                Text(title, style: TextStyle(fontSize: getProportionateScreenWidth(12), color: kPrimaryColor, fontWeight: FontWeight.w700)),
+                Text(subtitle, style: TextStyle(fontSize: getProportionateScreenWidth(8), color: kSecondaryColor)),
               ],
             ),
           ),

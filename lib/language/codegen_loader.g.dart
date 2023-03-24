@@ -46,6 +46,14 @@ class CodegenLoader extends AssetLoader{
     "create_title": "Create new request",
     "create_subtitle": "Create and new information of request"
   },
+  "maintenance": {
+    "title": "Maintenance",
+    "subtitle": "System maintenance of Projects",
+    "plan_title": "Maintenance plan",
+    "plan_subtitle": "Detailed maintenance plans of projects",
+    "defect_analysis_title": "Defect analysis",
+    "defect_analysis_subtitle": "Analysis and report defect of projects"
+  },
   "language_display": "Language display:",
   "hello_message": "Hi, {}\r\n",
   "welcome_message": "How are you today!",
@@ -91,6 +99,14 @@ static const Map<String,dynamic> vi_VN = {
     "detail_subtitle": "Thông tin chi tiết của phiếu đề xuất",
     "create_title": "Tạo mới phiếu đề xuất",
     "create_subtitle": "Khởi tạo và gửi phiếu đề xuất"
+  },
+  "maintenance": {
+    "title": "Bảo trì dự án",
+    "subtitle": "Bảo trì các hệ thống của dự án",
+    "plan_title": "Kế hoạch bảo trì",
+    "plan_subtitle": "Chi tiết kế hoạch bảo trì của các dự án",
+    "defect_analysis_title": "Phân tích sự cố",
+    "defect_analysis_subtitle": "Phân tích và báo cáo sự cố của hệ thống"
   },
   "language_display": "Ngôn ngữ hiển thị:",
   "hello_message": "Xin chào, {}\r\n",
