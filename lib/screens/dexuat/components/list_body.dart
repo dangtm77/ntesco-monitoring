@@ -167,7 +167,6 @@ class _BodyPageState extends State<Body> {
     var filterOptions = [];
     var options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
     var response = await getListDanhMuc(options);
-
     if (response.statusCode == 200) {
       var result = DanhMucModels.fromJson(jsonDecode(response.body));
 
@@ -370,6 +369,7 @@ class _BodyPageState extends State<Body> {
             initialData: [],
             future: optionsDanhMucFilter,
             builder: (context, snapshot) {
+              print(snapshot.data);
               return SmartSelect<int>.multiple(
                 title: 'Xem theo danh mục',
                 placeholder: "Vui lòng chọn ít nhất 1 danh mục",
@@ -377,6 +377,9 @@ class _BodyPageState extends State<Body> {
                 //selectedChoice: [],
                 selectedValue: danhMucCurrent,
                 choiceItems: snapshot.data,
+                choiceLoader: (info) {
+                  return optionsDanhMucFilter;
+                },
                 choiceGrouped: true,
                 groupBuilder: (context, state, group) {
                   return StickyHeader(

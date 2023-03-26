@@ -30,6 +30,14 @@
     "create_title": "Create new request",
     "create_subtitle": "Create and new information of request"
   },
+  "maintenance": {
+    "title": "Maintenance",
+    "subtitle": "System maintenance of Projects",
+    "plan_title": "Maintenance plan",
+    "plan_subtitle": "Detailed maintenance plans of projects",
+    "defect_analysis_title": "Defect analysis",
+    "defect_analysis_subtitle": "Analysis and report defect of projects"
+  },
   "language_display": "Language display:",
   "hello_message": "Hi, {}\r\n",
   "welcome_message": "How are you today!",
