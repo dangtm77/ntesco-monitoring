@@ -24,15 +24,7 @@ class _BodyPageState extends State<Body> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _header(context),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Dashboard(),
-              ),
-            )
-          ],
+          children: [_header(context), Dashboard()],
         ),
       ),
     );

@@ -28,36 +28,39 @@ class Dashboard extends StatelessWidget {
     ));
 
     return Flexible(
-      child: GridView.count(
-          childAspectRatio: 1.0,
-          padding: EdgeInsets.only(left: 5, right: 5),
-          crossAxisCount: 2,
-          crossAxisSpacing: 15,
-          mainAxisSpacing: 15,
-          children: myList.map((data) {
-            return InkWell(
-              onTap: data.action as void Function(),
-              child: Container(
-                decoration: BoxDecoration(color: kPrimaryColor, borderRadius: BorderRadius.circular(10)),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(data.icon, size: getProportionateScreenWidth(60), color: Colors.white),
-                    SizedBox(height: 15),
-                    Text(
-                      data.title,
-                      style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(14), fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      data.subtitle,
-                      style: TextStyle(color: Colors.white70, fontSize: getProportionateScreenWidth(13), fontWeight: FontWeight.w500),
-                    ),
-                  ],
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: GridView.count(
+            childAspectRatio: 1.0,
+            padding: EdgeInsets.only(left: 5, right: 5),
+            crossAxisCount: 2,
+            crossAxisSpacing: 15,
+            mainAxisSpacing: 15,
+            children: myList.map((data) {
+              return InkWell(
+                onTap: data.action as void Function(),
+                child: Container(
+                  decoration: BoxDecoration(color: kPrimaryColor, borderRadius: BorderRadius.circular(10)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(data.icon, size: getProportionateScreenWidth(60), color: Colors.white),
+                      SizedBox(height: 15),
+                      Text(
+                        data.title,
+                        style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(14), fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        data.subtitle,
+                        style: TextStyle(color: Colors.white70, fontSize: getProportionateScreenWidth(13), fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          }).toList()),
+              );
+            }).toList()),
+      ),
     );
   }
 }

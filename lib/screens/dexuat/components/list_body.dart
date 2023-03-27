@@ -20,7 +20,7 @@ import 'package:ntesco_smart_monitoring/components/default_button.dart';
 import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
-import 'package:ntesco_smart_monitoring/core/phieudexuat.dart';
+import 'package:ntesco_smart_monitoring/core/dx_phieudexuat.dart';
 import 'package:ntesco_smart_monitoring/helper/number.dart';
 import 'package:ntesco_smart_monitoring/helper/string.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';

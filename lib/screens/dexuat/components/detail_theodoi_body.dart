@@ -8,7 +8,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
-import 'package:ntesco_smart_monitoring/core/phieudexuat.dart';
+import 'package:ntesco_smart_monitoring/core/dx_phieudexuat.dart';
 import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/dx/PhieuDeXuatDetail.dart';

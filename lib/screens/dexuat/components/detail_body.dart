@@ -6,7 +6,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
-import 'package:ntesco_smart_monitoring/core/phieudexuat.dart';
+import 'package:ntesco_smart_monitoring/core/dx_phieudexuat.dart';
 import 'package:ntesco_smart_monitoring/models/dx/PhieuDeXuatDetail.dart';
 import 'package:ntesco_smart_monitoring/screens/dexuat/components/detail_chung_body.dart';
 import 'package:ntesco_smart_monitoring/screens/dexuat/components/detail_thaoluan_body.dart';

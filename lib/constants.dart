@@ -4,7 +4,7 @@ import 'package:ntesco_smart_monitoring/size_config.dart';
 const endPoint = "portal-api.ntesco.com";
 
 const kPrimaryColor = Color(0xFF0005493);
-const kPrimaryLightColor = Color(0xFFFFECDF);
+const kPrimaryLightColor = Color.fromARGB(255, 83, 176, 247);
 const kSecondaryColor = Colors.black87;
 const kTextColor = Color(0xFF757575);
 
