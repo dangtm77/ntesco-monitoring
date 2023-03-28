@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/components/state_widget.dart';
@@ -210,21 +209,21 @@ class _BodyPageState extends State<Body> {
   Widget _item(PlanModel item) {
     if (item.idParent == null)
       return ListTile(
-        leading: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              item.stt,
-              style: TextStyle(
-                color: kPrimaryColor,
-                fontWeight: FontWeight.bold,
-                fontSize: getProportionateScreenWidth(13),
-                fontStyle: FontStyle.normal,
-              ),
-            ),
-          ],
-        ),
+        // leading: Column(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   crossAxisAlignment: CrossAxisAlignment.start,
+        //   children: [
+        //     Text(
+        //       item.stt,
+        //       style: TextStyle(
+        //         color: kPrimaryColor,
+        //         fontWeight: FontWeight.bold,
+        //         fontSize: getProportionateScreenWidth(10),
+        //         fontStyle: FontStyle.normal,
+        //       ),
+        //     ),
+        //   ],
+        // ),
         title: Text(
           "PROJECT",
           style: TextStyle(
@@ -244,68 +243,78 @@ class _BodyPageState extends State<Body> {
           ),
         ),
       );
-    else
+    else {
+      double levelSpace = item.level * 20.0;
       return ListTile(
-        leading: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              item.stt,
-              style: TextStyle(
-                color: kSecondaryColor,
-                fontWeight: FontWeight.normal,
-                fontSize: getProportionateScreenWidth(12),
-                fontStyle: FontStyle.normal,
-              ),
-            ),
-          ],
-        ),
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "${DateFormat("dd/MM").format(item.startDate!)} - ${DateFormat("dd/MM/yyyy").format(item.endDate!)}",
-              style: TextStyle(
-                color: kSecondaryColor,
-                fontWeight: FontWeight.normal,
-                fontSize: getProportionateScreenWidth(11),
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-            Text(
-              item.title,
-              style: TextStyle(
-                color: kSecondaryColor,
-                fontWeight: FontWeight.w700,
-                fontSize: getProportionateScreenWidth(11),
-                fontStyle: FontStyle.normal,
-              ),
-            )
-          ],
-        ),
-        subtitle: (item.participantsInfo != null)
-            ? Text.rich(
-                TextSpan(
-                  children: [
-                    WidgetSpan(child: Icon(Ionicons.people, size: 20.0, color: kSecondaryColor)),
-                    WidgetSpan(child: SizedBox(width: 2.0)),
-                    TextSpan(
-                      text: item.participantsInfo!.map((e) => e.hoTen).join(', '),
-                      style: TextStyle(
-                        color: kSecondaryColor,
-                        fontWeight: FontWeight.normal,
-                        fontStyle: FontStyle.normal,
-                        fontSize: getProportionateScreenWidth(10),
-                      ),
-                    ),
-                  ],
+        // leading: Column(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   crossAxisAlignment: CrossAxisAlignment.start,
+        //   children: [
+        //     Text(
+        //       item.stt,
+        //       style: TextStyle(
+        //         color: kSecondaryColor,
+        //         fontWeight: FontWeight.normal,
+        //         fontSize: getProportionateScreenWidth(10),
+        //         fontStyle: FontStyle.normal,
+        //       ),
+        //     ),
+        //   ],
+        // ),
+        title: Padding(
+          padding: EdgeInsets.only(left: levelSpace),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                item.title,
+                style: TextStyle(
+                  color: kSecondaryColor,
+                  fontWeight: FontWeight.w700,
+                  fontSize: getProportionateScreenWidth(11),
+                  fontStyle: FontStyle.normal,
                 ),
-              )
-            : null,
+              ),
+              Text.rich(
+                  TextSpan(
+                    text: "${DateFormat("dd/MM").format(item.startDate!)} - ${DateFormat("dd/MM/yyyy").format(item.endDate!)}",
+                    style: TextStyle(
+                      color: kSecondaryColor,
+                      fontWeight: FontWeight.normal,
+                      fontSize: getProportionateScreenWidth(10),
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                  ((item.participantsInfo != null)
+                      ? TextSpan(
+                          children: [
+                            WidgetSpan(child: Icon(Ionicons.people, size: 20.0, color: kSecondaryColor)),
+                            WidgetSpan(child: SizedBox(width: 2.0)),
+                            TextSpan(
+                              text: item.participantsInfo!.map((e) => e.hoTen).join(', '),
+                              style: TextStyle(
+                                color: kSecondaryColor,
+                                fontWeight: FontWeight.normal,
+                                fontStyle: FontStyle.normal,
+                                fontSize: getProportionateScreenWidth(10),
+                              ),
+                            ),
+                          ],
+                        )
+                      : WidgetSpan(child: SizedBox(width: 00)))),
+            ],
+          ),
+        ),
+        // subtitle: (item.participantsInfo != null)
+        //     ? Padding(
+        //         padding: EdgeInsets.only(left: levelSpace),
+        //         child: ,
+        //       )
+        //     : null,
         //trailing: _trangThaiIcon,
         //onTap: () => Navigator.pushNamed(context, DetailOfDeXuatScreen.routeName, arguments: {'id': item.id}),
       );
+    }
   }
 }
