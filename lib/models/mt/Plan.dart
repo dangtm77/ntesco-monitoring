@@ -22,6 +22,7 @@ class PlanModels {
 class PlanModel {
   final String stt;
   final int level;
+  final String fullPath;
   final int id;
   final int? idParent;
   final int idProject;
@@ -42,6 +43,7 @@ class PlanModel {
     required this.stt,
     required this.id,
     required this.level,
+    required this.fullPath,
     this.idParent,
     required this.idProject,
     required this.title,
@@ -62,6 +64,7 @@ class PlanModel {
   factory PlanModel.fromJson(dynamic json) {
     return PlanModel(
       stt: json['stt'] as String,
+      fullPath: json['fullPath'] as String,
       level: json['level'] as int,
       id: json['id'] as int,
       idParent: json['idParent'] != null ? json['idParent'] as int : null,

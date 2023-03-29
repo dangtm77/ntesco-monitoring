@@ -14,6 +14,6 @@ Future<http.Response> getList(LoadOptionsModel options) async {
 
   var api = "v2/mt/plans";
 
-  final response = await http.get(Uri.https(endPoint, api), headers: headerValue);
+  final response = await http.get(Uri.https(endPoint, api, options.toMap()), headers: headerValue);
   return response;
 }

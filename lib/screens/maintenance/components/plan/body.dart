@@ -50,6 +50,7 @@ class _BodyPageState extends State<Body> {
 
   Future<PlanModels> _getListOfPlans() async {
     var sortOptions = [
+      {"selector": "fullPath", "desc": "false"},
       {"selector": "startDate", "desc": "true"},
       {"selector": "endDate", "desc": "true"}
     ];
@@ -74,7 +75,6 @@ class _BodyPageState extends State<Body> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _header(context),
-            _searchBar(context),
             _listAll(context),
           ],
         ),
@@ -92,6 +92,20 @@ class _BodyPageState extends State<Body> {
         child: Stack(
           clipBehavior: Clip.none,
           children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
+        ),
+      ),
+      buttonRight: InkWell(
+        borderRadius: BorderRadius.circular(15),
+        onTap: () => Navigator.pop(context),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Icon(
+              Ionicons.filter_outline,
+              color: (_projectsCurrent.length > 0) ? kPrimaryColor : Colors.grey.shade500,
+              size: 30.0,
+            ),
+          ],
         ),
       ),
     );
@@ -209,21 +223,21 @@ class _BodyPageState extends State<Body> {
   Widget _item(PlanModel item) {
     if (item.idParent == null)
       return ListTile(
-        // leading: Column(
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        //   crossAxisAlignment: CrossAxisAlignment.start,
-        //   children: [
-        //     Text(
-        //       item.stt,
-        //       style: TextStyle(
-        //         color: kPrimaryColor,
-        //         fontWeight: FontWeight.bold,
-        //         fontSize: getProportionateScreenWidth(10),
-        //         fontStyle: FontStyle.normal,
-        //       ),
-        //     ),
-        //   ],
-        // ),
+        leading: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              item.stt,
+              style: TextStyle(
+                color: kPrimaryColor,
+                fontWeight: FontWeight.bold,
+                fontSize: getProportionateScreenWidth(12),
+                fontStyle: FontStyle.normal,
+              ),
+            ),
+          ],
+        ),
         title: Text(
           "PROJECT",
           style: TextStyle(
@@ -244,23 +258,23 @@ class _BodyPageState extends State<Body> {
         ),
       );
     else {
-      double levelSpace = item.level * 20.0;
+      double levelSpace = item.level * 25.0;
       return ListTile(
-        // leading: Column(
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        //   crossAxisAlignment: CrossAxisAlignment.start,
-        //   children: [
-        //     Text(
-        //       item.stt,
-        //       style: TextStyle(
-        //         color: kSecondaryColor,
-        //         fontWeight: FontWeight.normal,
-        //         fontSize: getProportionateScreenWidth(10),
-        //         fontStyle: FontStyle.normal,
-        //       ),
-        //     ),
-        //   ],
-        // ),
+        leading: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              item.stt,
+              style: TextStyle(
+                color: kSecondaryColor,
+                fontWeight: FontWeight.normal,
+                fontSize: getProportionateScreenWidth(10),
+                fontStyle: FontStyle.normal,
+              ),
+            ),
+          ],
+        ),
         title: Padding(
           padding: EdgeInsets.only(left: levelSpace),
           child: Column(
@@ -276,9 +290,12 @@ class _BodyPageState extends State<Body> {
                   fontStyle: FontStyle.normal,
                 ),
               ),
-              Text.rich(
+              Text.rich(TextSpan(
+                children: [
+                  WidgetSpan(child: Icon(Ionicons.calendar_outline, size: 20.0, color: kSecondaryColor)),
+                  WidgetSpan(child: SizedBox(width: 2.0)),
                   TextSpan(
-                    text: "${DateFormat("dd/MM").format(item.startDate!)} - ${DateFormat("dd/MM/yyyy").format(item.endDate!)}",
+                    text: "${DateFormat("dd/MM/yyyy").format(item.startDate!)} - ${DateFormat("dd/MM/yyyy").format(item.endDate!)}",
                     style: TextStyle(
                       color: kSecondaryColor,
                       fontWeight: FontWeight.normal,
@@ -286,23 +303,26 @@ class _BodyPageState extends State<Body> {
                       fontStyle: FontStyle.italic,
                     ),
                   ),
-                  ((item.participantsInfo != null)
-                      ? TextSpan(
-                          children: [
-                            WidgetSpan(child: Icon(Ionicons.people, size: 20.0, color: kSecondaryColor)),
-                            WidgetSpan(child: SizedBox(width: 2.0)),
-                            TextSpan(
-                              text: item.participantsInfo!.map((e) => e.hoTen).join(', '),
-                              style: TextStyle(
-                                color: kSecondaryColor,
-                                fontWeight: FontWeight.normal,
-                                fontStyle: FontStyle.normal,
-                                fontSize: getProportionateScreenWidth(10),
-                              ),
-                            ),
-                          ],
-                        )
-                      : WidgetSpan(child: SizedBox(width: 00)))),
+                ],
+              )
+                  // ((item.participantsInfo != null)
+                  //     ? TextSpan(
+                  //         children: [
+                  //           WidgetSpan(child: Icon(Ionicons.people, size: 20.0, color: kSecondaryColor)),
+                  //           WidgetSpan(child: SizedBox(width: 2.0)),
+                  //           TextSpan(
+                  //             text: item.participantsInfo!.map((e) => e.hoTen).join(', '),
+                  //             style: TextStyle(
+                  //               color: kSecondaryColor,
+                  //               fontWeight: FontWeight.normal,
+                  //               fontStyle: FontStyle.normal,
+                  //               fontSize: getProportionateScreenWidth(10),
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       )
+                  //     : WidgetSpan(child: SizedBox(width: 00))),
+                  ),
             ],
           ),
         ),
