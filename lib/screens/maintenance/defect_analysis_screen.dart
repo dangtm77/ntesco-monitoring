@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 
-import 'components/plan/body.dart';
+import 'components/defect_analysis/body.dart';
 
-class MaintenancePlanScreen extends StatelessWidget {
+class MaintenanceDefectAnalysisScreen extends StatelessWidget {
   static String routeName = "/maintenance/defect-analysis";
   @override
   Widget build(BuildContext context) {

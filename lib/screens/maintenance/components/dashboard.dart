@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
+import 'package:ntesco_smart_monitoring/screens/maintenance/defect_analysis_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/maintenance/plan_screen.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 
@@ -18,7 +19,7 @@ class Dashboard extends StatelessWidget {
       title: "Phân tích sự cố",
       subtitle: "Defect Analysis",
       icon: Ionicons.analytics,
-      action: () => {},
+      action: () => Navigator.pushNamed(context, MaintenanceDefectAnalysisScreen.routeName),
     ));
     myList.add(new Items(
       title: "Bảo trì hệ thống",

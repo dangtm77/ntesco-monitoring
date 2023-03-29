@@ -1,16 +1,20 @@
 import 'dart:convert';
 
+import 'package:awesome_select/awesome_select.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:ntesco_smart_monitoring/components/default_button.dart';
 import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
+import 'package:ntesco_smart_monitoring/core/common.dart' as common;
 import 'package:ntesco_smart_monitoring/core/mt_plan.dart' as MT;
 import 'package:ntesco_smart_monitoring/helper/network.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
+import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
 import 'package:ntesco_smart_monitoring/models/mt/Plan.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 
@@ -55,11 +59,46 @@ class _BodyPageState extends State<Body> {
       {"selector": "endDate", "desc": "true"}
     ];
     var filterOptions = [];
+    //FILTER BY PROJECT
+    if (_projectsCurrent.isNotEmpty && _projectsCurrent.length > 0) {
+      var projectsFilterOptions = [];
+      _projectsCurrent.forEach((id) {
+        projectsFilterOptions.add(['idProject', '=', id]);
+        projectsFilterOptions.add("or");
+      });
+      if (projectsFilterOptions.length > 0) {
+        if (filterOptions.length > 0) filterOptions.add('and');
+        if (projectsFilterOptions.last == "or") projectsFilterOptions.removeAt(projectsFilterOptions.length - 1);
+        if (projectsFilterOptions.length > 0) filterOptions.add(projectsFilterOptions);
+      }
+    }
+
     var options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
     var response = await MT.getList(options);
     if (response.statusCode == 200) {
       var result = PlanModels.fromJson(jsonDecode(response.body));
       return result;
+    } else if (response.statusCode == 401)
+      throw response.statusCode;
+    else
+      throw Exception('StatusCode: ${response.statusCode}');
+  }
+
+  Future<List<S2Choice<int>>> _getListProjectsForSelect() async {
+    var sortOptions = [];
+    var filterOptions = [];
+    var options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+    var response = await common.getListProjects(options);
+    if (response.statusCode == 200) {
+      var result = ProjectModels.fromJson(jsonDecode(response.body));
+
+      print(result.data);
+
+      return S2Choice.listFrom<int, dynamic>(
+        source: result.data,
+        value: (index, item) => item.id,
+        title: (index, item) => item.name,
+      );
     } else if (response.statusCode == 401)
       throw response.statusCode;
     else
@@ -96,7 +135,7 @@ class _BodyPageState extends State<Body> {
       ),
       buttonRight: InkWell(
         borderRadius: BorderRadius.circular(15),
-        onTap: () => Navigator.pop(context),
+        onTap: () => showModalBottomSheet(builder: (BuildContext context) => _filter(context), context: context),
         child: Stack(
           clipBehavior: Clip.none,
           children: [
@@ -111,57 +150,62 @@ class _BodyPageState extends State<Body> {
     );
   }
 
-  Widget _searchBar(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 50,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 5.0),
-        child: TextField(
-          controller: _keywordForSearchEditingController,
-          onChanged: (value) {
-            setState(() {
-              if (value.isNotEmpty && value.trim().length > 3) {
-                _listOfPlans = _getListOfPlans();
-              }
-            });
-          },
-          decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.grey.shade100,
-              contentPadding: EdgeInsets.all(0.0),
-              prefixIcon: Icon(Ionicons.search, size: 22, color: Colors.grey.shade600),
-              suffixIcon: Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    if (_keywordForSearchEditingController.text.isNotEmpty)
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _keywordForSearchEditingController.clear();
-                            _listOfPlans = _getListOfPlans();
-                          });
-                        },
-                        icon: Icon(Ionicons.close_circle, color: Colors.grey.shade500, size: 22),
-                      ),
-                    IconButton(
-                      onPressed: () => {},
-                      icon: Icon(
-                        Ionicons.filter,
-                        color: (_projectsCurrent.length > 0) ? kPrimaryColor : Colors.grey.shade500,
-                        size: 20,
-                      ),
-                    ),
-                  ],
-                ),
+  Widget _filter(BuildContext context) {
+    Future<List<S2Choice<int>>> projectFilter = _getListProjectsForSelect();
+
+    return Scrollbar(
+      child: ListView(
+        addAutomaticKeepAlives: true,
+        children: [
+          FutureBuilder<List<S2Choice<int>>>(
+            initialData: [],
+            future: projectFilter,
+            builder: (context, snapshot) {
+              return SmartSelect<int>.multiple(
+                title: 'Xem theo dự án',
+                placeholder: "Vui lòng chọn ít nhất 1 dự án",
+                modalFilter: true,
+                selectedValue: _projectsCurrent,
+                choiceItems: snapshot.data,
+                modalHeader: true,
+                choiceType: S2ChoiceType.checkboxes,
+                modalType: S2ModalType.bottomSheet,
+                onChange: (state) => setState(() => _projectsCurrent = state.value),
+                tileBuilder: (context, state) {
+                  return S2Tile.fromState(
+                    state,
+                    isTwoLine: true,
+                    trailing: state.selected.length > 0
+                        ? CircleAvatar(
+                            radius: 15,
+                            backgroundColor: kPrimaryColor,
+                            child: Text(
+                              '${state.selected.length}',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          )
+                        : null,
+                    isLoading: snapshot.connectionState == ConnectionState.waiting,
+                  );
+                },
+              );
+            },
+          ),
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: DefaultButton(
+                text: "Xác nhận",
+                press: () {
+                  setState(() {
+                    _listOfPlans = _getListOfPlans();
+                  });
+                  Navigator.pop(context);
+                },
               ),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-              hintStyle: TextStyle(fontSize: 18, color: Colors.grey.shade500),
-              hintText: "Nhập từ khóa để tìm kiếm..."),
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -258,7 +302,7 @@ class _BodyPageState extends State<Body> {
         ),
       );
     else {
-      double levelSpace = item.level * 25.0;
+      double levelSpace = (item.level - 1) * 25.0;
       return ListTile(
         leading: Column(
           mainAxisAlignment: MainAxisAlignment.center,

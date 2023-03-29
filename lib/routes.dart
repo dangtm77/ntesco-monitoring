@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:ntesco_smart_monitoring/screens/contact_us/contact_us_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/dexuat/dexuat_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
+import 'package:ntesco_smart_monitoring/screens/maintenance/defect_analysis_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/maintenance/plan_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/maintenance/maintenance_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/signin/signin_screen.dart';
@@ -19,4 +20,5 @@ final Map<String, WidgetBuilder> routes = {
   CreateDeXuatScreen.routeName: (context) => CreateDeXuatScreen(),
   MaintenanceScreen.routeName: (context) => MaintenanceScreen(),
   MaintenancePlanScreen.routeName: (context) => MaintenancePlanScreen(),
+  MaintenanceDefectAnalysisScreen.routeName: (context) => MaintenanceDefectAnalysisScreen(),
 };

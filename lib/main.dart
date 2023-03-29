@@ -3,7 +3,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ntesco_smart_monitoring/helper/network.dart';
-import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:ntesco_smart_monitoring/language/codegen_loader.g.dart';

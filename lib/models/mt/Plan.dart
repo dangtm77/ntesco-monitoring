@@ -22,7 +22,7 @@ class PlanModels {
 class PlanModel {
   final String stt;
   final int level;
-  final String fullPath;
+  final String? fullPath;
   final int id;
   final int? idParent;
   final int idProject;
@@ -31,7 +31,7 @@ class PlanModel {
   final DateTime? endDate;
   final String? participants;
   final List<NguoiDungModel>? participantsInfo;
-  final String linkIDs;
+  final String? linkIDs;
   final bool isActive;
   final bool isDelete;
   final String? userCreate;
@@ -47,11 +47,11 @@ class PlanModel {
     this.idParent,
     required this.idProject,
     required this.title,
-    required this.startDate,
-    required this.endDate,
+    this.startDate,
+    this.endDate,
     this.participants,
     this.participantsInfo,
-    required this.linkIDs,
+    this.linkIDs,
     required this.isActive,
     required this.isDelete,
     this.userCreate,
@@ -64,7 +64,7 @@ class PlanModel {
   factory PlanModel.fromJson(dynamic json) {
     return PlanModel(
       stt: json['stt'] as String,
-      fullPath: json['fullPath'] as String,
+      fullPath: json['fullPath'],
       level: json['level'] as int,
       id: json['id'] as int,
       idParent: json['idParent'] != null ? json['idParent'] as int : null,
@@ -78,7 +78,7 @@ class PlanModel {
               return NguoiDungModel.fromJson(json);
             }).toList()
           : null,
-      linkIDs: json['linkIDs'] as String,
+      linkIDs: json['linkIDs'] != null ? json['linkIDs'] : null,
       isActive: json['isActive'] as bool,
       isDelete: json['isDelete'] as bool,
       userCreate: json['userCreate'] as String,
