@@ -11,11 +11,12 @@ import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/core/common.dart' as common;
-import 'package:ntesco_smart_monitoring/core/mt_plan.dart' as MT;
+import 'package:ntesco_smart_monitoring/core/mt_defect_analysis.dart' as MT;
 import 'package:ntesco_smart_monitoring/helper/network.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
-import 'package:ntesco_smart_monitoring/models/mt/Plan.dart';
+import 'package:ntesco_smart_monitoring/models/mt/DefectAnalysisModel.dart';
+import 'package:ntesco_smart_monitoring/models/mt/PlanModel.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 
 class Body extends StatefulWidget {
@@ -26,15 +27,11 @@ class Body extends StatefulWidget {
 class _BodyPageState extends State<Body> {
   //Biến check thiết bị có kết nối với internet hay không
   late bool isOnline = false;
-  TextEditingController _keywordForSearchEditingController = TextEditingController();
   late List<int> _projectsCurrent = [];
-  late Future<PlanModels> _listOfPlans;
+  late Future<DefectAnalysisModels> _listOfDefectAnalysis;
 
   @override
   void initState() {
-    _keywordForSearchEditingController.text = "";
-    _listOfPlans = _getListOfPlans();
-
     NetworkHelper.instance.initialise();
     NetworkHelper.instance.myStream.listen((rs) {
       var result = rs.keys.toList()[0];
@@ -44,6 +41,7 @@ class _BodyPageState extends State<Body> {
       setState(() {});
     });
 
+    _listOfDefectAnalysis = _getlistOfDefectAnalysis();
     super.initState();
   }
 
@@ -52,18 +50,17 @@ class _BodyPageState extends State<Body> {
     super.dispose();
   }
 
-  Future<PlanModels> _getListOfPlans() async {
+  Future<DefectAnalysisModels> _getlistOfDefectAnalysis() async {
     var sortOptions = [
-      {"selector": "fullPath", "desc": "false"},
-      {"selector": "startDate", "desc": "true"},
-      {"selector": "endDate", "desc": "true"}
+      // {"selector": "startDate", "desc": "true"},
+      // {"selector": "endDate", "desc": "true"}
     ];
     var filterOptions = [];
     //FILTER BY PROJECT
     if (_projectsCurrent.isNotEmpty && _projectsCurrent.length > 0) {
       var projectsFilterOptions = [];
       _projectsCurrent.forEach((id) {
-        projectsFilterOptions.add(['idProject', '=', id]);
+        projectsFilterOptions.add(['systems.idProject', '=', id]);
         projectsFilterOptions.add("or");
       });
       if (projectsFilterOptions.length > 0) {
@@ -76,7 +73,7 @@ class _BodyPageState extends State<Body> {
     var options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
     var response = await MT.getList(options);
     if (response.statusCode == 200) {
-      var result = PlanModels.fromJson(jsonDecode(response.body));
+      var result = DefectAnalysisModels.fromJson(jsonDecode(response.body));
       return result;
     } else if (response.statusCode == 401)
       throw response.statusCode;
@@ -114,7 +111,7 @@ class _BodyPageState extends State<Body> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _header(context),
-            //_listAll(context),
+            _listAll(context),
           ],
         ),
       ),
@@ -169,7 +166,7 @@ class _BodyPageState extends State<Body> {
                 choiceItems: snapshot.data,
                 modalHeader: true,
                 choiceType: S2ChoiceType.checkboxes,
-                modalType: S2ModalType.bottomSheet,
+                modalType: S2ModalType.fullPage,
                 onChange: (state) => setState(() => _projectsCurrent = state.value),
                 tileBuilder: (context, state) {
                   return S2Tile.fromState(
@@ -198,7 +195,7 @@ class _BodyPageState extends State<Body> {
                 text: "Xác nhận",
                 press: () {
                   setState(() {
-                    _listOfPlans = _getListOfPlans();
+                    _listOfDefectAnalysis = _getlistOfDefectAnalysis();
                   });
                   Navigator.pop(context);
                 },
@@ -217,12 +214,12 @@ class _BodyPageState extends State<Body> {
             ? RefreshIndicator(
                 onRefresh: () async {
                   setState(() {
-                    _listOfPlans = _getListOfPlans();
+                    _listOfDefectAnalysis = _getlistOfDefectAnalysis();
                   });
                 },
-                child: FutureBuilder<PlanModels>(
-                  future: _listOfPlans,
-                  builder: (BuildContext context, AsyncSnapshot<PlanModels> snapshot) {
+                child: FutureBuilder<DefectAnalysisModels>(
+                  future: _listOfDefectAnalysis,
+                  builder: (BuildContext context, AsyncSnapshot<DefectAnalysisModels> snapshot) {
                     if (snapshot.hasError)
                       return DataErrorWidget(error: snapshot.error.toString());
                     else {
@@ -244,7 +241,7 @@ class _BodyPageState extends State<Body> {
                                     position: index,
                                     duration: const Duration(milliseconds: 400),
                                     child: SlideAnimation(
-                                      child: FadeInAnimation(child: _item(item)),
+                                      child: FadeInAnimation(child: Text(item.code)),
                                     ),
                                   );
                                 },

@@ -15,7 +15,7 @@ import 'package:ntesco_smart_monitoring/core/mt_plan.dart' as MT;
 import 'package:ntesco_smart_monitoring/helper/network.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
-import 'package:ntesco_smart_monitoring/models/mt/Plan.dart';
+import 'package:ntesco_smart_monitoring/models/mt/PlanModel.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 
 class Body extends StatefulWidget {
@@ -26,15 +26,11 @@ class Body extends StatefulWidget {
 class _BodyPageState extends State<Body> {
   //Biến check thiết bị có kết nối với internet hay không
   late bool isOnline = false;
-  TextEditingController _keywordForSearchEditingController = TextEditingController();
   late List<int> _projectsCurrent = [];
   late Future<PlanModels> _listOfPlans;
 
   @override
   void initState() {
-    _keywordForSearchEditingController.text = "";
-    _listOfPlans = _getListOfPlans();
-
     NetworkHelper.instance.initialise();
     NetworkHelper.instance.myStream.listen((rs) {
       var result = rs.keys.toList()[0];
@@ -43,6 +39,8 @@ class _BodyPageState extends State<Body> {
       });
       setState(() {});
     });
+
+    _listOfPlans = _getListOfPlans();
 
     super.initState();
   }
@@ -169,7 +167,7 @@ class _BodyPageState extends State<Body> {
                 choiceItems: snapshot.data,
                 modalHeader: true,
                 choiceType: S2ChoiceType.checkboxes,
-                modalType: S2ModalType.bottomSheet,
+                modalType: S2ModalType.fullPage,
                 onChange: (state) => setState(() => _projectsCurrent = state.value),
                 tileBuilder: (context, state) {
                   return S2Tile.fromState(
