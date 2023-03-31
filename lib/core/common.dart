@@ -15,3 +15,16 @@ Future<http.Response> getListProjects(LoadOptionsModel options) async {
   final response = await http.get(Uri.https(endPoint, api, options.toMap()), headers: headerValue);
   return response;
 }
+
+Future<http.Response> getListVariables(LoadOptionsModel options) async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
+
+  var queryParameters = options.toMap();
+  queryParameters.addAll({"groupValue": 'MAINTENANCE_DEFECT_ANALYSIS_STATUS'});
+
+  var api = "/v2/common/variables/lookup";
+  final response = await http.get(Uri.https(endPoint, api, queryParameters), headers: headerValue);
+  return response;
+}

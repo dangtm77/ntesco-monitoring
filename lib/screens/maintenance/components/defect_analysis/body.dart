@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:ffi';
+import 'dart:ui';
 
 import 'package:awesome_select/awesome_select.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -15,8 +17,8 @@ import 'package:ntesco_smart_monitoring/core/mt_defect_analysis.dart' as MT;
 import 'package:ntesco_smart_monitoring/helper/network.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
+import 'package:ntesco_smart_monitoring/models/common/VariableModel.dart';
 import 'package:ntesco_smart_monitoring/models/mt/DefectAnalysisModel.dart';
-import 'package:ntesco_smart_monitoring/models/mt/PlanModel.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 
 class Body extends StatefulWidget {
@@ -28,6 +30,7 @@ class _BodyPageState extends State<Body> {
   //Biến check thiết bị có kết nối với internet hay không
   late bool isOnline = false;
   late List<int> _projectsCurrent = [];
+  late List<int> _statusCurrent = [];
   late Future<DefectAnalysisModels> _listOfDefectAnalysis;
 
   @override
@@ -89,12 +92,38 @@ class _BodyPageState extends State<Body> {
     if (response.statusCode == 200) {
       var result = ProjectModels.fromJson(jsonDecode(response.body));
 
-      print(result.data);
-
       return S2Choice.listFrom<int, dynamic>(
         source: result.data,
         value: (index, item) => item.id,
         title: (index, item) => item.name,
+      );
+    } else if (response.statusCode == 401)
+      throw response.statusCode;
+    else
+      throw Exception('StatusCode: ${response.statusCode}');
+  }
+
+  Future<List<S2Choice<int>>> _getListVarialForSelect() async {
+    var sortOptions = [];
+    var filterOptions = [
+      ['group', '=', 'MAINTENANCE_DEFECT_ANALYSIS_STATUS']
+    ];
+    var options = new LoadOptionsModel(
+      take: 0,
+      skip: 0,
+      sort: jsonEncode(sortOptions),
+      filter: jsonEncode(filterOptions),
+      requireTotalCount: 'true',
+    );
+    var response = await common.getListVariables(options);
+    print(response.body);
+    if (response.statusCode == 200) {
+      var result = VariableModels.fromJson(jsonDecode(response.body));
+      print(result.totalCount);
+      return S2Choice.listFrom<int, dynamic>(
+        source: result.data,
+        value: (index, item) => item.value,
+        title: (index, item) => item.text,
       );
     } else if (response.statusCode == 401)
       throw response.statusCode;
@@ -149,6 +178,7 @@ class _BodyPageState extends State<Body> {
 
   Widget _filter(BuildContext context) {
     Future<List<S2Choice<int>>> projectFilter = _getListProjectsForSelect();
+    Future<List<S2Choice<int>>> statusFilter = _getListVarialForSelect();
 
     return Scrollbar(
       child: ListView(
@@ -168,6 +198,40 @@ class _BodyPageState extends State<Body> {
                 choiceType: S2ChoiceType.checkboxes,
                 modalType: S2ModalType.fullPage,
                 onChange: (state) => setState(() => _projectsCurrent = state.value),
+                tileBuilder: (context, state) {
+                  return S2Tile.fromState(
+                    state,
+                    isTwoLine: true,
+                    trailing: state.selected.length > 0
+                        ? CircleAvatar(
+                            radius: 15,
+                            backgroundColor: kPrimaryColor,
+                            child: Text(
+                              '${state.selected.length}',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          )
+                        : null,
+                    isLoading: snapshot.connectionState == ConnectionState.waiting,
+                  );
+                },
+              );
+            },
+          ),
+          FutureBuilder<List<S2Choice<int>>>(
+            initialData: [],
+            future: statusFilter,
+            builder: (context, snapshot) {
+              return SmartSelect<int>.multiple(
+                title: 'Xem theo trạng thái',
+                placeholder: "Vui lòng chọn ít nhất 1 trạng thái",
+                modalFilter: true,
+                selectedValue: _statusCurrent,
+                choiceItems: snapshot.data,
+                modalHeader: true,
+                choiceType: S2ChoiceType.checkboxes,
+                modalType: S2ModalType.fullPage,
+                onChange: (state) => setState(() => _statusCurrent = state.value),
                 tileBuilder: (context, state) {
                   return S2Tile.fromState(
                     state,
@@ -241,7 +305,7 @@ class _BodyPageState extends State<Body> {
                                     position: index,
                                     duration: const Duration(milliseconds: 400),
                                     child: SlideAnimation(
-                                      child: FadeInAnimation(child: Text(item.code)),
+                                      child: FadeInAnimation(child: _item(item)),
                                     ),
                                   );
                                 },
@@ -261,121 +325,48 @@ class _BodyPageState extends State<Body> {
     );
   }
 
-  Widget _item(PlanModel item) {
-    if (item.idParent == null)
-      return ListTile(
-        leading: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              item.stt,
-              style: TextStyle(
-                color: kPrimaryColor,
-                fontWeight: FontWeight.bold,
-                fontSize: getProportionateScreenWidth(12),
-                fontStyle: FontStyle.normal,
-              ),
-            ),
-          ],
-        ),
-        title: Text(
-          "PROJECT",
-          style: TextStyle(
-            color: kPrimaryColor,
-            fontWeight: FontWeight.bold,
-            fontSize: getProportionateScreenWidth(11),
-            fontStyle: FontStyle.italic,
-          ),
-        ),
-        subtitle: Text(
-          item.title,
-          style: TextStyle(
-            color: kPrimaryColor,
-            fontWeight: FontWeight.bold,
-            fontSize: getProportionateScreenWidth(11),
-            fontStyle: FontStyle.normal,
-          ),
-        ),
-      );
-    else {
-      double levelSpace = (item.level - 1) * 25.0;
-      return ListTile(
-        leading: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              item.stt,
-              style: TextStyle(
-                color: kSecondaryColor,
-                fontWeight: FontWeight.normal,
-                fontSize: getProportionateScreenWidth(10),
-                fontStyle: FontStyle.normal,
-              ),
-            ),
-          ],
-        ),
-        title: Padding(
-          padding: EdgeInsets.only(left: levelSpace),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _item(DefectAnalysisModel item) {
+    return ListTile(
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text.rich(TextSpan(
+            style: TextStyle(fontSize: getProportionateScreenWidth(11), fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
             children: [
-              Text(
-                item.title,
-                style: TextStyle(
-                  color: kSecondaryColor,
-                  fontWeight: FontWeight.w700,
-                  fontSize: getProportionateScreenWidth(11),
-                  fontStyle: FontStyle.normal,
-                ),
-              ),
-              Text.rich(TextSpan(
-                children: [
-                  WidgetSpan(child: Icon(Ionicons.calendar_outline, size: 20.0, color: kSecondaryColor)),
-                  WidgetSpan(child: SizedBox(width: 2.0)),
-                  TextSpan(
-                    text: "${DateFormat("dd/MM/yyyy").format(item.startDate!)} - ${DateFormat("dd/MM/yyyy").format(item.endDate!)}",
-                    style: TextStyle(
-                      color: kSecondaryColor,
-                      fontWeight: FontWeight.normal,
-                      fontSize: getProportionateScreenWidth(10),
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ],
-              )
-                  // ((item.participantsInfo != null)
-                  //     ? TextSpan(
-                  //         children: [
-                  //           WidgetSpan(child: Icon(Ionicons.people, size: 20.0, color: kSecondaryColor)),
-                  //           WidgetSpan(child: SizedBox(width: 2.0)),
-                  //           TextSpan(
-                  //             text: item.participantsInfo!.map((e) => e.hoTen).join(', '),
-                  //             style: TextStyle(
-                  //               color: kSecondaryColor,
-                  //               fontWeight: FontWeight.normal,
-                  //               fontStyle: FontStyle.normal,
-                  //               fontSize: getProportionateScreenWidth(10),
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       )
-                  //     : WidgetSpan(child: SizedBox(width: 00))),
-                  ),
+              TextSpan(text: "Dự án: ", style: TextStyle(color: kTextColor)),
+              TextSpan(text: "${item.system.project.name?.toUpperCase()}", style: TextStyle(color: kPrimaryColor)),
             ],
-          ),
-        ),
-        // subtitle: (item.participantsInfo != null)
-        //     ? Padding(
-        //         padding: EdgeInsets.only(left: levelSpace),
-        //         child: ,
-        //       )
-        //     : null,
-        //trailing: _trangThaiIcon,
-        //onTap: () => Navigator.pushNamed(context, DetailOfDeXuatScreen.routeName, arguments: {'id': item.id}),
-      );
-    }
+          )),
+          SizedBox(height: 5.0),
+          Text.rich(TextSpan(
+            style: TextStyle(fontSize: getProportionateScreenWidth(11), fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
+            children: [
+              TextSpan(text: "Hệ thống: ", style: TextStyle(color: kTextColor)),
+              TextSpan(text: "${item.system.name?.toUpperCase()}", style: TextStyle(color: kPrimaryColor)),
+              WidgetSpan(child: SizedBox(width: 10.0)),
+              TextSpan(text: "Mã hiệu: ", style: TextStyle(color: kTextColor)),
+              TextSpan(text: "${item.code}", style: TextStyle(color: kPrimaryColor)),
+            ],
+          )),
+          SizedBox(height: 5.0),
+          Text.rich(TextSpan(
+            style: TextStyle(fontSize: getProportionateScreenWidth(11), fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
+            children: [
+              WidgetSpan(child: Icon(Icons.label_important_rounded, size: getProportionateScreenWidth(12), color: kTextColor)),
+              WidgetSpan(child: SizedBox(width: 5.0)),
+              TextSpan(text: "${item.statusInfo.text}", style: TextStyle(color: kTextColor)),
+              WidgetSpan(child: SizedBox(width: 15.0)),
+              WidgetSpan(child: Icon(Icons.person_add_alt_1, size: getProportionateScreenWidth(12), color: kTextColor)),
+              WidgetSpan(child: SizedBox(width: 5.0)),
+              TextSpan(text: "${item.analysisByInfo!.hoTen}", style: TextStyle(color: kTextColor)),
+              WidgetSpan(child: SizedBox(width: 15.0)),
+              WidgetSpan(child: Icon(Icons.calendar_month, size: getProportionateScreenWidth(12), color: kTextColor)),
+              WidgetSpan(child: SizedBox(width: 5.0)),
+              TextSpan(text: "${item.analysisDate}", style: TextStyle(color: kTextColor)),
+            ],
+          )),
+        ],
+      ),
+    );
   }
 }
