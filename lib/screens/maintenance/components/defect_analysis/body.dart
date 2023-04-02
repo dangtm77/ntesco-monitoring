@@ -1,24 +1,24 @@
 import 'dart:convert';
-import 'dart:ffi';
-import 'dart:ui';
 
 import 'package:awesome_select/awesome_select.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:grouped_list/grouped_list.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/components/default_button.dart';
 import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
-import 'package:ntesco_smart_monitoring/core/common.dart' as common;
+import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
 import 'package:ntesco_smart_monitoring/core/mt_defect_analysis.dart' as MT;
 import 'package:ntesco_smart_monitoring/helper/network.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
 import 'package:ntesco_smart_monitoring/models/common/VariableModel.dart';
 import 'package:ntesco_smart_monitoring/models/mt/DefectAnalysisModel.dart';
+import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/create.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 
 class Body extends StatefulWidget {
@@ -29,6 +29,12 @@ class Body extends StatefulWidget {
 class _BodyPageState extends State<Body> {
   //Biến check thiết bị có kết nối với internet hay không
   late bool isOnline = false;
+  late int pageIndex = 1;
+  late int itemPerPage = 15;
+  late bool isLoading = false;
+
+  TextEditingController _keywordForSearchEditingController = TextEditingController();
+
   late List<int> _projectsCurrent = [];
   late List<int> _statusCurrent = [];
   late Future<DefectAnalysisModels> _listOfDefectAnalysis;
@@ -44,6 +50,7 @@ class _BodyPageState extends State<Body> {
       setState(() {});
     });
 
+    _keywordForSearchEditingController.text = "";
     _listOfDefectAnalysis = _getlistOfDefectAnalysis();
     super.initState();
   }
@@ -63,7 +70,7 @@ class _BodyPageState extends State<Body> {
     if (_projectsCurrent.isNotEmpty && _projectsCurrent.length > 0) {
       var projectsFilterOptions = [];
       _projectsCurrent.forEach((id) {
-        projectsFilterOptions.add(['systems.idProject', '=', id]);
+        projectsFilterOptions.add(['system.idProject', '=', id]);
         projectsFilterOptions.add("or");
       });
       if (projectsFilterOptions.length > 0) {
@@ -72,11 +79,54 @@ class _BodyPageState extends State<Body> {
         if (projectsFilterOptions.length > 0) filterOptions.add(projectsFilterOptions);
       }
     }
+    //FILTER BY STATUS
+    if (_statusCurrent.isNotEmpty && _statusCurrent.length > 0) {
+      var statusFilterOptions = [];
+      _statusCurrent.forEach((id) {
+        statusFilterOptions.add(['status', '=', id]);
+        statusFilterOptions.add("or");
+      });
+      if (statusFilterOptions.length > 0) {
+        if (filterOptions.length > 0) filterOptions.add('and');
+        if (statusFilterOptions.last == "or") statusFilterOptions.removeAt(statusFilterOptions.length - 1);
+        if (statusFilterOptions.length > 0) filterOptions.add(statusFilterOptions);
+      }
+    }
 
-    var options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+    //FILTER BY KEYWORD
+    if (_keywordForSearchEditingController.text.isNotEmpty && _keywordForSearchEditingController.text.length > 3) {
+      var searchGroupFilterOptions = [];
+      if (filterOptions.length > 0) filterOptions.add('and');
+      searchGroupFilterOptions.add(['code', 'contains', _keywordForSearchEditingController.text.toString()]);
+      searchGroupFilterOptions.add('or');
+      searchGroupFilterOptions.add(['system.name', 'contains', _keywordForSearchEditingController.text.toString()]);
+      searchGroupFilterOptions.add('or');
+      searchGroupFilterOptions.add(['system.code', 'contains', _keywordForSearchEditingController.text.toString()]);
+      searchGroupFilterOptions.add('or');
+      searchGroupFilterOptions.add(['system.project.code', 'contains', _keywordForSearchEditingController.text.toString()]);
+      searchGroupFilterOptions.add('or');
+      searchGroupFilterOptions.add(['system.project.contractNo', 'contains', _keywordForSearchEditingController.text.toString()]);
+      searchGroupFilterOptions.add('or');
+      searchGroupFilterOptions.add(['system.project.name', 'contains', _keywordForSearchEditingController.text.toString()]);
+      filterOptions.add(searchGroupFilterOptions);
+    }
+    print(jsonEncode(filterOptions));
+
+    var options = new LoadOptionsModel(
+      take: itemPerPage * pageIndex,
+      skip: 0,
+      sort: jsonEncode(sortOptions),
+      filter: jsonEncode(filterOptions),
+      requireTotalCount: 'true',
+    );
     var response = await MT.getList(options);
+
+    print(response.body);
     if (response.statusCode == 200) {
       var result = DefectAnalysisModels.fromJson(jsonDecode(response.body));
+      setState(() {
+        isLoading = false;
+      });
       return result;
     } else if (response.statusCode == 401)
       throw response.statusCode;
@@ -88,7 +138,7 @@ class _BodyPageState extends State<Body> {
     var sortOptions = [];
     var filterOptions = [];
     var options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
-    var response = await common.getListProjects(options);
+    var response = await Common.getListProjects(options);
     if (response.statusCode == 200) {
       var result = ProjectModels.fromJson(jsonDecode(response.body));
 
@@ -115,11 +165,9 @@ class _BodyPageState extends State<Body> {
       filter: jsonEncode(filterOptions),
       requireTotalCount: 'true',
     );
-    var response = await common.getListVariables(options);
-    print(response.body);
+    var response = await Common.getListVariables(options);
     if (response.statusCode == 200) {
       var result = VariableModels.fromJson(jsonDecode(response.body));
-      print(result.totalCount);
       return S2Choice.listFrom<int, dynamic>(
         source: result.data,
         value: (index, item) => item.value,
@@ -140,7 +188,19 @@ class _BodyPageState extends State<Body> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _header(context),
+            isOnline ? _searchBar(context) : SizedBox.shrink(),
             _listAll(context),
+            Container(
+              height: isLoading ? 30.0 : 0,
+              color: Colors.transparent,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [Text("Đang tải thêm $itemPerPage dòng dữ liệu...", style: TextStyle(fontSize: 15))],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -161,16 +221,68 @@ class _BodyPageState extends State<Body> {
       ),
       buttonRight: InkWell(
         borderRadius: BorderRadius.circular(15),
-        onTap: () => showModalBottomSheet(builder: (BuildContext context) => _filter(context), context: context),
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Icon(
-              Ionicons.filter_outline,
-              color: (_projectsCurrent.length > 0) ? kPrimaryColor : Colors.grey.shade500,
-              size: 30.0,
-            ),
-          ],
+        onTap: () => Navigator.pushNamed(context, MaintenanceDefectAnalysisCreateScreen.routeName),
+        child: Icon(
+          Icons.addchart_outlined,
+          color: kPrimaryColor,
+          size: 30.0,
+        ),
+      ),
+    );
+  }
+
+  Widget _searchBar(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 40,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 5.0),
+        child: TextField(
+          controller: _keywordForSearchEditingController,
+          onChanged: (value) {
+            setState(() {
+              if (value.isNotEmpty && value.trim().length > 3) {
+                isLoading = false;
+                _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+              }
+            });
+          },
+          decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.grey.shade100,
+              contentPadding: EdgeInsets.all(0.0),
+              prefixIcon: Icon(Ionicons.search, size: 20, color: Colors.grey.shade600),
+              suffixIcon: Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    if (_keywordForSearchEditingController.text.isNotEmpty)
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _keywordForSearchEditingController.clear();
+                            isLoading = false;
+                            _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+                          });
+                        },
+                        icon: Icon(Ionicons.close_circle, color: Colors.grey.shade500, size: 20),
+                      ),
+                    IconButton(
+                      onPressed: () => showModalBottomSheet(builder: (BuildContext context) => _filter(context), context: context),
+                      icon: Icon(
+                        Ionicons.filter,
+                        color: (_statusCurrent.length > 0 || _projectsCurrent.length > 0) ? kPrimaryColor : Colors.grey.shade500,
+                        size: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+              hintStyle: TextStyle(fontSize: 15, color: Colors.grey.shade500),
+              hintText: "Nhập từ khóa để tìm kiếm..."),
         ),
       ),
     );
@@ -196,7 +308,7 @@ class _BodyPageState extends State<Body> {
                 choiceItems: snapshot.data,
                 modalHeader: true,
                 choiceType: S2ChoiceType.checkboxes,
-                modalType: S2ModalType.fullPage,
+                modalType: S2ModalType.popupDialog,
                 onChange: (state) => setState(() => _projectsCurrent = state.value),
                 tileBuilder: (context, state) {
                   return S2Tile.fromState(
@@ -230,7 +342,7 @@ class _BodyPageState extends State<Body> {
                 choiceItems: snapshot.data,
                 modalHeader: true,
                 choiceType: S2ChoiceType.checkboxes,
-                modalType: S2ModalType.fullPage,
+                modalType: S2ModalType.popupDialog,
                 onChange: (state) => setState(() => _statusCurrent = state.value),
                 tileBuilder: (context, state) {
                   return S2Tile.fromState(
@@ -256,7 +368,7 @@ class _BodyPageState extends State<Body> {
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: DefaultButton(
-                text: "Xác nhận",
+                text: "Xác nhận thông tin",
                 press: () {
                   setState(() {
                     _listOfDefectAnalysis = _getlistOfDefectAnalysis();
@@ -274,10 +386,21 @@ class _BodyPageState extends State<Body> {
   Widget _listAll(BuildContext context) {
     return Expanded(
       child: NotificationListener<ScrollNotification>(
+        onNotification: (ScrollNotification scrollInfo) {
+          if (!isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+            setState(() {
+              pageIndex = pageIndex + 1;
+              _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+              isLoading = true;
+            });
+          }
+          return true;
+        },
         child: (isOnline)
             ? RefreshIndicator(
                 onRefresh: () async {
                   setState(() {
+                    isLoading = false;
                     _listOfDefectAnalysis = _getlistOfDefectAnalysis();
                   });
                 },
@@ -287,7 +410,7 @@ class _BodyPageState extends State<Body> {
                     if (snapshot.hasError)
                       return DataErrorWidget(error: snapshot.error.toString());
                     else {
-                      if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active))
+                      if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !isLoading)
                         return LoadingWidget();
                       else {
                         if (snapshot.hasData && snapshot.data!.data.isNotEmpty) {
@@ -297,21 +420,34 @@ class _BodyPageState extends State<Body> {
                               horizontal: getProportionateScreenWidth(0.0),
                             ),
                             child: AnimationLimiter(
-                              child: ListView.separated(
-                                itemCount: snapshot.data!.data.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  var item = snapshot.data!.data.elementAt(index);
-                                  return AnimationConfiguration.staggeredList(
-                                    position: index,
-                                    duration: const Duration(milliseconds: 400),
-                                    child: SlideAnimation(
-                                      child: FadeInAnimation(child: _item(item)),
-                                    ),
-                                  );
-                                },
-                                separatorBuilder: (BuildContext context, int index) => const Divider(),
+                                child: GroupedListView<dynamic, String>(
+                              elements: snapshot.data!.data,
+                              groupBy: (element) => "${element.system.project.name} (${element.system.project.customer})",
+                              groupSeparatorBuilder: (String value) => Container(
+                                width: MediaQuery.of(context).size.width,
+                                color: kPrimaryColor,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
+                                  child: Text(
+                                    value,
+                                    textAlign: TextAlign.left,
+                                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                                  ),
+                                ),
                               ),
-                            ),
+                              itemBuilder: (BuildContext context, dynamic item) {
+                                return AnimationConfiguration.staggeredList(
+                                  position: 0,
+                                  duration: const Duration(milliseconds: 400),
+                                  child: SlideAnimation(
+                                    child: FadeInAnimation(child: _item(item)),
+                                  ),
+                                );
+                              },
+                              separator: Divider(thickness: 1, endIndent: getProportionateScreenHeight(15.0), indent: getProportionateScreenHeight(15.0), color: kPrimaryColor),
+                              floatingHeader: false,
+                              useStickyGroupSeparators: true,
+                            )),
                           );
                         } else
                           return NoDataWidget(message: "Không tìm thấy phiếu đề xuất nào liên quan đến bạn !!!");
@@ -331,36 +467,35 @@ class _BodyPageState extends State<Body> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text.rich(TextSpan(
-            style: TextStyle(fontSize: getProportionateScreenWidth(11), fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
             children: [
-              TextSpan(text: "Dự án: ", style: TextStyle(color: kTextColor)),
-              TextSpan(text: "${item.system.project.name?.toUpperCase()}", style: TextStyle(color: kPrimaryColor)),
-            ],
-          )),
-          SizedBox(height: 5.0),
-          Text.rich(TextSpan(
-            style: TextStyle(fontSize: getProportionateScreenWidth(11), fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
-            children: [
-              TextSpan(text: "Hệ thống: ", style: TextStyle(color: kTextColor)),
-              TextSpan(text: "${item.system.name?.toUpperCase()}", style: TextStyle(color: kPrimaryColor)),
-              WidgetSpan(child: SizedBox(width: 10.0)),
               TextSpan(text: "Mã hiệu: ", style: TextStyle(color: kTextColor)),
               TextSpan(text: "${item.code}", style: TextStyle(color: kPrimaryColor)),
+              WidgetSpan(child: SizedBox(width: 5.0)),
+              TextSpan(text: " | ", style: TextStyle(color: kPrimaryColor)),
+              WidgetSpan(child: SizedBox(width: 5.0)),
+              TextSpan(text: "Hệ thống: ", style: TextStyle(color: kTextColor)),
+              TextSpan(text: "${item.system.name}", style: TextStyle(color: kPrimaryColor)),
+              WidgetSpan(child: SizedBox(width: 5.0)),
+              TextSpan(text: " | ", style: TextStyle(color: kPrimaryColor)),
+              WidgetSpan(child: SizedBox(width: 5.0)),
+              TextSpan(text: "Có ", style: TextStyle(color: kTextColor)),
+              TextSpan(text: "${item.totalDetail} sự cố", style: TextStyle(color: kPrimaryColor)),
             ],
           )),
           SizedBox(height: 5.0),
           Text.rich(TextSpan(
-            style: TextStyle(fontSize: getProportionateScreenWidth(11), fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
             children: [
-              WidgetSpan(child: Icon(Icons.label_important_rounded, size: getProportionateScreenWidth(12), color: kTextColor)),
+              WidgetSpan(child: Icon(Icons.label_important_rounded, size: 18, color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 5.0)),
               TextSpan(text: "${item.statusInfo.text}", style: TextStyle(color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 15.0)),
-              WidgetSpan(child: Icon(Icons.person_add_alt_1, size: getProportionateScreenWidth(12), color: kTextColor)),
+              WidgetSpan(child: Icon(Icons.person_add_alt_1, size: 18, color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 5.0)),
               TextSpan(text: "${item.analysisByInfo!.hoTen}", style: TextStyle(color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 15.0)),
-              WidgetSpan(child: Icon(Icons.calendar_month, size: getProportionateScreenWidth(12), color: kTextColor)),
+              WidgetSpan(child: Icon(Icons.calendar_month, size: 18, color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 5.0)),
               TextSpan(text: "${item.analysisDate}", style: TextStyle(color: kTextColor)),
             ],

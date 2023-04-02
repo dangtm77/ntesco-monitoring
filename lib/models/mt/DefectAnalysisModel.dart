@@ -42,6 +42,7 @@ class DefectAnalysisModel {
   final DateTime? dateCreate;
   final DateTime? dateUpdate;
   final int sortIndex;
+  final int totalDetail;
   final SystemModel system;
   DefectAnalysisModel({
     required this.id,
@@ -69,6 +70,7 @@ class DefectAnalysisModel {
     this.dateCreate,
     this.dateUpdate,
     required this.sortIndex,
+    required this.totalDetail,
     required this.system,
   });
 
@@ -98,6 +100,7 @@ class DefectAnalysisModel {
       dateCreate: map['dateCreate'] != null ? DateTime.parse(map['dateCreate']) : null,
       dateUpdate: map['dateUpdate'] != null ? DateTime.parse(map['dateUpdate']) : null,
       sortIndex: map['sortIndex'] as int,
+      totalDetail: map['totalDetail'] as int,
       system: SystemModel.fromJson(map['system']),
       statusInfo: VariableModel.fromJson(map['statusInfo']),
     );
