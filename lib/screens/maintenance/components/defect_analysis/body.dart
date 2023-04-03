@@ -103,11 +103,11 @@ class _BodyPageState extends State<Body> {
       searchGroupFilterOptions.add('or');
       searchGroupFilterOptions.add(['system.code', 'contains', _keywordForSearchEditingController.text.toString()]);
       searchGroupFilterOptions.add('or');
-      searchGroupFilterOptions.add(['system.project.code', 'contains', _keywordForSearchEditingController.text.toString()]);
+      searchGroupFilterOptions.add(['project.code', 'contains', _keywordForSearchEditingController.text.toString()]);
       searchGroupFilterOptions.add('or');
-      searchGroupFilterOptions.add(['system.project.contractNo', 'contains', _keywordForSearchEditingController.text.toString()]);
+      searchGroupFilterOptions.add(['project.contractNo', 'contains', _keywordForSearchEditingController.text.toString()]);
       searchGroupFilterOptions.add('or');
-      searchGroupFilterOptions.add(['system.project.name', 'contains', _keywordForSearchEditingController.text.toString()]);
+      searchGroupFilterOptions.add(['project.name', 'contains', _keywordForSearchEditingController.text.toString()]);
       filterOptions.add(searchGroupFilterOptions);
     }
     print(jsonEncode(filterOptions));
@@ -422,7 +422,7 @@ class _BodyPageState extends State<Body> {
                             child: AnimationLimiter(
                                 child: GroupedListView<dynamic, String>(
                               elements: snapshot.data!.data,
-                              groupBy: (element) => "${element.system.project.name} (${element.system.project.customer})",
+                              groupBy: (element) => "${element.project.name} (${element.project.customer})",
                               groupSeparatorBuilder: (String value) => Container(
                                 width: MediaQuery.of(context).size.width,
                                 color: kPrimaryColor,

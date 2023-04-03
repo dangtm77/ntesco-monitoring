@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:ntesco_smart_monitoring/models/NguoiDung.dart';
+import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
 import 'package:ntesco_smart_monitoring/models/common/VariableModel.dart';
 import 'package:ntesco_smart_monitoring/models/mt/SystemModel.dart';
 
@@ -44,35 +45,8 @@ class DefectAnalysisModel {
   final int sortIndex;
   final int totalDetail;
   final SystemModel system;
-  DefectAnalysisModel({
-    required this.id,
-    required this.idSystem,
-    required this.code,
-    this.analysisDate,
-    this.analysisBy,
-    this.analysisByInfo,
-    this.currentSuitation,
-    this.maintenanceStaff,
-    this.maintenanceStaffConfirmDate,
-    this.maintenanceStaffComment,
-    this.qcStaff,
-    this.qcStaffConfirmDate,
-    this.qcStaffComment,
-    this.cncStaff,
-    this.cncStaffConfirmDate,
-    this.cncStaffComment,
-    required this.status,
-    required this.statusInfo,
-    required this.isDelete,
-    required this.isActive,
-    this.userCreate,
-    this.userUpdate,
-    this.dateCreate,
-    this.dateUpdate,
-    required this.sortIndex,
-    required this.totalDetail,
-    required this.system,
-  });
+  final ProjectModel project;
+  DefectAnalysisModel({required this.id, required this.idSystem, required this.code, this.analysisDate, this.analysisBy, this.analysisByInfo, this.currentSuitation, this.maintenanceStaff, this.maintenanceStaffConfirmDate, this.maintenanceStaffComment, this.qcStaff, this.qcStaffConfirmDate, this.qcStaffComment, this.cncStaff, this.cncStaffConfirmDate, this.cncStaffComment, required this.status, required this.statusInfo, required this.isDelete, required this.isActive, this.userCreate, this.userUpdate, this.dateCreate, this.dateUpdate, required this.sortIndex, required this.totalDetail, required this.system, required this.project});
 
   factory DefectAnalysisModel.fromJson(dynamic map) {
     return DefectAnalysisModel(
@@ -102,6 +76,7 @@ class DefectAnalysisModel {
       sortIndex: map['sortIndex'] as int,
       totalDetail: map['totalDetail'] as int,
       system: SystemModel.fromJson(map['system']),
+      project: ProjectModel.fromJson(map['project']),
       statusInfo: VariableModel.fromJson(map['statusInfo']),
     );
   }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +11,12 @@ import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
+import 'package:ntesco_smart_monitoring/core/mt_systems.dart' as System;
 import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:ntesco_smart_monitoring/models/mt/SystemModel.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 
 class MaintenanceDefectAnalysisCreateScreen extends StatelessWidget {
@@ -34,8 +37,10 @@ class CreateBody extends StatefulWidget {
 
 class _CreatePageState extends State<CreateBody> {
   final _formKey = GlobalKey<FormBuilderState>();
-
   late Future<ProjectModels> _listOfDefectAnalysis;
+  late Future<SystemModels> _listOfSystems;
+  late bool idSystemIsEnable;
+
   Future<ProjectModels> _getListProjects() async {
     var sortOptions = [];
     var filterOptions = [];
@@ -51,10 +56,33 @@ class _CreatePageState extends State<CreateBody> {
       throw Exception('StatusCode: ${response.statusCode}');
   }
 
+  Future<SystemModels> _getListSystems(int id) async {
+    var sortOptions = [];
+    var filterOptions = [];
+    var options = new LoadOptionsModel(
+      take: 0,
+      skip: 0,
+      sort: jsonEncode(sortOptions),
+      filter: jsonEncode(filterOptions),
+      requireTotalCount: 'true',
+    );
+    var response = await System.getListByProject(id, options);
+    switch (response.statusCode) {
+      case 200:
+        return SystemModels.fromJson(jsonDecode(response.body));
+      case 401:
+        throw response.statusCode;
+      default:
+        throw Exception('StatusCode: ${response.statusCode}');
+    }
+  }
+
   @override
   void initState() {
-    _listOfDefectAnalysis = _getListProjects();
     super.initState();
+    _listOfDefectAnalysis = _getListProjects();
+    _listOfSystems = _getListSystems(0);
+    idSystemIsEnable = false;
   }
 
   @override
@@ -92,7 +120,6 @@ class _CreatePageState extends State<CreateBody> {
       child: Container(
         child: FormBuilder(
           key: _formKey,
-          //enabled: false,
           //autovalidateMode: AutovalidateMode.always,
           //skipDisabled: true,
           initialValue: {
@@ -110,331 +137,9 @@ class _CreatePageState extends State<CreateBody> {
             padding: const EdgeInsets.all(10),
             child: Column(
               children: <Widget>[
-                FutureBuilder(
-                  future: _listOfDefectAnalysis,
-                  builder: (BuildContext context, AsyncSnapshot<ProjectModels> snapshot) {
-                    if (snapshot.hasError)
-                      return DataErrorWidget(error: snapshot.error.toString());
-                    else {
-                      if (snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active)
-                        return LoadingWidget();
-                      else {
-                        if (snapshot.hasData) {
-                          return FormBuilderDropdown<String>(
-                            name: 'idProject',
-                            decoration: InputDecoration(
-                              labelText: 'Dự án triển khai',
-                              //suffix: _genderHasError ? const Icon(Icons.error) : const Icon(Icons.check),
-                              hintText: 'Vui lòng chọn thông tin dự án',
-                            ),
-                            validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
-                            items: snapshot.data!.data
-                                .map((item) => DropdownMenuItem(
-                                      alignment: AlignmentDirectional.center,
-                                      value: item.name.toString(),
-                                      child: Text(item.name!.toString()),
-                                    ))
-                                .toList(),
-                            // onChanged: (val) {
-                            //   setState(() {
-                            //     _genderHasError = !(_formKey.currentState?.fields['gender']?.validate() ?? false);
-                            //   });
-                            // },
-                            //valueTransformer: (val) => val?.toString(),
-                          );
-                        } else
-                          return LoadingWidget();
-                      }
-                    }
-                  },
-                ),
-
-                /*                
-                const SizedBox(height: 15),
-                FormBuilderDateTimePicker(
-                  name: 'date',
-                  initialEntryMode: DatePickerEntryMode.calendar,
-                  //initialValue: DateTime.now(),
-                  inputType: InputType.both,
-                  decoration: InputDecoration(
-                    labelText: 'Appointment Time',
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () {
-                        _formKey.currentState!.fields['date']?.didChange(null);
-                      },
-                    ),
-                  ),
-                  initialTime: const TimeOfDay(hour: 8, minute: 0),
-                  // locale: const Locale.fromSubtags(languageCode: 'fr'),
-                ),
-                FormBuilderDateRangePicker(
-                  name: 'date_range',
-                  firstDate: DateTime(1970),
-                  lastDate: DateTime(2030),
-                  format: DateFormat('yyyy-MM-dd'),
-                  onChanged: _onChanged,
-                  decoration: InputDecoration(
-                    labelText: 'Date Range',
-                    helperText: 'Helper text',
-                    hintText: 'Hint text',
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () {
-                        _formKey.currentState!.fields['date_range']?.didChange(null);
-                      },
-                    ),
-                  ),
-                ),
-                FormBuilderSlider(
-                  name: 'slider',
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.min(6),
-                  ]),
-                  onChanged: _onChanged,
-                  min: 0.0,
-                  max: 10.0,
-                  initialValue: 7.0,
-                  divisions: 20,
-                  activeColor: Colors.red,
-                  inactiveColor: Colors.pink[100],
-                  decoration: const InputDecoration(
-                    labelText: 'Number of things',
-                  ),
-                ),
-                FormBuilderRangeSlider(
-                  name: 'range_slider',
-                  // validator: FormBuilderValidators.compose([FormBuilderValidators.min(context, 6)]),
-                  onChanged: _onChanged,
-                  min: 0.0,
-                  max: 100.0,
-                  initialValue: const RangeValues(4, 7),
-                  divisions: 20,
-                  activeColor: Colors.red,
-                  inactiveColor: Colors.pink[100],
-                  decoration: const InputDecoration(labelText: 'Price Range'),
-                ),
-                FormBuilderCheckbox(
-                  name: 'accept_terms',
-                  initialValue: false,
-                  onChanged: _onChanged,
-                  title: RichText(
-                    text: const TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'I have read and agree to the ',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        TextSpan(
-                          text: 'Terms and Conditions',
-                          style: TextStyle(color: Colors.blue),
-                          // Flutter doesn't allow a button inside a button
-                          // https://github.com/flutter/flutter/issues/31437#issuecomment-492411086
-                          /*
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      print('launch url');
-                                    },
-                                  */
-                        ),
-                      ],
-                    ),
-                  ),
-                  validator: FormBuilderValidators.equal(
-                    true,
-                    errorText: 'You must accept terms and conditions to continue',
-                  ),
-                ),
-                FormBuilderTextField(
-                  autovalidateMode: AutovalidateMode.always,
-                  name: 'age',
-                  decoration: InputDecoration(
-                    labelText: 'Age',
-                    suffixIcon: _ageHasError ? const Icon(Icons.error, color: Colors.red) : const Icon(Icons.check, color: Colors.green),
-                  ),
-                  onChanged: (val) {
-                    setState(() {
-                      _ageHasError = !(_formKey.currentState?.fields['age']?.validate() ?? false);
-                    });
-                  },
-                  // valueTransformer: (text) => num.tryParse(text),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                    FormBuilderValidators.numeric(),
-                    FormBuilderValidators.max(70),
-                  ]),
-                  // initialValue: '12',
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.next,
-                ),
-                FormBuilderDropdown<String>(
-                  // autovalidate: true,
-                  name: 'gender',
-                  decoration: InputDecoration(
-                    labelText: 'Gender',
-                    suffix: _genderHasError ? const Icon(Icons.error) : const Icon(Icons.check),
-                    hintText: 'Select Gender',
-                  ),
-                  validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
-                  items: genderOptions
-                      .map((gender) => DropdownMenuItem(
-                            alignment: AlignmentDirectional.center,
-                            value: gender,
-                            child: Text(gender),
-                          ))
-                      .toList(),
-                  onChanged: (val) {
-                    setState(() {
-                      _genderHasError = !(_formKey.currentState?.fields['gender']?.validate() ?? false);
-                    });
-                  },
-                  valueTransformer: (val) => val?.toString(),
-                ),
-                FormBuilderRadioGroup<String>(
-                  decoration: const InputDecoration(
-                    labelText: 'My chosen language',
-                  ),
-                  initialValue: null,
-                  name: 'best_language',
-                  onChanged: _onChanged,
-                  validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
-                  options: ['Dart', 'Kotlin', 'Java', 'Swift', 'Objective-C']
-                      .map((lang) => FormBuilderFieldOption(
-                            value: lang,
-                            child: Text(lang),
-                          ))
-                      .toList(growable: false),
-                  controlAffinity: ControlAffinity.trailing,
-                ),
-                FormBuilderSegmentedControl(
-                  decoration: const InputDecoration(
-                    labelText: 'Movie Rating (Archer)',
-                  ),
-                  name: 'movie_rating',
-                  // initialValue: 1,
-                  // textStyle: TextStyle(fontWeight: FontWeight.bold),
-                  options: List.generate(5, (i) => i + 1)
-                      .map((number) => FormBuilderFieldOption(
-                            value: number,
-                            child: Text(
-                              number.toString(),
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ))
-                      .toList(),
-                  onChanged: _onChanged,
-                ),
-                FormBuilderSwitch(
-                  title: const Text('I Accept the terms and conditions'),
-                  name: 'accept_terms_switch',
-                  initialValue: true,
-                  onChanged: _onChanged,
-                ),
-                FormBuilderCheckboxGroup<String>(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: const InputDecoration(labelText: 'The language of my people'),
-                  name: 'languages',
-                  // initialValue: const ['Dart'],
-                  options: const [
-                    FormBuilderFieldOption(value: 'Dart'),
-                    FormBuilderFieldOption(value: 'Kotlin'),
-                    FormBuilderFieldOption(value: 'Java'),
-                    FormBuilderFieldOption(value: 'Swift'),
-                    FormBuilderFieldOption(value: 'Objective-C'),
-                  ],
-                  onChanged: _onChanged,
-                  separator: const VerticalDivider(
-                    width: 10,
-                    thickness: 5,
-                    color: Colors.red,
-                  ),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.minLength(1),
-                    FormBuilderValidators.maxLength(3),
-                  ]),
-                ),
-                FormBuilderFilterChip<String>(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: const InputDecoration(labelText: 'The language of my people'),
-                  name: 'languages_filter',
-                  selectedColor: Colors.red,
-                  options: const [
-                    FormBuilderChipOption(
-                      value: 'Dart',
-                      avatar: CircleAvatar(child: Text('D')),
-                    ),
-                    FormBuilderChipOption(
-                      value: 'Kotlin',
-                      avatar: CircleAvatar(child: Text('K')),
-                    ),
-                    FormBuilderChipOption(
-                      value: 'Java',
-                      avatar: CircleAvatar(child: Text('J')),
-                    ),
-                    FormBuilderChipOption(
-                      value: 'Swift',
-                      avatar: CircleAvatar(child: Text('S')),
-                    ),
-                    FormBuilderChipOption(
-                      value: 'Objective-C',
-                      avatar: CircleAvatar(child: Text('O')),
-                    ),
-                  ],
-                  onChanged: _onChanged,
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.minLength(1),
-                    FormBuilderValidators.maxLength(3),
-                  ]),
-                ),
-                FormBuilderChoiceChip<String>(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: const InputDecoration(labelText: 'Ok, if I had to choose one language, it would be:'),
-                  name: 'languages_choice',
-                  initialValue: 'Dart',
-                  options: const [
-                    FormBuilderChipOption(
-                      value: 'Dart',
-                      avatar: CircleAvatar(child: Text('D')),
-                    ),
-                    FormBuilderChipOption(
-                      value: 'Kotlin',
-                      avatar: CircleAvatar(child: Text('K')),
-                    ),
-                    FormBuilderChipOption(
-                      value: 'Java',
-                      avatar: CircleAvatar(child: Text('J')),
-                    ),
-                    FormBuilderChipOption(
-                      value: 'Swift',
-                      avatar: CircleAvatar(child: Text('S')),
-                    ),
-                    FormBuilderChipOption(
-                      value: 'Objective-C',
-                      avatar: CircleAvatar(child: Text('O')),
-                    ),
-                  ],
-                  onChanged: _onChanged,
-                ),
-                MaterialButton(
-                  color: Theme.of(context).colorScheme.secondary,
-                  onPressed: () {
-                    if (_formKey.currentState?.saveAndValidate() ?? false) {
-                      if (true) {
-                        // Either invalidate using Form Key
-                        _formKey.currentState?.invalidateField(name: 'email', errorText: 'Email already taken.');
-                        // OR invalidate using Field Key
-                        // _emailFieldKey.currentState?.invalidate('Email already taken.');
-                      }
-
-                      debugPrint('Valid');
-                    } else {
-                      debugPrint('Invalid');
-                    }
-                    debugPrint(_formKey.currentState?.value.toString());
-                  },
-                  child: const Text('Signup', style: TextStyle(color: Colors.white)),
-                ),
-                */
+                idProjectForm(),
+                idSystemForm(),
+                SizedBox(height: 20),
                 Row(
                   children: <Widget>[
                     Expanded(
@@ -474,6 +179,87 @@ class _CreatePageState extends State<CreateBody> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget idProjectForm() {
+    return FutureBuilder(
+      future: _listOfDefectAnalysis,
+      builder: (BuildContext context, AsyncSnapshot<ProjectModels> snapshot) {
+        if (snapshot.hasError)
+          return DataErrorWidget(error: snapshot.error.toString());
+        else {
+          if (snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active)
+            return LoadingWidget();
+          else {
+            if (snapshot.hasData) {
+              return FormBuilderDropdown<String>(
+                name: 'idProject',
+                decoration: InputDecoration(
+                  labelText: 'Dự án triển khai',
+                  labelStyle: TextStyle(fontSize: 18),
+                ),
+                menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
+                validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+                items: snapshot.data!.data
+                    .map((item) => DropdownMenuItem(
+                          alignment: AlignmentDirectional.topStart,
+                          value: item.id.toString(),
+                          child: Text("${item.name} (${item.location})"),
+                        ))
+                    .toList(),
+                onChanged: (dynamic val) {
+                  print(val);
+                  setState(() {
+                    idSystemIsEnable = true;
+                    _listOfSystems = _getListSystems(int.parse(val));
+                  });
+                  print(idSystemIsEnable);
+                },
+                valueTransformer: (val) => val?.toString(),
+              );
+            } else
+              return LoadingWidget();
+          }
+        }
+      },
+    );
+  }
+
+  Widget idSystemForm() {
+    return FutureBuilder(
+      future: _listOfSystems,
+      builder: (BuildContext context, AsyncSnapshot<SystemModels> snapshot) {
+        if (snapshot.hasError)
+          return DataErrorWidget(error: snapshot.error.toString());
+        else {
+          if (snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active)
+            return LoadingWidget();
+          else {
+            if (snapshot.hasData) {
+              return FormBuilderDropdown<String>(
+                name: 'idSystem',
+                enabled: idSystemIsEnable,
+                decoration: InputDecoration(
+                  labelText: 'Hệ thống cần phân tích',
+                  labelStyle: TextStyle(fontSize: 18),
+                ),
+                menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
+                validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+                items: snapshot.data!.data
+                    .map((item) => DropdownMenuItem(
+                          alignment: AlignmentDirectional.topStart,
+                          value: item.name.toString(),
+                          child: Text("${item.name} - (${DateFormat("dd/MM/yyyy").format(item.dateAcceptance!)})"),
+                        ))
+                    .toList(),
+                valueTransformer: (val) => val?.toString(),
+              );
+            } else
+              return LoadingWidget();
+          }
+        }
+      },
     );
   }
 

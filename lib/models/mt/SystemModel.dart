@@ -1,5 +1,3 @@
-import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
-
 class SystemModels {
   final int totalCount;
   final List<SystemModel> data;
@@ -23,7 +21,6 @@ class SystemModel {
   final String? name;
   final String? otherName;
   final DateTime? dateAcceptance;
-  final ProjectModel project;
   SystemModel({
     required this.id,
     required this.idProject,
@@ -31,7 +28,6 @@ class SystemModel {
     this.name,
     this.otherName,
     this.dateAcceptance,
-    required this.project,
   });
   factory SystemModel.fromJson(dynamic map) {
     return SystemModel(
@@ -41,7 +37,6 @@ class SystemModel {
       name: map['name'] != null ? map['name'] as String : null,
       otherName: map['otherName'] != null ? map['otherName'] as String : null,
       dateAcceptance: map['dateAcceptance'] != null ? DateTime.parse(map['dateAcceptance']) : null,
-      project: ProjectModel.fromJson(map['project']),
     );
   }
 }
