@@ -18,6 +18,7 @@ import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:ntesco_smart_monitoring/models/mt/SystemModel.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
+import 'package:ntesco_smart_monitoring/theme.dart';
 
 class MaintenanceDefectAnalysisCreateScreen extends StatelessWidget {
   static String routeName = "/maintenance/defect-analysis/create";
@@ -118,64 +119,81 @@ class _CreatePageState extends State<CreateBody> {
   Widget _form(BuildContext context) {
     return Expanded(
       child: Container(
-        child: FormBuilder(
-          key: _formKey,
-          //autovalidateMode: AutovalidateMode.always,
-          //skipDisabled: true,
-          initialValue: {
-            'idProject': null,
-            'idSystem': null,
-            'code': null,
-            'analysisDate': null,
-            'analysisBy': null,
-            'currentSuitation': null,
-            'maintenanceStaff': null,
-            'qcStaff': null,
-            'cncStaff': null,
-          },
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              children: <Widget>[
-                idProjectForm(),
-                idSystemForm(),
-                SizedBox(height: 20),
-                Row(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            children: [
+              FormBuilder(
+                key: _formKey,
+                //autovalidateMode: AutovalidateMode.always,
+                //skipDisabled: true,
+                initialValue: {
+                  'idProject': null,
+                  'idSystem': null,
+                  'code': null,
+                  'analysisDate': DateTime.now(),
+                  'analysisBy': null,
+                  'currentSuitation': null,
+                  'maintenanceStaff': null,
+                  'qcStaff': null,
+                  'cncStaff': null,
+                },
+                child: Column(
                   children: <Widget>[
-                    Expanded(
-                      child: MaterialButton(
-                        color: Theme.of(context).colorScheme.secondary,
-                        onPressed: () {
-                          if (_formKey.currentState?.saveAndValidate() ?? false) {
-                            debugPrint(_formKey.currentState?.value.toString());
-                          } else {
-                            debugPrint(_formKey.currentState?.value.toString());
-                            debugPrint('validation failed');
-                          }
-                        },
-                        child: const Text(
-                          'Submit',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
+                    idProjectForm(),
+                    SizedBox(height: 20),
+                    idSystemForm(),
+                    SizedBox(height: 20),
+                    codeForm(),
+                    SizedBox(height: 20),
+                    Row(
+                      children: [
+                        analysisByForm(),
+                        const SizedBox(width: 15),
+                        analysisDateForm(),
+                      ],
                     ),
-                    const SizedBox(width: 20),
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () {
-                          _formKey.currentState?.reset();
-                        },
-                        // color: Theme.of(context).colorScheme.secondary,
-                        child: Text(
-                          'Reset',
-                          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                    SizedBox(height: 20),
+                    currentSuitationForm(),
+                    SizedBox(height: 20),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: MaterialButton(
+                            color: Theme.of(context).colorScheme.secondary,
+                            onPressed: () {
+                              if (_formKey.currentState?.saveAndValidate() ?? false) {
+                                debugPrint(_formKey.currentState?.value.toString());
+                              } else {
+                                debugPrint(_formKey.currentState?.value.toString());
+                                debugPrint('validation failed');
+                              }
+                            },
+                            child: const Text(
+                              'Submit',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
                         ),
-                      ),
+                        const SizedBox(width: 20),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () {
+                              _formKey.currentState?.reset();
+                            },
+                            // color: Theme.of(context).colorScheme.secondary,
+                            child: Text(
+                              'Reset',
+                              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -197,8 +215,8 @@ class _CreatePageState extends State<CreateBody> {
                 name: 'idProject',
                 decoration: InputDecoration(
                   labelText: 'Dự án triển khai',
-                  labelStyle: TextStyle(fontSize: 18),
-                ),
+                  hintText: "Vui lòng chọn...",
+                ).applyDefaults(inputDecorationTheme()),
                 menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
                 items: snapshot.data!.data
@@ -209,12 +227,10 @@ class _CreatePageState extends State<CreateBody> {
                         ))
                     .toList(),
                 onChanged: (dynamic val) {
-                  print(val);
                   setState(() {
                     idSystemIsEnable = true;
                     _listOfSystems = _getListSystems(int.parse(val));
                   });
-                  print(idSystemIsEnable);
                 },
                 valueTransformer: (val) => val?.toString(),
               );
@@ -242,8 +258,8 @@ class _CreatePageState extends State<CreateBody> {
                 enabled: idSystemIsEnable,
                 decoration: InputDecoration(
                   labelText: 'Hệ thống cần phân tích',
-                  labelStyle: TextStyle(fontSize: 18),
-                ),
+                  hintText: "Vui lòng chọn...",
+                ).applyDefaults(inputDecorationTheme()),
                 menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
                 items: snapshot.data!.data
@@ -260,6 +276,62 @@ class _CreatePageState extends State<CreateBody> {
           }
         }
       },
+    );
+  }
+
+  Widget codeForm() {
+    return FormBuilderTextField(
+      name: "code",
+      decoration: const InputDecoration(
+        labelText: 'Mã hiệu',
+        labelStyle: TextStyle(fontSize: 18),
+      ),
+      validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+    );
+  }
+
+  Widget analysisDateForm() {
+    return Expanded(
+      child: FormBuilderDateTimePicker(
+        name: "analysisDate",
+        initialEntryMode: DatePickerEntryMode.calendar,
+        inputType: InputType.date,
+        format: DateFormat("dd/MM/yyyy"),
+        decoration: InputDecoration(
+          labelText: 'Ngày phân tích',
+          labelStyle: TextStyle(fontSize: 18),
+          suffixIcon: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              _formKey.currentState!.fields['analysisDate']?.didChange(null);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget analysisByForm() {
+    return Expanded(
+      child: FormBuilderTextField(
+        name: "analysisBy",
+        decoration: const InputDecoration(
+          labelText: 'Nhân sự phân tích',
+          labelStyle: TextStyle(fontSize: 18),
+        ),
+        validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+      ),
+    );
+  }
+
+  Widget currentSuitationForm() {
+    return FormBuilderTextField(
+      name: "currentSuitation",
+      decoration: const InputDecoration(
+        labelText: 'Hiện trạng',
+        labelStyle: TextStyle(fontSize: 18),
+      ).applyDefaults(inputDecorationTheme()),
+      validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
     );
   }
 
