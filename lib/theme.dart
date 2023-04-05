@@ -26,28 +26,9 @@ InputDecorationTheme inputDecorationTheme() {
       fontWeight: FontWeight.w600,
     ),
     floatingLabelBehavior: FloatingLabelBehavior.always,
-    contentPadding: EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 0.0),
+    contentPadding: EdgeInsets.all(10.0),
     enabledBorder: outlineInputBorder,
     focusedBorder: outlineInputBorder,
     border: OutlineInputBorder(),
   );
 }
-
-// TextTheme textTheme() {
-//   return TextTheme(
-//     bodyText1: TextStyle(color: kTextColor),
-//     bodyText2: TextStyle(color: kTextColor),
-//   );
-// }
-
-// AppBarTheme appBarTheme() {
-//   return AppBarTheme(
-//     color: Colors.white,
-//     elevation: 0,
-//     brightness: Brightness.light,
-//     iconTheme: IconThemeData(color: Colors.black),
-//     textTheme: TextTheme(
-//       headline6: TextStyle(color: Color(0XFF8B8B8B), fontSize: 18),
-//     ),
-//   );
-// }
