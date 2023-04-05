@@ -6,13 +6,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:http/http.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/components/default_button.dart';
 import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
-import 'package:ntesco_smart_monitoring/core/mt_defect_analysis.dart' as MT;
+import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 import 'package:ntesco_smart_monitoring/helper/network.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
@@ -50,25 +51,21 @@ class _BodyPageState extends State<Body> {
       setState(() {});
     });
 
+    isLoading = false;
     _keywordForSearchEditingController.text = "";
     _listOfDefectAnalysis = _getlistOfDefectAnalysis();
     super.initState();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   Future<DefectAnalysisModels> _getlistOfDefectAnalysis() async {
-    var sortOptions = [
+    List<dynamic> sortOptions = [
       // {"selector": "startDate", "desc": "true"},
       // {"selector": "endDate", "desc": "true"}
     ];
-    var filterOptions = [];
+    List<dynamic> filterOptions = [];
     //FILTER BY PROJECT
     if (_projectsCurrent.isNotEmpty && _projectsCurrent.length > 0) {
-      var projectsFilterOptions = [];
+      List<dynamic> projectsFilterOptions = [];
       _projectsCurrent.forEach((id) {
         projectsFilterOptions.add(['system.idProject', '=', id]);
         projectsFilterOptions.add("or");
@@ -81,7 +78,7 @@ class _BodyPageState extends State<Body> {
     }
     //FILTER BY STATUS
     if (_statusCurrent.isNotEmpty && _statusCurrent.length > 0) {
-      var statusFilterOptions = [];
+      List<dynamic> statusFilterOptions = [];
       _statusCurrent.forEach((id) {
         statusFilterOptions.add(['status', '=', id]);
         statusFilterOptions.add("or");
@@ -94,89 +91,68 @@ class _BodyPageState extends State<Body> {
     }
 
     //FILTER BY KEYWORD
-    if (_keywordForSearchEditingController.text.isNotEmpty && _keywordForSearchEditingController.text.length > 3) {
-      var searchGroupFilterOptions = [];
+    if (_keywordForSearchEditingController.text.isNotEmpty && _keywordForSearchEditingController.text.trim().length > 3) {
+      List<dynamic> searchGroupFilterOptions = [];
+      String _keyword = _keywordForSearchEditingController.text.trim().toString();
       if (filterOptions.length > 0) filterOptions.add('and');
-      searchGroupFilterOptions.add(['code', 'contains', _keywordForSearchEditingController.text.toString()]);
+      searchGroupFilterOptions.add(['code', 'contains', _keyword]);
       searchGroupFilterOptions.add('or');
-      searchGroupFilterOptions.add(['system.name', 'contains', _keywordForSearchEditingController.text.toString()]);
+      searchGroupFilterOptions.add(['system.name', 'contains', _keyword]);
       searchGroupFilterOptions.add('or');
-      searchGroupFilterOptions.add(['system.code', 'contains', _keywordForSearchEditingController.text.toString()]);
+      searchGroupFilterOptions.add(['system.code', 'contains', _keyword]);
       searchGroupFilterOptions.add('or');
-      searchGroupFilterOptions.add(['project.code', 'contains', _keywordForSearchEditingController.text.toString()]);
+      searchGroupFilterOptions.add(['project.code', 'contains', _keyword]);
       searchGroupFilterOptions.add('or');
-      searchGroupFilterOptions.add(['project.contractNo', 'contains', _keywordForSearchEditingController.text.toString()]);
+      searchGroupFilterOptions.add(['project.contractNo', 'contains', _keyword]);
       searchGroupFilterOptions.add('or');
-      searchGroupFilterOptions.add(['project.name', 'contains', _keywordForSearchEditingController.text.toString()]);
+      searchGroupFilterOptions.add(['project.name', 'contains', _keyword]);
       filterOptions.add(searchGroupFilterOptions);
     }
-    print(jsonEncode(filterOptions));
 
-    var options = new LoadOptionsModel(
-      take: itemPerPage * pageIndex,
-      skip: 0,
-      sort: jsonEncode(sortOptions),
-      filter: jsonEncode(filterOptions),
-      requireTotalCount: 'true',
-    );
-    var response = await MT.getList(options);
-
-    print(response.body);
-    if (response.statusCode == 200) {
-      var result = DefectAnalysisModels.fromJson(jsonDecode(response.body));
-      setState(() {
-        isLoading = false;
-      });
+    LoadOptionsModel options = new LoadOptionsModel(take: itemPerPage * pageIndex, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+    Response response = await Maintenance.DefectAnalysis_GetList(options);
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
+      DefectAnalysisModels result = DefectAnalysisModels.fromJson(jsonDecode(response.body));
       return result;
-    } else if (response.statusCode == 401)
-      throw response.statusCode;
-    else
+    } else {
       throw Exception('StatusCode: ${response.statusCode}');
+    }
   }
 
   Future<List<S2Choice<int>>> _getListProjectsForSelect() async {
-    var sortOptions = [];
-    var filterOptions = [];
-    var options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
-    var response = await Common.getListProjects(options);
-    if (response.statusCode == 200) {
-      var result = ProjectModels.fromJson(jsonDecode(response.body));
-
+    List<dynamic> sortOptions = [];
+    List<dynamic> filterOptions = [];
+    LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+    Response response = await Common.Projects_GetList(options);
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
+      ProjectModels result = ProjectModels.fromJson(jsonDecode(response.body));
       return S2Choice.listFrom<int, dynamic>(
         source: result.data,
         value: (index, item) => item.id,
         title: (index, item) => item.name,
       );
-    } else if (response.statusCode == 401)
-      throw response.statusCode;
-    else
+    } else {
       throw Exception('StatusCode: ${response.statusCode}');
+    }
   }
 
   Future<List<S2Choice<int>>> _getListVarialForSelect() async {
-    var sortOptions = [];
-    var filterOptions = [
+    List<dynamic> sortOptions = [];
+    List<dynamic> filterOptions = [
       ['group', '=', 'MAINTENANCE_DEFECT_ANALYSIS_STATUS']
     ];
-    var options = new LoadOptionsModel(
-      take: 0,
-      skip: 0,
-      sort: jsonEncode(sortOptions),
-      filter: jsonEncode(filterOptions),
-      requireTotalCount: 'true',
-    );
-    var response = await Common.getListVariables(options);
-    if (response.statusCode == 200) {
-      var result = VariableModels.fromJson(jsonDecode(response.body));
+    LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+    Response response = await Common.Variables_GetList(options);
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
+      VariableModels result = VariableModels.fromJson(jsonDecode(response.body));
       return S2Choice.listFrom<int, dynamic>(
         source: result.data,
         value: (index, item) => item.value,
         title: (index, item) => item.text,
       );
-    } else if (response.statusCode == 401)
-      throw response.statusCode;
-    else
+    } else {
       throw Exception('StatusCode: ${response.statusCode}');
+    }
   }
 
   @override
@@ -314,16 +290,7 @@ class _BodyPageState extends State<Body> {
                   return S2Tile.fromState(
                     state,
                     isTwoLine: true,
-                    trailing: state.selected.length > 0
-                        ? CircleAvatar(
-                            radius: 15,
-                            backgroundColor: kPrimaryColor,
-                            child: Text(
-                              '${state.selected.length}',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          )
-                        : null,
+                    trailing: state.selected.length > 0 ? CircleAvatar(radius: 15, backgroundColor: kPrimaryColor, child: Text('${state.selected.length}', style: TextStyle(color: Colors.white))) : null,
                     isLoading: snapshot.connectionState == ConnectionState.waiting,
                   );
                 },
@@ -367,14 +334,37 @@ class _BodyPageState extends State<Body> {
           Container(
             child: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: DefaultButton(
-                text: "Xác nhận thông tin",
-                press: () {
-                  setState(() {
-                    _listOfDefectAnalysis = _getlistOfDefectAnalysis();
-                  });
-                  Navigator.pop(context);
-                },
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: DefaultButton(
+                      text: "Đặt lại",
+                      color: kTextColor,
+                      press: () {
+                        setState(() {
+                          _projectsCurrent = [];
+                          _statusCurrent = [];
+                          _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+                        });
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 6,
+                    child: DefaultButton(
+                      text: "Lọc dữ liệu",
+                      press: () {
+                        setState(() {
+                          _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+                        });
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -431,7 +421,7 @@ class _BodyPageState extends State<Body> {
                                   child: Text(
                                     value,
                                     textAlign: TextAlign.left,
-                                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
                                   ),
                                 ),
                               ),
@@ -467,7 +457,7 @@ class _BodyPageState extends State<Body> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text.rich(TextSpan(
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
             children: [
               TextSpan(text: "Mã hiệu: ", style: TextStyle(color: kTextColor)),
               TextSpan(text: "${item.code}", style: TextStyle(color: kPrimaryColor)),
@@ -485,7 +475,7 @@ class _BodyPageState extends State<Body> {
           )),
           SizedBox(height: 5.0),
           Text.rich(TextSpan(
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
             children: [
               WidgetSpan(child: Icon(Icons.label_important_rounded, size: 18, color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 5.0)),
@@ -503,5 +493,10 @@ class _BodyPageState extends State<Body> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

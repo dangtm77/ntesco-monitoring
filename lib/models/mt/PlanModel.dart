@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:ntesco_smart_monitoring/models/NguoiDung.dart';
+import 'package:ntesco_smart_monitoring/models/common/UserModel.dart';
 
 class PlanModels {
   final int totalCount;
@@ -30,7 +30,7 @@ class PlanModel {
   final DateTime? startDate;
   final DateTime? endDate;
   final String? participants;
-  final List<NguoiDungModel>? participantsInfo;
+  final List<UserModel>? participantsInfo;
   final String? linkIDs;
   final bool isActive;
   final bool isDelete;
@@ -74,8 +74,8 @@ class PlanModel {
       endDate: json['endDate'] != null ? DateTime.parse((json['endDate'])) : null,
       participants: (json['participants'] != null && json['participants'].length > 1) ? json['participants'] as String : null,
       participantsInfo: (json['participantsInfo'] != null && json['participantsInfo'].length > 1)
-          ? json['participantsInfo'].map<NguoiDungModel>((json) {
-              return NguoiDungModel.fromJson(json);
+          ? json['participantsInfo'].map<UserModel>((json) {
+              return UserModel.fromJson(json);
             }).toList()
           : null,
       linkIDs: json['linkIDs'] != null ? json['linkIDs'] : null,

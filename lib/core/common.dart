@@ -1,30 +1,11 @@
-import 'dart:convert';
-
+// ignore_for_file: non_constant_identifier_names
 import 'package:http/http.dart' as http;
-import 'package:ntesco_smart_monitoring/constants.dart';
-import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
-import 'package:ntesco_smart_monitoring/models/Login.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ntesco_smart_monitoring/core/core.dart' as Core;
 
-Future<http.Response> getListProjects(LoadOptionsModel options) async {
-  SharedPreferences preferences = await SharedPreferences.getInstance();
-  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
-  var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
+const API_PROJECTS_LOOKUP = "v2/common/projects/lookup";
+const API_USERS_LOOKUP = "v2/common/users/lookup";
+const API_VARIABLES_LOOKUP = "v2/common/variables/lookup";
 
-  var api = "v2/common/projects/lookup";
-  final response = await http.get(Uri.https(endPoint, api, options.toMap()), headers: headerValue);
-  return response;
-}
-
-Future<http.Response> getListVariables(LoadOptionsModel options) async {
-  SharedPreferences preferences = await SharedPreferences.getInstance();
-  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
-  var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
-
-  var queryParameters = options.toMap();
-  queryParameters.addAll({"groupValue": 'MAINTENANCE_DEFECT_ANALYSIS_STATUS'});
-
-  var api = "/v2/common/variables/lookup";
-  final response = await http.get(Uri.https(endPoint, api, queryParameters), headers: headerValue);
-  return response;
-}
+Future<http.Response> Projects_GetList(dynamic options) async => Core.get(options.toMap(), API_PROJECTS_LOOKUP);
+Future<http.Response> Users_GetList(dynamic options) async => Core.get(options.toMap(), API_USERS_LOOKUP);
+Future<http.Response> Variables_GetList(dynamic options) async => Core.get(options.toMap(), API_VARIABLES_LOOKUP);

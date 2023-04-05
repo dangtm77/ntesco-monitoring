@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:ntesco_smart_monitoring/models/NguoiDung.dart';
+import 'package:ntesco_smart_monitoring/models/common/UserModel.dart';
 
 class TheoDoiModels {
   final int totalCount;
@@ -21,7 +21,7 @@ class TheoDoiModel {
   final int id;
   final int idPhieuDeXuat;
   final String nguoiDuyet;
-  final NguoiDungModel nguoiDuyetInfo;
+  final UserModel nguoiDuyetInfo;
   final bool? isDuyet;
   final String ghiChu;
   final int thuTu;
@@ -44,7 +44,7 @@ class TheoDoiModel {
       id: json['id'],
       idPhieuDeXuat: json['idPhieuDeXuat'],
       nguoiDuyet: json['nguoiDuyet'],
-      nguoiDuyetInfo: NguoiDungModel.fromJson(json['nguoiDuyetInfo']),
+      nguoiDuyetInfo: UserModel.fromJson(json['nguoiDuyetInfo']),
       isDuyet: json['isDuyet'],
       ghiChu: json['ghiChu'],
       thuTu: json['thuTu'],

@@ -5,13 +5,14 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:http/http.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/components/default_button.dart';
 import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
-import 'package:ntesco_smart_monitoring/core/common.dart' as common;
-import 'package:ntesco_smart_monitoring/core/mt_plans.dart' as MT;
+import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
+import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 import 'package:ntesco_smart_monitoring/helper/network.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
@@ -51,15 +52,15 @@ class _BodyPageState extends State<Body> {
   }
 
   Future<PlanModels> _getListOfPlans() async {
-    var sortOptions = [
+    List<dynamic> sortOptions = [
       {"selector": "fullPath", "desc": "false"},
       {"selector": "startDate", "desc": "true"},
       {"selector": "endDate", "desc": "true"}
     ];
-    var filterOptions = [];
+    List<dynamic> filterOptions = [];
     //FILTER BY PROJECT
     if (_projectsCurrent.isNotEmpty && _projectsCurrent.length > 0) {
-      var projectsFilterOptions = [];
+      List<dynamic> projectsFilterOptions = [];
       _projectsCurrent.forEach((id) {
         projectsFilterOptions.add(['idProject', '=', id]);
         projectsFilterOptions.add("or");
@@ -71,34 +72,26 @@ class _BodyPageState extends State<Body> {
       }
     }
 
-    var options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
-    var response = await MT.getList(options);
-    if (response.statusCode == 200) {
-      var result = PlanModels.fromJson(jsonDecode(response.body));
-      return result;
-    } else if (response.statusCode == 401)
-      throw response.statusCode;
+    LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+    Response response = await Maintenance.Plans_GetList(options);
+    if (response.statusCode >= 200 && response.statusCode <= 299)
+      return PlanModels.fromJson(jsonDecode(response.body));
     else
       throw Exception('StatusCode: ${response.statusCode}');
   }
 
   Future<List<S2Choice<int>>> _getListProjectsForSelect() async {
-    var sortOptions = [];
-    var filterOptions = [];
-    var options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
-    var response = await common.getListProjects(options);
-    if (response.statusCode == 200) {
-      var result = ProjectModels.fromJson(jsonDecode(response.body));
+    List<dynamic> sortOptions = [];
+    List<dynamic> filterOptions = [];
+    LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+    Response response = await Common.Projects_GetList(options);
 
-      print(result.data);
-
+    if (response.statusCode >= 200 && response.statusCode <= 299)
       return S2Choice.listFrom<int, dynamic>(
-        source: result.data,
+        source: ProjectModels.fromJson(jsonDecode(response.body)).data,
         value: (index, item) => item.id,
         title: (index, item) => item.name,
       );
-    } else if (response.statusCode == 401)
-      throw response.statusCode;
     else
       throw Exception('StatusCode: ${response.statusCode}');
   }
@@ -192,14 +185,36 @@ class _BodyPageState extends State<Body> {
           Container(
             child: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: DefaultButton(
-                text: "Xác nhận",
-                press: () {
-                  setState(() {
-                    _listOfPlans = _getListOfPlans();
-                  });
-                  Navigator.pop(context);
-                },
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: DefaultButton(
+                      text: "Đặt lại",
+                      color: kTextColor,
+                      press: () {
+                        setState(() {
+                          _projectsCurrent = [];
+                          _listOfPlans = _getListOfPlans();
+                        });
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 6,
+                    child: DefaultButton(
+                      text: "Lọc dữ liệu",
+                      press: () {
+                        setState(() {
+                          _listOfPlans = _getListOfPlans();
+                        });
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -234,7 +249,7 @@ class _BodyPageState extends State<Body> {
                               horizontal: getProportionateScreenWidth(0.0),
                             ),
                             child: AnimationLimiter(
-                              child: ListView.separated(
+                              child: ListView.builder(
                                 itemCount: snapshot.data!.data.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   var item = snapshot.data!.data.elementAt(index);
@@ -246,7 +261,6 @@ class _BodyPageState extends State<Body> {
                                     ),
                                   );
                                 },
-                                separatorBuilder: (BuildContext context, int index) => const Divider(),
                               ),
                             ),
                           );
@@ -264,41 +278,38 @@ class _BodyPageState extends State<Body> {
 
   Widget _item(PlanModel item) {
     if (item.idParent == null)
-      return ListTile(
-        leading: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              item.stt,
-              style: TextStyle(
-                color: kPrimaryColor,
-                fontWeight: FontWeight.bold,
-                fontSize: getProportionateScreenWidth(12),
-                fontStyle: FontStyle.normal,
-              ),
-            ),
-          ],
-        ),
-        title: Text(
-          "PROJECT",
-          style: TextStyle(
-            color: kPrimaryColor,
-            fontWeight: FontWeight.bold,
-            fontSize: getProportionateScreenWidth(11),
-            fontStyle: FontStyle.italic,
-          ),
-        ),
-        subtitle: Text(
-          item.title,
-          style: TextStyle(
-            color: kPrimaryColor,
-            fontWeight: FontWeight.bold,
-            fontSize: getProportionateScreenWidth(11),
-            fontStyle: FontStyle.normal,
+      return Container(
+        width: MediaQuery.of(context).size.width,
+        color: kPrimaryColor,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
+          child: Text(
+            "${item.stt}. ${item.title}",
+            textAlign: TextAlign.left,
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ),
       );
+    // return ListTile(
+    //   leading: Column(
+    //     mainAxisAlignment: MainAxisAlignment.center,
+    //     crossAxisAlignment: CrossAxisAlignment.start,
+    //     children: [
+    //       Text(
+    //         item.stt,
+    //         style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: 15.0, fontStyle: FontStyle.normal),
+    //       ),
+    //     ],
+    //   ),
+    //   title: Text(
+    //     "PROJECT",
+    //     style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: 15.0, fontStyle: FontStyle.italic),
+    //   ),
+    //   subtitle: Text(
+    //     item.title,
+    //     style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: 15.0, fontStyle: FontStyle.normal),
+    //   ),
+    // );
     else {
       double levelSpace = (item.level - 1) * 25.0;
       return ListTile(
@@ -308,63 +319,31 @@ class _BodyPageState extends State<Body> {
           children: [
             Text(
               item.stt,
-              style: TextStyle(
-                color: kSecondaryColor,
-                fontWeight: FontWeight.normal,
-                fontSize: getProportionateScreenWidth(10),
-                fontStyle: FontStyle.normal,
-              ),
+              style: TextStyle(color: kTextColor, fontWeight: FontWeight.normal, fontSize: 15.0, fontStyle: FontStyle.normal),
             ),
           ],
         ),
         title: Padding(
           padding: EdgeInsets.only(left: levelSpace),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 item.title,
-                style: TextStyle(
-                  color: kSecondaryColor,
-                  fontWeight: FontWeight.w700,
-                  fontSize: getProportionateScreenWidth(11),
-                  fontStyle: FontStyle.normal,
-                ),
+                style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.w700, fontSize: 15.0, fontStyle: FontStyle.normal),
               ),
+              SizedBox(height: 5.0),
               Text.rich(TextSpan(
                 children: [
-                  WidgetSpan(child: Icon(Ionicons.calendar_outline, size: 20.0, color: kSecondaryColor)),
-                  WidgetSpan(child: SizedBox(width: 2.0)),
+                  WidgetSpan(child: Icon(Ionicons.calendar_outline, size: 17.0, color: kTextColor)),
+                  WidgetSpan(child: SizedBox(width: 4.0)),
                   TextSpan(
                     text: "${DateFormat("dd/MM/yyyy").format(item.startDate!)} - ${DateFormat("dd/MM/yyyy").format(item.endDate!)}",
-                    style: TextStyle(
-                      color: kSecondaryColor,
-                      fontWeight: FontWeight.normal,
-                      fontSize: getProportionateScreenWidth(10),
-                      fontStyle: FontStyle.italic,
-                    ),
+                    style: TextStyle(color: kTextColor, fontWeight: FontWeight.normal, fontSize: 15.0, fontStyle: FontStyle.italic),
                   ),
                 ],
-              )
-                  // ((item.participantsInfo != null)
-                  //     ? TextSpan(
-                  //         children: [
-                  //           WidgetSpan(child: Icon(Ionicons.people, size: 20.0, color: kSecondaryColor)),
-                  //           WidgetSpan(child: SizedBox(width: 2.0)),
-                  //           TextSpan(
-                  //             text: item.participantsInfo!.map((e) => e.hoTen).join(', '),
-                  //             style: TextStyle(
-                  //               color: kSecondaryColor,
-                  //               fontWeight: FontWeight.normal,
-                  //               fontStyle: FontStyle.normal,
-                  //               fontSize: getProportionateScreenWidth(10),
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       )
-                  //     : WidgetSpan(child: SizedBox(width: 00))),
-                  ),
+              )),
             ],
           ),
         ),

@@ -5,10 +5,12 @@ import '../constants.dart';
 class DefaultButton extends StatelessWidget {
   const DefaultButton({
     Key? key,
-    this.text,
+    required this.text,
+    this.color,
     this.press,
   }) : super(key: key);
-  final String? text;
+  final String text;
+  final Color? color;
   final Function? press;
 
   @override
@@ -19,14 +21,12 @@ class DefaultButton extends StatelessWidget {
       child: TextButton(
         style: TextButton.styleFrom(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          primary: Colors.white,
-          backgroundColor: kPrimaryColor,
+          backgroundColor: color ?? kPrimaryColor,
         ),
         onPressed: press as void Function()?,
         child: Text(
           text!,
-          style: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(fontSize: 16, color: Colors.white),
         ),
       ),
     );

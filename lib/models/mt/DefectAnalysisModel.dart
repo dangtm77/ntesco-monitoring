@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:ntesco_smart_monitoring/models/NguoiDung.dart';
 import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
+import 'package:ntesco_smart_monitoring/models/common/UserModel.dart';
 import 'package:ntesco_smart_monitoring/models/common/VariableModel.dart';
 import 'package:ntesco_smart_monitoring/models/mt/SystemModel.dart';
 
@@ -23,7 +23,7 @@ class DefectAnalysisModel {
   final String code;
   final DateTime? analysisDate;
   final String? analysisBy;
-  final NguoiDungModel? analysisByInfo;
+  final UserModel? analysisByInfo;
   final String? currentSuitation;
   final String? maintenanceStaff;
   final DateTime? maintenanceStaffConfirmDate;
@@ -55,7 +55,7 @@ class DefectAnalysisModel {
       code: map['code'] as String,
       analysisDate: map['analysisDate'] != null ? DateTime.parse(map['analysisDate']) : null,
       analysisBy: map['analysisBy'] != null ? map['analysisBy'] as String : null,
-      analysisByInfo: map['analysisByInfo'] != null ? NguoiDungModel.fromJson(map['analysisByInfo']) : null,
+      analysisByInfo: map['analysisByInfo'] != null ? UserModel.fromJson(map['analysisByInfo']) : null,
       currentSuitation: map['currentSuitation'] != null ? map['currentSuitation'] as String : null,
       maintenanceStaff: map['maintenanceStaff'] != null ? map['maintenanceStaff'] as String : null,
       maintenanceStaffConfirmDate: map['maintenanceStaffConfirmDate'] != null ? DateTime.parse(map['maintenanceStaffConfirmDate']) : null,

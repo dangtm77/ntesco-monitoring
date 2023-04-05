@@ -1,21 +1,22 @@
 import 'dart:convert';
-import 'dart:ui';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:http/http.dart';
 import 'package:ionicons/ionicons.dart';
 
 import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
-import 'package:ntesco_smart_monitoring/core/mt_systems.dart' as System;
+import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:ntesco_smart_monitoring/models/common/UserModel.dart';
 import 'package:ntesco_smart_monitoring/models/mt/SystemModel.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:ntesco_smart_monitoring/theme.dart';
@@ -43,38 +44,74 @@ class _CreatePageState extends State<CreateBody> {
   late bool idSystemIsEnable;
 
   Future<ProjectModels> _getListProjects() async {
-    var sortOptions = [];
-    var filterOptions = [];
-    var options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
-    var response = await Common.getListProjects(options);
-
-    if (response.statusCode == 200) {
-      var result = ProjectModels.fromJson(jsonDecode(response.body));
-      return result;
-    } else if (response.statusCode == 401)
-      throw response.statusCode;
-    else
-      throw Exception('StatusCode: ${response.statusCode}');
+    try {
+      List<dynamic> sortOptions = [];
+      List<dynamic> filterOptions = [];
+      LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+      Response response = await Common.Projects_GetList(options);
+      if (response.statusCode >= 200 && response.statusCode <= 299)
+        return ProjectModels.fromJson(jsonDecode(response.body));
+      else
+        throw Exception('StatusCode: ${response.statusCode}');
+    } catch (ex) {
+      throw ex;
+    }
   }
 
   Future<SystemModels> _getListSystems(int id) async {
-    var sortOptions = [];
-    var filterOptions = [];
-    var options = new LoadOptionsModel(
-      take: 0,
-      skip: 0,
-      sort: jsonEncode(sortOptions),
-      filter: jsonEncode(filterOptions),
-      requireTotalCount: 'true',
-    );
-    var response = await System.getListByProject(id, options);
-    switch (response.statusCode) {
-      case 200:
+    try {
+      List<dynamic> sortOptions = [];
+      List<dynamic> filterOptions = [];
+      LoadOptionsModel options = new LoadOptionsModel(
+        take: 0,
+        skip: 0,
+        sort: jsonEncode(sortOptions),
+        filter: jsonEncode(filterOptions),
+        requireTotalCount: 'true',
+      );
+      Response response = await Maintenance.Systems_GetList_ByProject(id, options);
+      if (response.statusCode >= 200 && response.statusCode <= 299)
         return SystemModels.fromJson(jsonDecode(response.body));
-      case 401:
-        throw response.statusCode;
-      default:
+      else
         throw Exception('StatusCode: ${response.statusCode}');
+    } catch (ex) {
+      throw ex;
+    }
+  }
+
+  Future<UserModels> _getListUsers(String type) async {
+    try {
+      List<dynamic> sortOptions = [];
+      List<dynamic> filterOptions = [];
+
+      if (type == "maintenanceStaff") {
+        List<dynamic> maintenanceStaffFilterOptions = [];
+        maintenanceStaffFilterOptions.add(['idTrangThai', '<>', 3]);
+        maintenanceStaffFilterOptions.add("and");
+        maintenanceStaffFilterOptions.add(['idRootPhongBan', '=', 49]);
+        maintenanceStaffFilterOptions.add("and");
+
+        if (maintenanceStaffFilterOptions.length > 0) {
+          if (filterOptions.length > 0) filterOptions.add('and');
+          if (maintenanceStaffFilterOptions.last == "and") maintenanceStaffFilterOptions.removeAt(maintenanceStaffFilterOptions.length - 1);
+          if (maintenanceStaffFilterOptions.length > 0) filterOptions.add(maintenanceStaffFilterOptions);
+        }
+      }
+      print(jsonEncode(filterOptions));
+      LoadOptionsModel options = new LoadOptionsModel(
+        take: 0,
+        skip: 0,
+        sort: jsonEncode(sortOptions),
+        filter: jsonEncode(filterOptions),
+        requireTotalCount: 'true',
+      );
+      Response response = await Common.Users_GetList(options);
+      if (response.statusCode >= 200 && response.statusCode <= 299)
+        return UserModels.fromJson(jsonDecode(response.body));
+      else
+        throw Exception('StatusCode: ${response.statusCode}');
+    } catch (ex) {
+      throw ex;
     }
   }
 
@@ -125,8 +162,7 @@ class _CreatePageState extends State<CreateBody> {
             children: [
               FormBuilder(
                 key: _formKey,
-                //autovalidateMode: AutovalidateMode.always,
-                //skipDisabled: true,
+                autovalidateMode: AutovalidateMode.always,
                 initialValue: {
                   'idProject': null,
                   'idSystem': null,
@@ -135,8 +171,11 @@ class _CreatePageState extends State<CreateBody> {
                   'analysisBy': null,
                   'currentSuitation': null,
                   'maintenanceStaff': null,
+                  'maintenanceStaffInfo': null,
                   'qcStaff': null,
+                  'qcStaffInfo': null,
                   'cncStaff': null,
+                  'cncStaffInfo': null,
                 },
                 child: Column(
                   children: <Widget>[
@@ -155,6 +194,8 @@ class _CreatePageState extends State<CreateBody> {
                     ),
                     SizedBox(height: 20),
                     currentSuitationForm(),
+                    SizedBox(height: 20),
+                    maintenanceStaffForm(),
                     SizedBox(height: 20),
                     Row(
                       children: <Widget>[
@@ -284,8 +325,8 @@ class _CreatePageState extends State<CreateBody> {
       name: "code",
       decoration: const InputDecoration(
         labelText: 'Mã hiệu',
-        labelStyle: TextStyle(fontSize: 18),
-      ),
+        hintText: "Vui lòng chọn...",
+      ).applyDefaults(inputDecorationTheme()),
       validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
     );
   }
@@ -299,14 +340,14 @@ class _CreatePageState extends State<CreateBody> {
         format: DateFormat("dd/MM/yyyy"),
         decoration: InputDecoration(
           labelText: 'Ngày phân tích',
-          labelStyle: TextStyle(fontSize: 18),
+          hintText: "Vui lòng chọn thông tin...",
           suffixIcon: IconButton(
             icon: const Icon(Icons.close),
             onPressed: () {
               _formKey.currentState!.fields['analysisDate']?.didChange(null);
             },
           ),
-        ),
+        ).applyDefaults(inputDecorationTheme()),
       ),
     );
   }
@@ -317,8 +358,9 @@ class _CreatePageState extends State<CreateBody> {
         name: "analysisBy",
         decoration: const InputDecoration(
           labelText: 'Nhân sự phân tích',
-          labelStyle: TextStyle(fontSize: 18),
-        ),
+          hintText: "Vui lòng nhập thông tin...",
+          errorStyle: TextStyle(height: 0),
+        ).applyDefaults(inputDecorationTheme()),
         validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
       ),
     );
@@ -329,63 +371,66 @@ class _CreatePageState extends State<CreateBody> {
       name: "currentSuitation",
       decoration: const InputDecoration(
         labelText: 'Hiện trạng',
-        labelStyle: TextStyle(fontSize: 18),
+        hintText: "Vui lòng nhập thông tin...",
       ).applyDefaults(inputDecorationTheme()),
       validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
     );
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-}
-
-class Create2 extends StatelessWidget {
-  Future<ProjectModels> _getListProjectForCreate() async {
-    var sortOptions = [
-      // {"selector": "nhomDanhMuc", "desc": "false"},
-      // {"selector": "sapXep", "desc": "false"}
-    ];
-    var filterOptions = [];
-    var options = new LoadOptionsModel(
-      take: 0,
-      skip: 0,
-      sort: jsonEncode(sortOptions),
-      filter: jsonEncode(filterOptions),
-      requireTotalCount: 'true',
+  Widget maintenanceStaffForm() {
+    return FormBuilderTextField(
+      name: "maintenanceStaff",
+      readOnly: true,
+      decoration: InputDecoration(
+        labelText: 'Đại diện bộ phận Bảo trì',
+        hintText: "Vui lòng chọn thông tin...",
+        suffixIcon: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween, // added line
+          mainAxisSize: MainAxisSize.min, // added line
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.person_pin_rounded),
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return _selectUserInfo(context, "maintenanceStaff");
+                  },
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () {
+                _formKey.currentState!.fields['maintenanceStaff']?.didChange(null);
+              },
+            ),
+          ],
+        ),
+      ).applyDefaults(inputDecorationTheme()),
+      validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
     );
-    var response = await Common.getListProjects(options);
-
-    if (response.statusCode == 200) {
-      var result = ProjectModels.fromJson(jsonDecode(response.body));
-      return result;
-    } else if (response.statusCode == 401)
-      throw response.statusCode;
-    else
-      throw Exception('StatusCode: ${response.statusCode}');
   }
 
-  @override
-  Widget build(BuildContext context) {
-    Future<ProjectModels> listProject = _getListProjectForCreate();
+  Widget _selectUserInfo(BuildContext context, String key) {
+    var _listUsers = _getListUsers(key);
     return Scrollbar(
       child: Column(
         children: [
           Container(
-            alignment: Alignment.center,
+            alignment: Alignment.centerLeft,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Text(
-                "LỰA CHỌN DỰ ÁN - KHÁCH HÀNG",
-                style: TextStyle(color: kPrimaryColor, fontSize: 20.0, fontWeight: FontWeight.bold),
+                "Vui lòng chọn thông tin cần thiết...",
+                style: TextStyle(color: kPrimaryColor, fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
             ),
           ),
           Expanded(
-            child: FutureBuilder<ProjectModels>(
-              future: listProject,
-              builder: (BuildContext context, AsyncSnapshot<ProjectModels> snapshot) {
+            child: FutureBuilder<UserModels>(
+              future: _listUsers,
+              builder: (BuildContext context, AsyncSnapshot<UserModels> snapshot) {
                 if (snapshot.hasError)
                   return DataErrorWidget(error: snapshot.error.toString());
                 else {
@@ -396,54 +441,42 @@ class Create2 extends StatelessWidget {
                       return AnimationLimiter(
                         child: GroupedListView<dynamic, String>(
                           elements: snapshot.data!.data,
-                          groupBy: (element) => element.customer,
+                          groupBy: (element) => ((element.idRootPhongBan == element.idPhongBan) ? "Phòng " : "Bộ phận ") + element.phongBan,
                           groupSeparatorBuilder: (String value) => Container(
                             width: MediaQuery.of(context).size.width,
                             color: kPrimaryColor,
                             child: Padding(
-                              padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    value.toUpperCase(),
-                                    textAlign: TextAlign.left,
-                                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
-                                  ),
-                                  Text(
-                                    "Khách hàng",
-                                    textAlign: TextAlign.left,
-                                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
-                                  ),
-                                ],
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text(
+                                "$value".toUpperCase(),
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
                           itemBuilder: (context, dynamic element) => ListTile(
-                            title: Text.rich(TextSpan(children: [
-                              TextSpan(
-                                text: element.name.toString(),
-                                style: TextStyle(fontSize: 16.0, color: kPrimaryColor, fontWeight: FontWeight.bold),
-                              ),
-                            ])),
-                            subtitle: Text.rich(TextSpan(children: [
-                              TextSpan(
-                                text: "Mã hiệu : ${element.code}",
-                                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
-                              ),
-                              WidgetSpan(child: SizedBox(width: 5.0)),
-                              TextSpan(text: "|"),
-                              WidgetSpan(child: SizedBox(width: 5.0)),
-                              TextSpan(
-                                text: "Địa điểm: ${element.location}",
-                                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
-                              )
-                            ])),
+                            leading: CircleAvatar(radius: 18.0, backgroundImage: NetworkImage(element.anhDaiDien.toString())),
+                            title: Text(
+                              element.hoTen.toString(),
+                              style: const TextStyle(fontSize: 15.0, color: kPrimaryColor, fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Text(
+                              "${element.chucDanh ?? "Chưa xác định"}",
+                              style: const TextStyle(fontSize: 15.0),
+                            ),
                             trailing: Icon(Ionicons.arrow_redo_outline, color: kSecondaryColor, size: 18.0),
-                            //onTap: () => Navigator.pushNamed(context, CreateDeXuatScreen.routeName, arguments: {'danhmuc': element}),
-                          ), // optional
-                          separator: const Divider(color: kPrimaryColor),
-                          floatingHeader: true, useStickyGroupSeparators: true,
+                            onTap: () {
+                              _formKey.currentState!.fields[key]!.didChange(element.username);
+                              Navigator.pop(context);
+                            },
+                          ),
+                          order: GroupedListOrder.DESC,
+                          floatingHeader: true,
+                          useStickyGroupSeparators: true,
                         ),
                       );
                     } else
@@ -456,5 +489,10 @@ class Create2 extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

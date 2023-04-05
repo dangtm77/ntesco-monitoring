@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:ntesco_smart_monitoring/models/NguoiDung.dart';
+import 'package:ntesco_smart_monitoring/models/common/UserModel.dart';
 import 'package:ntesco_smart_monitoring/models/dx/FormConfig.dart';
 
 class PhieuDeXuatDetailModel {
@@ -11,7 +11,7 @@ class PhieuDeXuatDetailModel {
   final String mucDich;
   final DateTime ngayTao;
   final String nguoiTao;
-  final NguoiDungModel nguoiTaoInfo;
+  final UserModel nguoiTaoInfo;
   final int tinhTrang;
   final bool isQuanTrong;
   final DateTime tuNgay;
@@ -64,7 +64,7 @@ class PhieuDeXuatDetailModel {
       tenDanhMuc: json['tenDanhMuc'],
       ngayTao: DateTime.parse((json['ngayTao'])),
       nguoiTao: json['nguoiTao'],
-      nguoiTaoInfo: NguoiDungModel.fromJson(json['nguoiTaoInfo']),
+      nguoiTaoInfo: UserModel.fromJson(json['nguoiTaoInfo']),
       tinhTrang: json['tinhTrang'],
       isQuanTrong: json['isQuanTrong'],
       tuNgay: DateTime.parse((json['tuNgay'])),

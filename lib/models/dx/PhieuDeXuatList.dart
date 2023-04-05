@@ -1,4 +1,4 @@
-import 'package:ntesco_smart_monitoring/models/NguoiDung.dart';
+import 'package:ntesco_smart_monitoring/models/common/UserModel.dart';
 
 class PhieuDeXuatListModels {
   final int totalCount;
@@ -23,7 +23,7 @@ class PhieuDeXuatListModel {
   final String tenDanhMuc;
   final DateTime ngayTao;
   final String nguoiTao;
-  final NguoiDungModel nguoiTaoInfo;
+  final UserModel nguoiTaoInfo;
   final int tinhTrang;
   final bool isQuanTrong;
   final DateTime tuNgay;
@@ -55,7 +55,7 @@ class PhieuDeXuatListModel {
       tenDanhMuc: json['tenDanhMuc'],
       ngayTao: DateTime.parse((json['ngayTao'])),
       nguoiTao: json['nguoiTao'],
-      nguoiTaoInfo: NguoiDungModel.fromJson(json['nguoiTaoInfo']),
+      nguoiTaoInfo: UserModel.fromJson(json['nguoiTaoInfo']),
       tinhTrang: json['tinhTrang'],
       isQuanTrong: json['isQuanTrong'],
       isDenLuot: json['isDenLuot'],
