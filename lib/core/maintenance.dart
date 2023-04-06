@@ -22,3 +22,4 @@ Future<http.Response> Plans_GetList(dynamic options) async => Core.get(options.t
 
 //--------------------------DEFECT ANALYSIS--------------------------//
 Future<http.Response> DefectAnalysis_GetList(dynamic options) async => Core.get(options.toMap(), API_DEFECTANALYSIS_GETLIST);
+Future<http.Response> DefectAnalysis_Create(dynamic body) async => Core.post(body, API_DEFECTANALYSIS_GETLIST);

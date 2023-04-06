@@ -1,3 +1,5 @@
+import 'dart:math';
+
 class StringHelper {
   static String toShortName(String val) {
     var value = val.trim();
@@ -11,5 +13,23 @@ class StringHelper {
         return value;
     } else
       return value;
+  }
+
+  static String autoGenCode(int lengthChar, int lengthNum, String char) {
+    final charactersList = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    final numberList = '0123456789';
+    final random = Random();
+    var result = '';
+
+    for (var i = 0; i < lengthChar; i++) {
+      result += charactersList[random.nextInt(charactersList.length)];
+    }
+    if (char != null) result += char;
+
+    for (var i = 0; i < lengthNum; i++) {
+      result += numberList[random.nextInt(numberList.length)];
+    }
+
+    return result;
   }
 }

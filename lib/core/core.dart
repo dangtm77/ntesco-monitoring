@@ -11,3 +11,15 @@ Future<http.Response> get(dynamic queryParameters, String urlApi) async {
   var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
   return await http.get(Uri.https(endPoint, urlApi, queryParameters), headers: headerValue);
 }
+
+Future<http.Response> post(dynamic body, String urlApi) async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
+  print(Uri.https(endPoint, urlApi));
+  return await http.post(
+    Uri.https(endPoint, urlApi),
+    headers: headerValue,
+    body: body,
+  );
+}

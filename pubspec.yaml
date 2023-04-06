@@ -12,7 +12,7 @@ dependencies:
   flutter_staggered_animations: ^1.0.0
   http: ^0.13.4
   intl: ^0.17.0
-  adaptive_dialog: ^1.1.0
+  adaptive_dialog: ^1.8.3
   cupertino_icons: ^1.0.3
   ionicons: ^0.2.1
   flutter_svg: ^0.22.0

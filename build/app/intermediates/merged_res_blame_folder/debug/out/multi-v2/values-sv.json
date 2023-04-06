@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "D:\\01. Github\\ntesco-monitoring\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-sv\\values-sv.xml",
+            "outputFile": "D:\\GitHub\\ntesco-monitoring\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-sv\\values-sv.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\dangtm.TAYHO\\.gradle\\caches\\transforms-3\\ea576d89faa9eaea2d1082a4e39b0086\\transformed\\core-1.6.0\\res\\values-sv\\values-sv.xml",
+                    "source": "C:\\Users\\DangTM-Home\\.gradle\\caches\\transforms-3\\ea576d89faa9eaea2d1082a4e39b0086\\transformed\\core-1.6.0\\res\\values-sv\\values-sv.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
