@@ -1,11 +1,7 @@
 import 'dart:convert';
-
-import 'package:awesome_select/awesome_select.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:grouped_list/grouped_list.dart';
 import 'package:http/http.dart';
 import 'package:ionicons/ionicons.dart';
 
@@ -43,7 +39,6 @@ class _CreatePageState extends State<CreateBody> {
   late Future<ProjectModels> _listOfProjects;
   late Future<SystemModels> _listOfSystems;
   late Future<UserModels> _listOfUsers;
-  late Future<List<S2Choice<String>>> _listOfUsersForSelect;
   late bool idSystemIsEnable;
 
   Future<ProjectModels> _getListProjects() async {
@@ -84,42 +79,21 @@ class _CreatePageState extends State<CreateBody> {
 
   Future<UserModels> _getListUsers() async {
     try {
-      List<dynamic> sortOptions = [];
+      List<dynamic> sortOptions = [
+        {"selector": "phongBan_SapXep", "desc": "false"},
+        {"selector": "chucDanh_SapXep", "desc": "true"},
+      ];
       List<dynamic> filterOptions = [];
-
-      List<dynamic> maintenanceStaffFilterOptions = [];
-      maintenanceStaffFilterOptions.add(['idTrangThai', '<>', 3]);
-
-      if (maintenanceStaffFilterOptions.length > 0) {
-        if (filterOptions.length > 0) filterOptions.add('and');
-        if (maintenanceStaffFilterOptions.length > 0) filterOptions.add(maintenanceStaffFilterOptions);
-      }
-
       LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
       Response response = await Common.Users_GetList(options);
       if (response.statusCode >= 200 && response.statusCode <= 299)
         return UserModels.fromJson(jsonDecode(response.body));
-      else
+      else {
+        print(response.body);
         throw Exception('StatusCode: ${response.statusCode}');
+      }
     } catch (ex) {
       throw ex;
-    }
-  }
-
-  Future<List<S2Choice<String>>> _getListUsersForSelect() async {
-    List<dynamic> sortOptions = [];
-    List<dynamic> filterOptions = [];
-    LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
-    Response response = await Common.Users_GetList(options);
-    if (response.statusCode >= 200 && response.statusCode <= 299) {
-      UserModels result = UserModels.fromJson(jsonDecode(response.body));
-      return S2Choice.listFrom<String, dynamic>(
-        source: result.data,
-        value: (index, item) => item.username,
-        title: (index, item) => item.hoTen,
-      );
-    } else {
-      throw Exception('StatusCode: ${response.statusCode}');
     }
   }
 
@@ -129,7 +103,6 @@ class _CreatePageState extends State<CreateBody> {
     _listOfProjects = _getListProjects();
     _listOfSystems = _getListSystems(0);
     _listOfUsers = _getListUsers();
-    _listOfUsersForSelect = _getListUsersForSelect();
     idSystemIsEnable = false;
   }
 
@@ -172,7 +145,7 @@ class _CreatePageState extends State<CreateBody> {
             children: [
               FormBuilder(
                 key: _formKey,
-                //autovalidateMode: AutovalidateMode.always,
+                autovalidateMode: AutovalidateMode.always,
                 initialValue: {
                   'idProject': null,
                   'idSystem': null,
@@ -199,8 +172,6 @@ class _CreatePageState extends State<CreateBody> {
                         analysisDateForm(),
                       ],
                     ),
-                    SizedBox(height: 20),
-                    iii(),
                     SizedBox(height: 20),
                     currentSuitationForm(),
                     SizedBox(height: 20),
@@ -251,70 +222,6 @@ class _CreatePageState extends State<CreateBody> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget iii() {
-    return FutureBuilder<List<S2Choice<String>>>(
-      initialData: [],
-      future: _listOfUsersForSelect,
-      builder: (context, snapshot) {
-        return SmartSelect<String>.single(
-          title: 'Xem theo dự án',
-          placeholder: "Vui lòng chọn ít nhất 1 dự án",
-          modalFilter: true,
-          choiceItems: snapshot.data,
-          modalHeader: true,
-          choiceType: S2ChoiceType.chips,
-          modalType: S2ModalType.popupDialog,
-          choiceBuilder: (context, state, choice) {
-            return Card(
-              margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-              //color: choice.selected ? theme.primaryColor : theme.cardColor,
-              child: InkWell(
-                onTap: () => choice.select?.call(true),
-                child: SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        CircleAvatar(
-                          backgroundImage: NetworkImage(choice.meta['image']),
-                          child: choice.selected
-                              ? Icon(
-                                  Icons.check,
-                                  color: Colors.white,
-                                )
-                              : null,
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          choice.title ?? '',
-                          style: TextStyle(
-                            color: choice.selected ? Colors.white : null,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-          onChange: (state) => setState(() {}),
-          tileBuilder: (context, state) {
-            return S2Tile.fromState(
-              state,
-              isTwoLine: true,
-              trailing: state.selected.length > 0 ? CircleAvatar(radius: 15, backgroundColor: kPrimaryColor, child: Text('${state.selected.length}', style: TextStyle(color: Colors.white))) : null,
-              isLoading: snapshot.connectionState == ConnectionState.waiting,
-            );
-          },
-          selectedValue: '',
-        );
-      },
     );
   }
 
@@ -420,14 +327,37 @@ class _CreatePageState extends State<CreateBody> {
 
   Widget analysisByForm() {
     return Expanded(
-      child: FormBuilderTextField(
-        name: "analysisBy",
-        decoration: const InputDecoration(
-          labelText: 'Nhân sự phân tích',
-          hintText: "Vui lòng nhập thông tin...",
-          errorStyle: TextStyle(height: 0),
-        ).applyDefaults(inputDecorationTheme()),
-        validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+      child: FutureBuilder(
+        future: _listOfUsers,
+        builder: (BuildContext context, AsyncSnapshot<UserModels> snapshot) {
+          if (snapshot.hasError)
+            return DataErrorWidget(error: snapshot.error.toString());
+          else if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active && !snapshot.hasData))
+            return LoadingWidget();
+          else
+            return FormBuilderDropdown<String>(
+              name: 'analysisByForm',
+              menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
+              validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+              decoration: InputDecoration(
+                  labelText: 'Nhân sự phân tích',
+                  hintText: "Vui lòng chọn thông tin...",
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () => _formKey.currentState!.fields['analysisByForm']?.didChange(null),
+                  )).applyDefaults(inputDecorationTheme()),
+              items: snapshot.data!.data
+                  .where((x) => x.idTrangThai != 3)
+                  .map(
+                    (item) => DropdownMenuItem(
+                      value: item.username.toString(),
+                      child: Text("${item.hoTen} (${item.chucDanh})"),
+                    ),
+                  )
+                  .toList(),
+              valueTransformer: (val) => val?.toString(),
+            );
+        },
       ),
     );
   }
@@ -488,18 +418,18 @@ class _CreatePageState extends State<CreateBody> {
           return LoadingWidget();
         else
           return FormBuilderDropdown<String>(
-            name: 'maintenanceStaff',
+            name: 'qcStaff',
             menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
             validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
             decoration: InputDecoration(
-                labelText: 'Đại diện bộ phận Bảo trì',
+                labelText: 'Đại diện bộ phận QC',
                 hintText: "Vui lòng chọn thông tin...",
                 suffixIcon: IconButton(
                   icon: Icon(Icons.close),
-                  onPressed: () => _formKey.currentState!.fields['maintenanceStaff']?.didChange(null),
+                  onPressed: () => _formKey.currentState!.fields['qcStaff']?.didChange(null),
                 )).applyDefaults(inputDecorationTheme()),
             items: snapshot.data!.data
-                .where((x) => x.idTrangThai != 3 && x.idRootPhongBan == 49)
+                .where((x) => x.idTrangThai != 3 && x.idRootPhongBan == 28)
                 .map(
                   (item) => DropdownMenuItem(
                     value: item.username.toString(),
@@ -523,18 +453,18 @@ class _CreatePageState extends State<CreateBody> {
           return LoadingWidget();
         else
           return FormBuilderDropdown<String>(
-            name: 'maintenanceStaff',
+            name: 'cncStaff',
             menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
             validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
             decoration: InputDecoration(
-                labelText: 'Đại diện bộ phận Bảo trì',
+                labelText: 'Đại diện bộ phận C&C',
                 hintText: "Vui lòng chọn thông tin...",
                 suffixIcon: IconButton(
                   icon: Icon(Icons.close),
-                  onPressed: () => _formKey.currentState!.fields['maintenanceStaff']?.didChange(null),
+                  onPressed: () => _formKey.currentState!.fields['cncStaff']?.didChange(null),
                 )).applyDefaults(inputDecorationTheme()),
             items: snapshot.data!.data
-                .where((x) => x.idTrangThai != 3 && x.idRootPhongBan == 49)
+                .where((x) => x.idTrangThai != 3 && x.idRootPhongBan == 41)
                 .map(
                   (item) => DropdownMenuItem(
                     value: item.username.toString(),
@@ -627,6 +557,7 @@ class _CreatePageState extends State<CreateBody> {
     );
   }
 */
+
   @override
   void dispose() {
     super.dispose();

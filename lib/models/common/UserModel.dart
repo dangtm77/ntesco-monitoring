@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 class UserModels {
   final int totalCount;
   final List<UserModel> data;
@@ -30,6 +32,10 @@ class UserModel {
   final String phongBan;
   final String chucDanh;
 
+  final int chucDanh_SapXep;
+  final int phongBan_SapXep;
+  final String chucDanh_Loai;
+
   UserModel({
     required this.username,
     this.anhDaiDien,
@@ -44,6 +50,9 @@ class UserModel {
     required this.rootPhongBan,
     required this.phongBan,
     required this.chucDanh,
+    required this.chucDanh_SapXep,
+    required this.phongBan_SapXep,
+    required this.chucDanh_Loai,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -61,6 +70,9 @@ class UserModel {
       rootPhongBan: json["rootPhongBan"],
       phongBan: json["phongBan"],
       chucDanh: json["chucDanh"],
+      chucDanh_SapXep: json["chucDanh_SapXep"] as int,
+      phongBan_SapXep: json["phongBan_SapXep"] as int,
+      chucDanh_Loai: json["chucDanh_Loai"],
     );
   }
 }
