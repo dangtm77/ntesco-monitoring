@@ -1,3 +1,4 @@
+import 'package:bmprogresshud/bmprogresshud.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -100,15 +101,18 @@ class _MyAppState extends State<MyApp> {
     if (status == false || status == null) initRoute = SplashScreen.routeName;
     if (isLoggedIn == false || isLoggedIn == null) initRoute = SignInScreen.routeName;
 
-    return MaterialApp(
-      supportedLocales: context.supportedLocales,
-      localizationsDelegates: context.localizationDelegates,
-      locale: context.locale,
-      debugShowCheckedModeBanner: false,
-      title: 'NTesco App',
-      theme: theme(),
-      initialRoute: initRoute,
-      routes: routes,
+    return ProgressHud(
+      isGlobalHud: true,
+      child: MaterialApp(
+        supportedLocales: context.supportedLocales,
+        localizationsDelegates: context.localizationDelegates,
+        locale: context.locale,
+        debugShowCheckedModeBanner: false,
+        title: 'NTesco App',
+        theme: theme(),
+        initialRoute: initRoute,
+        routes: routes,
+      ),
     );
   }
 }

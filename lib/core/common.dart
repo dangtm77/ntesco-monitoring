@@ -6,6 +6,6 @@ const API_PROJECTS_LOOKUP = "v2/common/projects/lookup";
 const API_USERS_LOOKUP = "v2/common/users/lookup";
 const API_VARIABLES_LOOKUP = "v2/common/variables/lookup";
 
-Future<http.Response> Projects_GetList(dynamic options) async => Core.get(options.toMap(), API_PROJECTS_LOOKUP);
-Future<http.Response> Users_GetList(dynamic options) async => Core.get(options.toMap(), API_USERS_LOOKUP);
-Future<http.Response> Variables_GetList(dynamic options) async => Core.get(options.toMap(), API_VARIABLES_LOOKUP);
+Future<http.Response> Projects_GetList(dynamic options) async => Core.get(options, API_PROJECTS_LOOKUP);
+Future<http.Response> Users_GetList(dynamic options) async => Core.get(options, API_USERS_LOOKUP);
+Future<http.Response> Variables_GetList(dynamic options) async => Core.get(options, API_VARIABLES_LOOKUP);

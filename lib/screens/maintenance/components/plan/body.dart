@@ -70,7 +70,7 @@ class _BodyPageState extends State<Body> {
     }
 
     LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
-    Response response = await Maintenance.Plans_GetList(options);
+    Response response = await Maintenance.Plans_GetList(options.toMap());
     if (response.statusCode >= 200 && response.statusCode <= 299)
       return PlanModels.fromJson(jsonDecode(response.body));
     else
@@ -81,7 +81,7 @@ class _BodyPageState extends State<Body> {
     List<dynamic> sortOptions = [];
     List<dynamic> filterOptions = [];
     LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
-    Response response = await Common.Projects_GetList(options);
+    Response response = await Common.Projects_GetList(options.toMap());
 
     if (response.statusCode >= 200 && response.statusCode <= 299)
       return S2Choice.listFrom<int, dynamic>(

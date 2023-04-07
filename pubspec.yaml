@@ -8,7 +8,7 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
-  bmprogresshud: ^1.0.0
+  bmprogresshud: ^1.0.1
   flutter_staggered_animations: ^1.0.0
   http: ^0.13.4
   intl: ^0.17.0

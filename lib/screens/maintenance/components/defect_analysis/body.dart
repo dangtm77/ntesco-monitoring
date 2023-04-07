@@ -20,6 +20,7 @@ import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
 import 'package:ntesco_smart_monitoring/models/common/VariableModel.dart';
 import 'package:ntesco_smart_monitoring/models/mt/DefectAnalysisModel.dart';
 import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/create.dart';
+import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/update.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 
 class Body extends StatefulWidget {
@@ -115,7 +116,7 @@ class _BodyPageState extends State<Body> {
     }
 
     LoadOptionsModel options = new LoadOptionsModel(take: itemPerPage * pageIndex, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
-    Response response = await Maintenance.DefectAnalysis_GetList(options);
+    Response response = await Maintenance.DefectAnalysis_GetList(options.toMap());
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       DefectAnalysisModels result = DefectAnalysisModels.fromJson(jsonDecode(response.body));
       setState(() {
@@ -131,7 +132,7 @@ class _BodyPageState extends State<Body> {
     List<dynamic> sortOptions = [];
     List<dynamic> filterOptions = [];
     LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
-    Response response = await Common.Projects_GetList(options);
+    Response response = await Common.Projects_GetList(options.toMap());
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       ProjectModels result = ProjectModels.fromJson(jsonDecode(response.body));
       return S2Choice.listFrom<int, dynamic>(
@@ -150,7 +151,7 @@ class _BodyPageState extends State<Body> {
       ['group', '=', 'MAINTENANCE_DEFECT_ANALYSIS_STATUS']
     ];
     LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
-    Response response = await Common.Variables_GetList(options);
+    Response response = await Common.Variables_GetList(options.toMap());
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       VariableModels result = VariableModels.fromJson(jsonDecode(response.body));
       return S2Choice.listFrom<int, dynamic>(
@@ -470,6 +471,7 @@ class _BodyPageState extends State<Body> {
 
   Widget _item(DefectAnalysisModel item) {
     return ListTile(
+      onTap: () => Navigator.pushNamed(context, MaintenanceDefectAnalysisUpdateScreen.routeName, arguments: {'id': item.id}),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
