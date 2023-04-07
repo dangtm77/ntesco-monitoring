@@ -42,6 +42,11 @@ class _BodyPageState extends State<Body> {
 
   @override
   void initState() {
+    _keywordForSearchEditingController.text = "";
+    _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+
+    super.initState();
+
     NetworkHelper.instance.initialise();
     NetworkHelper.instance.myStream.listen((rs) {
       var result = rs.keys.toList()[0];
@@ -50,17 +55,17 @@ class _BodyPageState extends State<Body> {
       });
       setState(() {});
     });
+  }
 
-    isLoading = false;
-    _keywordForSearchEditingController.text = "";
-    _listOfDefectAnalysis = _getlistOfDefectAnalysis();
-    super.initState();
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   Future<DefectAnalysisModels> _getlistOfDefectAnalysis() async {
     List<dynamic> sortOptions = [
-      // {"selector": "startDate", "desc": "true"},
-      // {"selector": "endDate", "desc": "true"}
+      {"selector": "analysisDate", "desc": "true"},
+      {"selector": "dateCreate", "desc": "true"}
     ];
     List<dynamic> filterOptions = [];
     //FILTER BY PROJECT
@@ -113,6 +118,9 @@ class _BodyPageState extends State<Body> {
     Response response = await Maintenance.DefectAnalysis_GetList(options);
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       DefectAnalysisModels result = DefectAnalysisModels.fromJson(jsonDecode(response.body));
+      setState(() {
+        isLoading = false;
+      });
       return result;
     } else {
       throw Exception('StatusCode: ${response.statusCode}');
@@ -172,8 +180,17 @@ class _BodyPageState extends State<Body> {
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [Text("Đang tải thêm $itemPerPage dòng dữ liệu...", style: TextStyle(fontSize: 15))],
+                  children: [
+                    SizedBox(
+                      child: CircularProgressIndicator(
+                        color: kPrimaryColor,
+                      ),
+                      height: 10.0,
+                      width: 10.0,
+                    ),
+                    SizedBox(width: 10.0),
+                    Text("Đang tải thêm $itemPerPage dòng dữ liệu...")
+                  ],
                 ),
               ),
             ),
@@ -440,7 +457,7 @@ class _BodyPageState extends State<Body> {
                             )),
                           );
                         } else
-                          return NoDataWidget(message: "Không tìm thấy phiếu đề xuất nào liên quan đến bạn !!!");
+                          return NoDataWidget(message: "Không tìm thấy dữ liệu");
                       }
                     }
                   },
@@ -475,7 +492,7 @@ class _BodyPageState extends State<Body> {
           )),
           SizedBox(height: 5.0),
           Text.rich(TextSpan(
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal),
             children: [
               WidgetSpan(child: Icon(Icons.label_important_rounded, size: 18, color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 5.0)),
@@ -493,10 +510,5 @@ class _BodyPageState extends State<Body> {
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }

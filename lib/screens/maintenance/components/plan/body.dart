@@ -32,18 +32,15 @@ class _BodyPageState extends State<Body> {
 
   @override
   void initState() {
+    _listOfPlans = _getListOfPlans();
+    super.initState();
     NetworkHelper.instance.initialise();
     NetworkHelper.instance.myStream.listen((rs) {
       var result = rs.keys.toList()[0];
       setState(() {
         isOnline = (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile) ? true : false;
       });
-      setState(() {});
     });
-
-    _listOfPlans = _getListOfPlans();
-
-    super.initState();
   }
 
   @override

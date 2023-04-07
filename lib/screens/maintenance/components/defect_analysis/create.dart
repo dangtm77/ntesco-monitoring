@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -148,16 +149,17 @@ class _CreatePageState extends State<CreateBody> {
                 FormBuilder(
                   key: _formKey,
                   autovalidateMode: AutovalidateMode.always,
+                  autoFocusOnValidationFailure: true,
                   initialValue: {
                     'idProject': null,
                     'idSystem': null,
-                    //'code': StringHelper.autoGenCode(3, 7, '#'),
-                    //'analysisDate': DateTime.now(),
-                    //'analysisBy': null,
-                    //'currentSuitation': null,
-                    //'maintenanceStaff': null,
-                    //'qcStaff': null,
-                    //'cncStaff': null,
+                    'code': StringHelper.autoGenCode(3, 7, '#'),
+                    'analysisDate': DateTime.now(),
+                    'analysisBy': 'admin',
+                    'currentSuitation': null,
+                    'maintenanceStaff': null,
+                    'qcStaff': null,
+                    'cncStaff': null,
                   },
                   child: Column(
                     children: <Widget>[
@@ -165,11 +167,15 @@ class _CreatePageState extends State<CreateBody> {
                       SizedBox(height: 20),
                       idSystemForm(),
                       SizedBox(height: 20),
-                      codeForm(),
+                      Row(
+                        children: [
+                          Expanded(child: codeForm()),
+                          SizedBox(width: 10),
+                          Expanded(child: analysisDateForm()),
+                        ],
+                      ),
                       SizedBox(height: 20),
                       analysisByForm(),
-                      SizedBox(height: 20),
-                      analysisDateForm(),
                       SizedBox(height: 20),
                       currentSuitationForm(),
                       SizedBox(height: 20),
@@ -186,30 +192,10 @@ class _CreatePageState extends State<CreateBody> {
                             child: DefaultButton(
                               text: 'Xác nhận thông tin',
                               color: kPrimaryColor,
-                              press: () async {
-                                if (_formKey.currentState?.saveAndValidate() ?? false) {
-                                  final result = await showOkCancelAlertDialog(
-                                    context: context,
-                                    title: "XÁC NHẬN THÔNG TIN",
-                                    message: "Bạn có chắc chắn là muốn khởi tạo thông tin này không?",
-                                    okLabel: "Xác nhận",
-                                    cancelLabel: "Đóng",
-                                    isDestructiveAction: true,
-                                  );
-                                  if (result == OkCancelResult.ok) {
-                                    var response = await Maintenance.DefectAnalysis_Create(jsonEncode(_formKey.currentState?.value.toString()));
-                                    print(response.body);
-                                    if (response.statusCode == 201) {
-                                      print('Data sent successfully.');
-                                    } else {
-                                      print('Error sending data: ${response.statusCode}');
-                                    }
-                                  }
-                                }
-                              },
+                              press: () async => submitFunc(context),
                             ),
                           ),
-                          const SizedBox(width: 20),
+                          const SizedBox(width: 10),
                           Expanded(
                             flex: 4,
                             child: DefaultButton(
@@ -229,6 +215,39 @@ class _CreatePageState extends State<CreateBody> {
         ),
       );
 
+  Future<void> submitFunc(BuildContext context) async {
+    if (_formKey.currentState?.saveAndValidate() ?? false) {
+      final result = await showOkCancelAlertDialog(
+        context: context,
+        title: "XÁC NHẬN THÔNG TIN",
+        message: "Bạn có chắc chắn là muốn khởi tạo thông tin này không?\n\r\n\rLưu ý: Nếu thông tin đại diện của các bộ phận không được chọn hệ thống sẽ tự động lấy nhân sự có vai trò cao nhất trong phòng/bộ phận",
+        okLabel: "Xác nhận",
+        cancelLabel: "Đóng",
+        isDestructiveAction: true,
+      );
+      if (result == OkCancelResult.ok) {
+        var model = {
+          'idProject': _formKey.currentState?.fields['idProject']?.value,
+          'idSystem': _formKey.currentState?.fields['idSystem']?.value,
+          'code': _formKey.currentState?.fields['code']?.value,
+          'analysisDate': _formKey.currentState?.fields['analysisDate']?.value.toIso8601String(),
+          'analysisBy': _formKey.currentState?.fields['analysisBy']?.value,
+          'currentSuitation': _formKey.currentState?.fields['currentSuitation']?.value,
+          'maintenanceStaff': _formKey.currentState?.fields['maintenanceStaff']?.value,
+          'qcStaff': _formKey.currentState?.fields['qcStaff']?.value,
+          'cncStaff': _formKey.currentState?.fields['cncStaff']?.value,
+        };
+        var response = await Maintenance.DefectAnalysis_Create(jsonEncode(model));
+        print(response.statusCode);
+        if (response.statusCode >= 200 && response.statusCode <= 299) {
+          print('Data sent successfully.');
+        } else {
+          print('Error sending data: ${response.statusCode}');
+        }
+      }
+    }
+  }
+
   Widget idProjectForm() => FutureBuilder(
         future: _listOfProjects,
         builder: (BuildContext context, AsyncSnapshot<ProjectModels> snapshot) {
@@ -239,18 +258,30 @@ class _CreatePageState extends State<CreateBody> {
           else
             return FormBuilderDropdown<String>(
               name: 'idProject',
-              decoration: InputDecoration(
-                labelText: 'Dự án triển khai',
-                hintText: "Vui lòng chọn...",
-              ).applyDefaults(inputDecorationTheme()),
               menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
-              validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+              decoration: InputDecoration(
+                label: Text.rich(TextSpan(children: [TextSpan(text: 'Dự án / Công trình'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
+                hintText: "Vui lòng chọn thông tin...",
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () => _formKey.currentState!.fields['idProject']?.didChange(null),
+                ),
+              ).applyDefaults(inputDecorationTheme()),
               items: snapshot.data!.data
-                  .map((item) => DropdownMenuItem(
-                        alignment: AlignmentDirectional.topStart,
-                        value: item.id.toString(),
-                        child: Text("${item.name} (${item.location})"),
-                      ))
+                  .map(
+                    (item) => DropdownMenuItem(
+                      value: item.id.toString(),
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(text: "${item.name}", style: TextStyle(fontWeight: FontWeight.w600)),
+                            WidgetSpan(child: SizedBox(width: 5.0)),
+                            TextSpan(text: "(${item.location})", style: TextStyle(fontStyle: FontStyle.italic)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
                   .toList(),
               onChanged: (dynamic val) {
                 if (val != null)
@@ -275,18 +306,30 @@ class _CreatePageState extends State<CreateBody> {
             return FormBuilderDropdown<String>(
               name: 'idSystem',
               enabled: idSystemIsEnable,
-              decoration: InputDecoration(
-                labelText: 'Hệ thống cần phân tích',
-                hintText: "Vui lòng chọn...",
-              ).applyDefaults(inputDecorationTheme()),
               menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
-              validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+              decoration: InputDecoration(
+                label: Text.rich(TextSpan(children: [TextSpan(text: 'Hệ thống cần phân tích'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
+                hintText: "Vui lòng chọn thông tin...",
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () => _formKey.currentState!.fields['idSystem']?.didChange(null),
+                ),
+              ).applyDefaults(inputDecorationTheme()),
               items: snapshot.data!.data
-                  .map((item) => DropdownMenuItem(
-                        alignment: AlignmentDirectional.topStart,
-                        value: item.name.toString(),
-                        child: Text("${item.name} - (${DateFormat("dd/MM/yyyy").format(item.dateAcceptance!)})"),
-                      ))
+                  .map(
+                    (item) => DropdownMenuItem(
+                      value: item.id.toString(),
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(text: "${item.name}", style: TextStyle(fontWeight: FontWeight.w600)),
+                            WidgetSpan(child: SizedBox(width: 5.0)),
+                            TextSpan(text: "(Ngày bàn giao ${DateFormat("dd/MM/yyyy").format(item.dateAcceptance!)})", style: TextStyle(fontStyle: FontStyle.italic)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
                   .toList(),
               valueTransformer: (val) => val?.toString(),
             );
@@ -297,7 +340,7 @@ class _CreatePageState extends State<CreateBody> {
         name: "code",
         decoration: const InputDecoration(
           labelText: 'Mã hiệu',
-          hintText: "Vui lòng chọn...",
+          hintText: "Vui lòng nhập thông tin...",
         ).applyDefaults(inputDecorationTheme()),
         validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
       );
@@ -328,7 +371,7 @@ class _CreatePageState extends State<CreateBody> {
             return LoadingWidget();
           else
             return FormBuilderDropdown<String>(
-              name: 'analysisByForm',
+              name: 'analysisBy',
               menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
               validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
               decoration: InputDecoration(
@@ -343,7 +386,15 @@ class _CreatePageState extends State<CreateBody> {
                   .map(
                     (item) => DropdownMenuItem(
                       value: item.username.toString(),
-                      child: Text("${item.hoTen} (${item.chucDanh})"),
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(text: "${item.hoTen}", style: TextStyle(fontWeight: FontWeight.w600)),
+                            WidgetSpan(child: SizedBox(width: 5.0)),
+                            TextSpan(text: "(${item.chucDanh})", style: TextStyle(fontStyle: FontStyle.italic)),
+                          ],
+                        ),
+                      ),
                     ),
                   )
                   .toList(),
@@ -354,7 +405,7 @@ class _CreatePageState extends State<CreateBody> {
 
   Widget currentSuitationForm() => FormBuilderTextField(
         name: "currentSuitation",
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           labelText: 'Hiện trạng',
           hintText: "Vui lòng nhập thông tin...",
         ).applyDefaults(inputDecorationTheme()),
@@ -372,18 +423,27 @@ class _CreatePageState extends State<CreateBody> {
               name: 'maintenanceStaff',
               menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
               decoration: InputDecoration(
-                  labelText: 'Đại diện bộ phận Bảo trì',
-                  hintText: "Vui lòng chọn thông tin...",
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () => _formKey.currentState!.fields['maintenanceStaff']?.didChange(null),
-                  )).applyDefaults(inputDecorationTheme()),
+                labelText: 'Đại diện bộ phận Bảo trì',
+                hintText: "Vui lòng chọn thông tin...",
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () => _formKey.currentState!.fields['maintenanceStaff']?.didChange(null),
+                ),
+              ).applyDefaults(inputDecorationTheme()),
               items: snapshot.data!.data
                   .where((x) => x.idTrangThai != 3 && x.idRootPhongBan == 49)
                   .map(
                     (item) => DropdownMenuItem(
                       value: item.username.toString(),
-                      child: Text("${item.hoTen} (${item.chucDanh})"),
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(text: "${item.hoTen}", style: TextStyle(fontWeight: FontWeight.w600)),
+                            WidgetSpan(child: SizedBox(width: 5.0)),
+                            TextSpan(text: "(${item.chucDanh})", style: TextStyle(fontStyle: FontStyle.italic)),
+                          ],
+                        ),
+                      ),
                     ),
                   )
                   .toList(),
@@ -415,7 +475,15 @@ class _CreatePageState extends State<CreateBody> {
                   .map(
                     (item) => DropdownMenuItem(
                       value: item.username.toString(),
-                      child: Text("${item.hoTen} (${item.chucDanh})"),
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(text: "${item.hoTen}", style: TextStyle(fontWeight: FontWeight.w600)),
+                            WidgetSpan(child: SizedBox(width: 5.0)),
+                            TextSpan(text: "(${item.chucDanh})", style: TextStyle(fontStyle: FontStyle.italic)),
+                          ],
+                        ),
+                      ),
                     ),
                   )
                   .toList(),
@@ -447,7 +515,15 @@ class _CreatePageState extends State<CreateBody> {
                   .map(
                     (item) => DropdownMenuItem(
                       value: item.username.toString(),
-                      child: Text("${item.hoTen} (${item.chucDanh})"),
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(text: "${item.hoTen}", style: TextStyle(fontWeight: FontWeight.w600)),
+                            WidgetSpan(child: SizedBox(width: 5.0)),
+                            TextSpan(text: "(${item.chucDanh})", style: TextStyle(fontStyle: FontStyle.italic)),
+                          ],
+                        ),
+                      ),
                     ),
                   )
                   .toList(),

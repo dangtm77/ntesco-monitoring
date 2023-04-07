@@ -1,4 +1,8 @@
 {
+  "common": {
+    "hint_text_input": "Vui lòng nhập thông tin...",
+    "hint_text_select": "Vui lòng chọn thông tin..."
+  },
   "login": {
     "username_label": "Tên đăng nhập",
     "password_label": "Mật khẩu",

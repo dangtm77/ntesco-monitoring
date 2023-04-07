@@ -34,7 +34,7 @@ class Dashboard extends StatelessWidget {
         child: GridView.count(
             childAspectRatio: 1.0,
             padding: EdgeInsets.only(left: 5, right: 5),
-            crossAxisCount: 2,
+            crossAxisCount: 3,
             crossAxisSpacing: 15,
             mainAxisSpacing: 15,
             children: myList.map((data) {
@@ -49,12 +49,12 @@ class Dashboard extends StatelessWidget {
                       SizedBox(height: 15),
                       Text(
                         data.title,
-                        style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(14), fontWeight: FontWeight.w600),
+                        style: TextStyle(color: Colors.white, fontSize: 22.0, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(height: 5),
                       Text(
                         data.subtitle,
-                        style: TextStyle(color: Colors.white70, fontSize: getProportionateScreenWidth(13), fontWeight: FontWeight.w500),
+                        style: TextStyle(color: Colors.white70, fontSize: 18.0, fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),

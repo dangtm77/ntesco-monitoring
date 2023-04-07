@@ -144,7 +144,6 @@ class _BodyPageState extends State<Body> {
       filterOptions.add(searchGroupFilterOptions);
     }
 
-    print(jsonEncode(filterOptions));
     var options = new LoadOptionsModel(take: itemPerPage * pageIndex, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
     var response = await getListPhieuDeXuat(yearCurrent, options);
 
@@ -602,16 +601,16 @@ class _BodyPageState extends State<Body> {
       case 1:
         _trangThaiIcon = Column(
           children: [
-            Icon(Ionicons.timer_outline, color: Colors.amber),
+            Icon(Ionicons.timer_outline, color: Colors.amber, size: 18.0),
             Text(item.tienDo, style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 13.0)),
           ],
         );
         break;
       case 2:
-        _trangThaiIcon = Icon(Ionicons.checkmark_circle_outline, color: Colors.green);
+        _trangThaiIcon = Icon(Ionicons.checkmark_circle_outline, color: Colors.green, size: 18.0);
         break;
       case 3:
-        _trangThaiIcon = Icon(Icons.block_rounded, color: Colors.red);
+        _trangThaiIcon = Icon(Icons.block_rounded, color: Colors.red, size: 18.0);
         break;
     }
 
@@ -652,7 +651,7 @@ class _BodyPageState extends State<Body> {
           overflow: TextOverflow.fade,
           softWrap: false,
           maxLines: 1,
-          style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.normal, fontSize: 12, fontStyle: FontStyle.normal),
+          style: TextStyle(color: kTextColor, fontWeight: FontWeight.bold, fontSize: 15, fontStyle: FontStyle.normal),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -662,50 +661,43 @@ class _BodyPageState extends State<Body> {
               overflow: TextOverflow.fade,
               maxLines: 1,
               softWrap: false,
-              style: TextStyle(color: Colors.black87, fontSize: 14.0, fontWeight: FontWeight.w700),
+              style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.w700),
             ),
-            SizedBox(height: 3.0),
+            SizedBox(height: 5.0),
             Text.rich(
               TextSpan(
-                style: TextStyle(fontSize: 12),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 children: [
-                  WidgetSpan(child: Icon(Icons.tag, size: 15.0, color: kSecondaryColor)),
+                  WidgetSpan(child: Icon(Icons.tag, size: 18.0, color: kTextColor)),
                   WidgetSpan(child: SizedBox(width: 2.0)),
                   TextSpan(
                     text: item.id.toString(),
                     style: TextStyle(
-                      color: kSecondaryColor,
+                      color: kTextColor,
                       fontWeight: FontWeight.normal,
                       fontStyle: FontStyle.italic,
-                      fontSize: 12,
                     ),
                   ),
-                  WidgetSpan(child: SizedBox(width: 10.0)),
-                  WidgetSpan(
-                    child: Icon(Icons.person, size: 15.0, color: kSecondaryColor),
-                  ),
+                  WidgetSpan(child: SizedBox(width: 15.0)),
+                  WidgetSpan(child: Icon(Icons.person_add, size: 18.0, color: kTextColor)),
                   WidgetSpan(child: SizedBox(width: 2.0)),
                   TextSpan(
                     text: StringHelper.toShortName(item.nguoiTaoInfo.hoTen.toString()),
                     style: TextStyle(
-                      color: kSecondaryColor,
+                      color: kTextColor,
                       fontWeight: FontWeight.normal,
                       fontStyle: FontStyle.italic,
-                      fontSize: 12,
                     ),
                   ),
-                  WidgetSpan(child: SizedBox(width: 10.0)),
-                  WidgetSpan(
-                    child: Icon(Icons.event, size: 15.0, color: kSecondaryColor),
-                  ),
+                  WidgetSpan(child: SizedBox(width: 15.0)),
+                  WidgetSpan(child: Icon(Icons.calendar_month, size: 18.0, color: kTextColor)),
                   WidgetSpan(child: SizedBox(width: 2.0)),
                   TextSpan(
-                    text: DateFormat("hh:mm dd/MM").format(item.ngayTao),
+                    text: DateFormat("hh:mm dd/MM/yyyy").format(item.ngayTao),
                     style: TextStyle(
-                      color: kSecondaryColor,
+                      color: kTextColor,
                       fontWeight: FontWeight.normal,
                       fontStyle: FontStyle.italic,
-                      fontSize: 12,
                     ),
                   ),
                 ],
