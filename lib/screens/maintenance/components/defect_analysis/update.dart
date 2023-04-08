@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
@@ -11,7 +13,7 @@ import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 import 'package:ntesco_smart_monitoring/models/mt/DefectAnalysisModel.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 
-class MaintenanceDefectAnalysisUpdateScreen extends StatelessWidget {
+class DefectAnalysisUpdateScreen extends StatelessWidget {
   static String routeName = "/maintenance/defect-analysis/update";
   @override
   Widget build(BuildContext context) {
@@ -65,9 +67,7 @@ class _UpdateBodyState extends State<UpdateBody> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              _header(),
-            ],
+            children: <Widget>[_header(), _main(context)],
           ),
         ),
       );
@@ -86,6 +86,67 @@ class _UpdateBodyState extends State<UpdateBody> {
           ),
         ),
       );
+
+  Widget _main(BuildContext context) => Expanded(
+          child: FutureBuilder<DefectAnalysisModel>(
+        future: _defectAnalysis,
+        builder: (BuildContext context, AsyncSnapshot<DefectAnalysisModel> snapshot) {
+          if (snapshot.hasError) {
+            return DataErrorWidget(error: snapshot.error.toString());
+          } else {
+            if (snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active)
+              return LoadingWidget();
+            else {
+              if (snapshot.hasData && snapshot.data != null) {
+                var item = snapshot.data;
+                return Scaffold(
+                  body: SizedBox.expand(
+                    child: PageView(
+                      controller: _pageController,
+                      onPageChanged: ((value) => setState(() => _currentIndex = value)),
+                      children: <Widget>[
+                        //DetailChungBody(id: id, phieuDeXuat: item),
+                        //DetailTheoDoiBody(id: id, phieuDeXuat: item),
+                        //DetailThaoLuanBody(id: id, phieuDeXuat: item),
+                        //Container(color: Colors.blue),
+                      ],
+                    ),
+                  ),
+                  bottomNavigationBar: BottomNavyBar(
+                    itemCornerRadius: 10.0,
+                    containerHeight: 45.0,
+                    selectedIndex: _currentIndex,
+                    onItemSelected: (value) {
+                      setState(() => _currentIndex = value);
+                      _pageController.jumpToPage(value);
+                    },
+                    items: <BottomNavyBarItem>[
+                      BottomNavyBarItem(
+                        title: Text('Chung'),
+                        icon: Icon(Ionicons.reader_outline),
+                        textAlign: TextAlign.center,
+                      ),
+                      BottomNavyBarItem(
+                        title: Text('Phê duyệt'),
+                        icon: Icon(Ionicons.git_branch_outline),
+                        textAlign: TextAlign.center,
+                      ),
+                      BottomNavyBarItem(
+                        title: Text('Trao đổi'),
+                        icon: Icon(Ionicons.chatbubbles_outline),
+                        textAlign: TextAlign.center,
+                      ),
+                      //BottomNavyBarItem(title: Text('Khác'), icon: Icon(Ionicons.ellipsis_horizontal_circle_outline), textAlign: TextAlign.center),
+                    ],
+                  ),
+                );
+              } else {
+                return NoDataWidget(message: "Không tìm thấy thông tin phiếu đề xuất!!!");
+              }
+            }
+          }
+        },
+      ));
 
   @override
   void dispose() {

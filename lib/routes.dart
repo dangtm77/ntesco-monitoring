@@ -22,8 +22,8 @@ final Map<String, WidgetBuilder> routes = {
   DetailOfDeXuatScreen.routeName: (context) => DetailOfDeXuatScreen(),
   CreateDeXuatScreen.routeName: (context) => CreateDeXuatScreen(),
   MaintenanceScreen.routeName: (context) => MaintenanceScreen(),
-  MaintenancePlanScreen.routeName: (context) => MaintenancePlanScreen(),
-  MaintenanceDefectAnalysisScreen.routeName: (context) => MaintenanceDefectAnalysisScreen(),
-  MaintenanceDefectAnalysisCreateScreen.routeName: (context) => MaintenanceDefectAnalysisCreateScreen(),
-  MaintenanceDefectAnalysisUpdateScreen.routeName: (context) => MaintenanceDefectAnalysisUpdateScreen(),
+  PlanScreen.routeName: (context) => PlanScreen(),
+  DefectAnalysisScreen.routeName: (context) => DefectAnalysisScreen(),
+  DefectAnalysisCreateScreen.routeName: (context) => DefectAnalysisCreateScreen(),
+  DefectAnalysisUpdateScreen.routeName: (context) => DefectAnalysisUpdateScreen(),
 };

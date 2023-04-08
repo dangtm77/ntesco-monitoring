@@ -24,7 +24,7 @@ import 'package:ntesco_smart_monitoring/screens/maintenance/defect_analysis_scre
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:ntesco_smart_monitoring/theme.dart';
 
-class MaintenanceDefectAnalysisCreateScreen extends StatelessWidget {
+class DefectAnalysisCreateScreen extends StatelessWidget {
   static String routeName = "/maintenance/defect-analysis/create";
   @override
   Widget build(BuildContext context) {
@@ -536,7 +536,7 @@ class _CreatePageState extends State<CreateBody> {
           await Maintenance.DefectAnalysis_Create(jsonEncode(model)).then((response) {
             if (response.statusCode >= 200 && response.statusCode <= 299) {
               ProgressHud.of(context)?.showSuccessAndDismiss(text: "Thành công");
-              Navigator.pushReplacementNamed(context, MaintenanceDefectAnalysisScreen.routeName);
+              Navigator.pushReplacementNamed(context, DefectAnalysisScreen.routeName);
             } else {
               ProgressHud.of(context)?.dismiss();
               ScaffoldMessenger.of(context).showSnackBar(

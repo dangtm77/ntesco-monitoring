@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
-import 'package:ntesco_smart_monitoring/screens/maintenance/components/dashboard.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -24,7 +23,7 @@ class _BodyPageState extends State<Body> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [_header(context), Dashboard()],
+          children: [_header(context), Text('Updating...')],
         ),
       ),
     );

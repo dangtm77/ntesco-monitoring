@@ -5,8 +5,11 @@ import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/core/auth.dart';
 import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/dexuat/dexuat_screen.dart';
+import 'package:ntesco_smart_monitoring/screens/maintenance/defect_analysis_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/maintenance/maintenance_screen.dart';
+import 'package:ntesco_smart_monitoring/screens/maintenance/plan_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/signin/signin_screen.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ntesco_smart_monitoring/models/Login.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -49,7 +52,7 @@ class _MainDrawerState extends State<MainDrawer> {
         return SafeArea(
           child: SingleChildScrollView(
             child: Column(
-              children: [
+              children: <Widget>[
                 SizedBox(height: 15),
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 10),
@@ -85,57 +88,89 @@ class _MainDrawerState extends State<MainDrawer> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 20.0,
-                ),
+                SizedBox(height: 20.0),
                 ListTile(
                   onTap: () => Navigator.pushNamed(context, HomeScreen.routeName),
-                  leading: Icon(Icons.home_rounded, color: kPrimaryColor),
-                  trailing: Icon(Icons.arrow_right_rounded, color: kPrimaryColor),
-                  title: Text("menu.home".tr(), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w700)),
+                  title: Row(
+                    children: [
+                      Icon(Ionicons.home_outline, color: kPrimaryColor),
+                      SizedBox(width: 15),
+                      Text("menu.home".tr(), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w600)),
+                    ],
+                  ),
                 ),
                 ListTile(
                   onTap: () => Navigator.pushNamed(context, ListOfDeXuatScreen.routeName),
-                  leading: Icon(Icons.bar_chart_rounded, color: kPrimaryColor),
-                  trailing: Icon(Icons.arrow_right_rounded, color: kPrimaryColor),
-                  title: Text("menu.phieudexuat".tr(), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w700)),
+                  title: Row(
+                    children: [
+                      Icon(Ionicons.git_compare_outline, color: kPrimaryColor),
+                      SizedBox(width: 15),
+                      Text("menu.phieudexuat".tr(), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w600)),
+                    ],
+                  ),
                 ),
-                ListTile(
-                  onTap: () => Navigator.pushNamed(context, MaintenanceScreen.routeName),
-                  leading: Icon(Ionicons.build_outline, color: kPrimaryColor),
-                  trailing: Icon(Icons.arrow_right_rounded, color: kPrimaryColor),
-                  title: Text("menu.maintenance".tr(), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w700)),
+                ExpansionTile(
+                  initiallyExpanded: true,
+                  title: Row(
+                    children: [
+                      Icon(Ionicons.construct_outline, color: kPrimaryColor),
+                      SizedBox(width: 15),
+                      Text("menu.maintenance".tr(), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w600)),
+                    ],
+                  ),
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 35.0),
+                      child: ListTile(
+                        onTap: () => Navigator.pushNamed(context, PlanScreen.routeName),
+                        title: Row(
+                          children: [
+                            Icon(Ionicons.newspaper_outline, color: kPrimaryColor),
+                            SizedBox(width: 15),
+                            Text("Kế hoạch bảo trì", style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.normal)),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 35.0),
+                      child: ListTile(
+                        onTap: () => Navigator.pushNamed(context, MaintenanceScreen.routeName),
+                        title: Row(
+                          children: [
+                            Icon(Ionicons.build_outline, color: kPrimaryColor),
+                            SizedBox(width: 15),
+                            Text("Bảo trì hệ thống", style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.normal)),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 35.0),
+                      child: ListTile(
+                        onTap: () => Navigator.pushNamed(context, DefectAnalysisScreen.routeName),
+                        title: Row(
+                          children: [
+                            Icon(Ionicons.shield_checkmark_outline, color: kPrimaryColor),
+                            SizedBox(width: 15),
+                            Text("Phân tích sự cố", style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.normal)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                /*
-                ListTile(
-                  onTap: () => Navigator.pushNamed(context, ReportsScreen.routeName),
-                  leading: Icon(Icons.bar_chart_rounded, color: kPrimaryColor),
-                  trailing: Icon(Icons.arrow_right_rounded, color: kPrimaryColor),
-                  title:
-                      Text("menu.reports".tr(), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w700)),
-                ),
-                ListTile(
-                  onTap: () => Navigator.pushNamed(context, ContactUsScreen.routeName),
-                  leading: Icon(Icons.insert_comment_outlined, color: kPrimaryColor),
-                  trailing: Icon(Icons.arrow_right_rounded, color: kPrimaryColor),
-                  title: Text("menu.contact_us".tr(),
-                      style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w700)),
-                ),
-                ListTile(
-                  onTap: () => {},
-                  leading: Icon(Icons.warning_amber_rounded, color: kPrimaryColor),
-                  trailing: Icon(Icons.arrow_right_rounded, color: kPrimaryColor),
-                  title: Text("menu.alarm".tr(),
-                      style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w700)),
-                ),
-                */
                 ListTile(
                   onTap: () async {
                     if (await funcLogOut()) Navigator.pushReplacementNamed(context, SignInScreen.routeName);
                   },
-                  leading: Icon(Icons.power_settings_new_rounded, color: kPrimaryColor),
-                  trailing: Icon(Icons.arrow_right_rounded, color: kPrimaryColor),
-                  title: Text("menu.log_out".tr(), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w700)),
+                  title: Row(
+                    children: [
+                      Icon(Ionicons.log_out_outline, color: kPrimaryColor),
+                      SizedBox(width: 15),
+                      Text("menu.log_out".tr(), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w600)),
+                    ],
+                  ),
                 ),
               ],
             ),

@@ -215,7 +215,7 @@ class _BodyPageState extends State<Body> {
       ),
       buttonRight: InkWell(
         borderRadius: BorderRadius.circular(15),
-        onTap: () => Navigator.pushNamed(context, MaintenanceDefectAnalysisCreateScreen.routeName),
+        onTap: () => Navigator.pushNamed(context, DefectAnalysisCreateScreen.routeName),
         child: Icon(
           Icons.addchart_outlined,
           color: kPrimaryColor,
@@ -452,7 +452,7 @@ class _BodyPageState extends State<Body> {
                                   ),
                                 );
                               },
-                              separator: Divider(thickness: 1, endIndent: getProportionateScreenHeight(15.0), indent: getProportionateScreenHeight(15.0), color: kPrimaryColor),
+                              separator: Divider(thickness: 1),
                               floatingHeader: false,
                               useStickyGroupSeparators: true,
                             )),
@@ -471,7 +471,7 @@ class _BodyPageState extends State<Body> {
 
   Widget _item(DefectAnalysisModel item) {
     return ListTile(
-      onTap: () => Navigator.pushNamed(context, MaintenanceDefectAnalysisUpdateScreen.routeName, arguments: {'id': item.id}),
+      onTap: () => Navigator.pushNamed(context, DefectAnalysisUpdateScreen.routeName, arguments: {'id': item.id}),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
