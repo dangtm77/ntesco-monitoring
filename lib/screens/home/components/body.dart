@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
-import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ntesco_smart_monitoring/models/Login.dart';

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:awesome_select/awesome_select.dart';
@@ -14,11 +15,12 @@ import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
 import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
-import 'package:ntesco_smart_monitoring/helper/network.dart';
+import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
 import 'package:ntesco_smart_monitoring/models/common/VariableModel.dart';
 import 'package:ntesco_smart_monitoring/models/mt/DefectAnalysisModel.dart';
+import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/create.dart';
 import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/update.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
@@ -31,6 +33,8 @@ class Body extends StatefulWidget {
 class _BodyPageState extends State<Body> {
   //Biến check thiết bị có kết nối với internet hay không
   late bool isOnline = false;
+  late StreamSubscription<ConnectivityResult> subscription;
+
   late int pageIndex = 1;
   late int itemPerPage = 15;
   late bool isLoading = false;
@@ -44,27 +48,29 @@ class _BodyPageState extends State<Body> {
   @override
   void initState() {
     _keywordForSearchEditingController.text = "";
-    _listOfDefectAnalysis = _getlistOfDefectAnalysis();
-
     super.initState();
+    checkConnectivity(null);
+    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) => checkConnectivity(result));
+  }
 
-    NetworkHelper.instance.initialise();
-    NetworkHelper.instance.myStream.listen((rs) {
-      var result = rs.keys.toList()[0];
+  Future<void> checkConnectivity(ConnectivityResult? result) async {
+    Util.checkConnectivity(result, (status) {
       setState(() {
-        isOnline = (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile) ? true : false;
+        isOnline = status;
+        _listOfDefectAnalysis = _getlistOfDefectAnalysis();
       });
-      setState(() {});
     });
   }
 
   @override
   void dispose() {
+    subscription.cancel();
     super.dispose();
   }
 
   Future<DefectAnalysisModels> _getlistOfDefectAnalysis() async {
     List<dynamic> sortOptions = [
+      {"selector": "totalDetail", "desc": "true"},
       {"selector": "analysisDate", "desc": "true"},
       {"selector": "dateCreate", "desc": "true"}
     ];
@@ -207,7 +213,7 @@ class _BodyPageState extends State<Body> {
       subtitle: "maintenance.defect_analysis_subtitle".tr(),
       buttonLeft: InkWell(
         borderRadius: BorderRadius.circular(15),
-        onTap: () => Navigator.pop(context),
+        onTap: () => Navigator.pushNamed(context, HomeScreen.routeName),
         child: Stack(
           clipBehavior: Clip.none,
           children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
@@ -393,19 +399,19 @@ class _BodyPageState extends State<Body> {
 
   Widget _listAll(BuildContext context) {
     return Expanded(
-      child: NotificationListener<ScrollNotification>(
-        onNotification: (ScrollNotification scrollInfo) {
-          if (!isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-            setState(() {
-              pageIndex = pageIndex + 1;
-              _listOfDefectAnalysis = _getlistOfDefectAnalysis();
-              isLoading = true;
-            });
-          }
-          return true;
-        },
-        child: (isOnline)
-            ? RefreshIndicator(
+      child: (isOnline)
+          ? NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification scrollInfo) {
+                if (!isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+                  setState(() {
+                    pageIndex = pageIndex + 1;
+                    _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+                    isLoading = true;
+                  });
+                }
+                return true;
+              },
+              child: RefreshIndicator(
                 onRefresh: () async {
                   setState(() {
                     isLoading = false;
@@ -463,9 +469,9 @@ class _BodyPageState extends State<Body> {
                     }
                   },
                 ),
-              )
-            : NoConnectionWidget(),
-      ),
+              ),
+            )
+          : NoConnectionWidget(),
     );
   }
 
@@ -496,6 +502,10 @@ class _BodyPageState extends State<Body> {
           Text.rich(TextSpan(
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal),
             children: [
+              WidgetSpan(child: Icon(Icons.tag, size: 18, color: kTextColor)),
+              WidgetSpan(child: SizedBox(width: 3.0)),
+              TextSpan(text: "${item.id}", style: TextStyle(color: kTextColor)),
+              WidgetSpan(child: SizedBox(width: 15.0)),
               WidgetSpan(child: Icon(Icons.label_important_rounded, size: 18, color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 5.0)),
               TextSpan(text: "${item.statusInfo.text}", style: TextStyle(color: kTextColor)),
@@ -506,7 +516,7 @@ class _BodyPageState extends State<Body> {
               WidgetSpan(child: SizedBox(width: 15.0)),
               WidgetSpan(child: Icon(Icons.calendar_month, size: 18, color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 5.0)),
-              TextSpan(text: "${item.analysisDate}", style: TextStyle(color: kTextColor)),
+              TextSpan(text: "${DateFormat("hh:mm dd/MM/yyyy").format(item.analysisDate!)}", style: TextStyle(color: kTextColor)),
             ],
           )),
         ],

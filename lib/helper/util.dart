@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
 class Util {
@@ -17,5 +18,10 @@ class Util {
           backgroundColor: color,
         ),
       );
+  }
+
+  static Future<void> checkConnectivity(ConnectivityResult? result, Function callback) async {
+    var status = ((result != null) ? result : (await Connectivity().checkConnectivity()));
+    callback((status == ConnectivityResult.wifi || status == ConnectivityResult.mobile));
   }
 }

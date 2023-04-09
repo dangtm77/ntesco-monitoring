@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ntesco_smart_monitoring/components/change_language.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ntesco_smart_monitoring/core/auth.dart';
-import 'package:ntesco_smart_monitoring/helper/network.dart';
 import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:ntesco_smart_monitoring/models/Login.dart';
 import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
@@ -33,14 +32,6 @@ class _SignFormState extends State<SignForm> {
   void initState() {
     super.initState();
     model = new LoginRequestModel();
-
-    NetworkHelper.instance.initialise();
-    NetworkHelper.instance.myStream.listen((rs) {
-      var result = rs.keys.toList()[0];
-      setState(() {
-        isOnline = (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile) ? true : false;
-      });
-    });
   }
 
   @override

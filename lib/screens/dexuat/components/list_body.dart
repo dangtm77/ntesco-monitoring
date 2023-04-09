@@ -1,18 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ui';
 
 import 'package:awesome_select/awesome_select.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:ntesco_smart_monitoring/helper/network.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 
@@ -51,21 +47,13 @@ class _BodyPageState extends State<Body> {
   late bool isLoading = false;
   //Biến check thiết bị có kết nối với internet hay không
   late bool isOnline = false;
+
   @override
   void initState() {
     _keywordForSearchEditingController.text = "";
     listPhieuDeXuat = _getListPhieuDeXuat();
     thongKe = _getThongKe(yearCurrent);
     super.initState();
-
-    NetworkHelper.instance.initialise();
-    NetworkHelper.instance.myStream.listen((rs) {
-      var result = rs.keys.toList()[0];
-      setState(() {
-        isOnline = (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile) ? true : false;
-      });
-      setState(() {});
-    });
   }
 
   @override

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:awesome_select/awesome_select.dart';
@@ -13,7 +14,7 @@ import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
 import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
-import 'package:ntesco_smart_monitoring/helper/network.dart';
+import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
 import 'package:ntesco_smart_monitoring/models/mt/PlanModel.dart';
@@ -27,24 +28,30 @@ class Body extends StatefulWidget {
 class _BodyPageState extends State<Body> {
   //Biến check thiết bị có kết nối với internet hay không
   late bool isOnline = false;
+  late StreamSubscription<ConnectivityResult> subscription;
+
   late List<int> _projectsCurrent = [];
   late Future<PlanModels> _listOfPlans;
 
   @override
   void initState() {
-    _listOfPlans = _getListOfPlans();
     super.initState();
-    NetworkHelper.instance.initialise();
-    NetworkHelper.instance.myStream.listen((rs) {
-      var result = rs.keys.toList()[0];
+    checkConnectivity(null);
+    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) => checkConnectivity(result));
+  }
+
+  Future<void> checkConnectivity(ConnectivityResult? result) async {
+    Util.checkConnectivity(result, (status) {
       setState(() {
-        isOnline = (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile) ? true : false;
+        isOnline = status;
+        _listOfPlans = _getListOfPlans();
       });
     });
   }
 
   @override
   void dispose() {
+    subscription.cancel();
     super.dispose();
   }
 
@@ -222,54 +229,53 @@ class _BodyPageState extends State<Body> {
 
   Widget _listAll(BuildContext context) {
     return Expanded(
-      child: NotificationListener<ScrollNotification>(
-        child: (isOnline)
-            ? RefreshIndicator(
-                onRefresh: () async {
-                  setState(() {
-                    _listOfPlans = _getListOfPlans();
-                  });
-                },
-                child: FutureBuilder<PlanModels>(
-                  future: _listOfPlans,
-                  builder: (BuildContext context, AsyncSnapshot<PlanModels> snapshot) {
-                    if (snapshot.hasError)
-                      return DataErrorWidget(error: snapshot.error.toString());
+      child: (isOnline)
+          ? NotificationListener<ScrollNotification>(
+              child: RefreshIndicator(
+              onRefresh: () async {
+                setState(() {
+                  _listOfPlans = _getListOfPlans();
+                });
+              },
+              child: FutureBuilder<PlanModels>(
+                future: _listOfPlans,
+                builder: (BuildContext context, AsyncSnapshot<PlanModels> snapshot) {
+                  if (snapshot.hasError)
+                    return DataErrorWidget(error: snapshot.error.toString());
+                  else {
+                    if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active))
+                      return LoadingWidget();
                     else {
-                      if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active))
-                        return LoadingWidget();
-                      else {
-                        if (snapshot.hasData && snapshot.data!.data.isNotEmpty) {
-                          return Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: getProportionateScreenHeight(10.0),
-                              horizontal: getProportionateScreenWidth(0.0),
+                      if (snapshot.hasData && snapshot.data!.data.isNotEmpty) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: getProportionateScreenHeight(10.0),
+                            horizontal: getProportionateScreenWidth(0.0),
+                          ),
+                          child: AnimationLimiter(
+                            child: ListView.builder(
+                              itemCount: snapshot.data!.data.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                var item = snapshot.data!.data.elementAt(index);
+                                return AnimationConfiguration.staggeredList(
+                                  position: index,
+                                  duration: const Duration(milliseconds: 400),
+                                  child: SlideAnimation(
+                                    child: FadeInAnimation(child: _item(item)),
+                                  ),
+                                );
+                              },
                             ),
-                            child: AnimationLimiter(
-                              child: ListView.builder(
-                                itemCount: snapshot.data!.data.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  var item = snapshot.data!.data.elementAt(index);
-                                  return AnimationConfiguration.staggeredList(
-                                    position: index,
-                                    duration: const Duration(milliseconds: 400),
-                                    child: SlideAnimation(
-                                      child: FadeInAnimation(child: _item(item)),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          );
-                        } else
-                          return NoDataWidget(message: "Không tìm thấy phiếu đề xuất nào liên quan đến bạn !!!");
-                      }
+                          ),
+                        );
+                      } else
+                        return NoDataWidget(message: "Không tìm thấy phiếu đề xuất nào liên quan đến bạn !!!");
                     }
-                  },
-                ),
-              )
-            : NoConnectionWidget(),
-      ),
+                  }
+                },
+              ),
+            ))
+          : NoConnectionWidget(),
     );
   }
 

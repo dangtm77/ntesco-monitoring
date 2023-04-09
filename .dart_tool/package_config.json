@@ -284,6 +284,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "get",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/get-4.6.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.15"
+    },
+    {
       "name": "grouped_list",
       "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/grouped_list-5.1.2",
       "packageUri": "lib/",
@@ -388,12 +394,6 @@
     {
       "name": "octo_image",
       "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/octo_image-1.0.2",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "page_transition",
-      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/page_transition-2.0.9",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -728,7 +728,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2023-04-08T03:03:29.990829Z",
+  "generated": "2023-04-08T10:01:53.240307Z",
   "generator": "pub",
   "generatorVersion": "2.18.6"
 }

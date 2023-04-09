@@ -9,7 +9,6 @@ import 'package:ntesco_smart_monitoring/screens/maintenance/defect_analysis_scre
 import 'package:ntesco_smart_monitoring/screens/maintenance/maintenance_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/maintenance/plan_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/signin/signin_screen.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ntesco_smart_monitoring/models/Login.dart';
 import 'package:easy_localization/easy_localization.dart';

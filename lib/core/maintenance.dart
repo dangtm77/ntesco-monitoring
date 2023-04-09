@@ -10,6 +10,8 @@ const API_PLANS_GETLIST = "v2/mt/plans";
 const API_DEFECTANALYSIS_GETLIST = "v2/mt/defectanalysis";
 const API_DEFECTANALYSIS_GEDETAIL = "v2/mt/defectanalysis/detail";
 
+const API_DEFECTANALYSISDETAILS_GETLIST = "v2/mt/defectanalysisdetails";
+
 //--------------------------SYSTEMS--------------------------//
 Future<http.Response> Systems_GetList(dynamic options) async => Core.get(options, API_SYSTEMS_GETLIST);
 Future<http.Response> Systems_GetList_ByProject(int id, dynamic options) async {
@@ -25,3 +27,9 @@ Future<http.Response> Plans_GetList(dynamic options) async => Core.get(options, 
 Future<http.Response> DefectAnalysis_GetDetail(dynamic options) async => Core.get(options, API_DEFECTANALYSIS_GEDETAIL);
 Future<http.Response> DefectAnalysis_GetList(dynamic options) async => Core.get(options, API_DEFECTANALYSIS_GETLIST);
 Future<http.Response> DefectAnalysis_Create(dynamic body) async => Core.post(body, API_DEFECTANALYSIS_GETLIST);
+//--------------------------DEFECT ANALYSIS--------------------------//
+Future<http.Response> DefectAnalysisDetails_GetList(int id, dynamic options) async {
+  var queryParameters = options;
+  queryParameters.addAll({"idDefectAnalysis": id.toString()});
+  return Core.get(queryParameters, API_DEFECTANALYSISDETAILS_GETLIST);
+}

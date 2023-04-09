@@ -1,9 +1,6 @@
 import 'package:bmprogresshud/bmprogresshud.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:ntesco_smart_monitoring/helper/network.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:ntesco_smart_monitoring/language/codegen_loader.g.dart';
@@ -12,8 +9,6 @@ import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/signin/signin_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/splash/splash_screen.dart';
 import 'package:ntesco_smart_monitoring/theme.dart';
-
-import 'screens/maintenance/plan_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,29 +67,12 @@ class _MyAppState extends State<MyApp> {
 
   _MyAppState(this.status, this.isLoggedIn);
 
-  late NetworkHelper _networkConnectivity = NetworkHelper.instance;
-  bool isOnline = false;
-
   void initState() {
-    _networkConnectivity.initialise();
-    _networkConnectivity.myStream.listen((source) {
-      setState(() {
-        switch (source.keys.toList()[0]) {
-          case ConnectivityResult.wifi:
-          case ConnectivityResult.mobile:
-            isOnline = true;
-            break;
-          default:
-            isOnline = false;
-        }
-      });
-    });
     super.initState();
   }
 
   @override
   void dispose() {
-    _networkConnectivity.disposeStream();
     super.dispose();
   }
 
@@ -115,18 +93,6 @@ class _MyAppState extends State<MyApp> {
         theme: theme(),
         initialRoute: initRoute,
         routes: routes,
-        onGenerateRoute: (settings) {
-          switch (settings.name) {
-            case '/mt/plan':
-              return PageTransition(
-                child: PlanScreen(),
-                type: PageTransitionType.scale,
-                settings: settings,
-              );
-            default:
-              return null;
-          }
-        },
       ),
     );
   }

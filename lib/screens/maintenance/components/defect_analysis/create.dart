@@ -74,9 +74,10 @@ class _CreatePageState extends State<CreateBody> {
         requireTotalCount: 'true',
       );
       Response response = await Maintenance.Systems_GetList_ByProject(id, options.toMap());
-      if (response.statusCode >= 200 && response.statusCode <= 299)
+      if (response.statusCode >= 200 && response.statusCode <= 299) {
+        print(response.body);
         return SystemModels.fromJson(jsonDecode(response.body));
-      else
+      } else
         throw Exception('StatusCode: ${response.statusCode}');
     } catch (ex) {
       throw ex;
@@ -105,11 +106,11 @@ class _CreatePageState extends State<CreateBody> {
 
   @override
   void initState() {
-    super.initState();
     _listOfProjects = _getListProjects();
     _listOfSystems = _getListSystems(0);
     _listOfUsers = _getListUsers();
     idSystemIsEnable = false;
+    super.initState();
   }
 
   @override
@@ -227,7 +228,7 @@ class _CreatePageState extends State<CreateBody> {
             else if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active && !snapshot.hasData))
               return CircularProgressIndicator();
             else
-              return FormBuilderDropdown<String>(
+              return FormBuilderDropdown<int>(
                 name: 'idProject',
                 menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 decoration: InputDecoration(
@@ -241,7 +242,7 @@ class _CreatePageState extends State<CreateBody> {
                 items: snapshot.data!.data
                     .map(
                       (item) => DropdownMenuItem(
-                        value: item.id.toString(),
+                        value: item.id,
                         child: Text.rich(
                           TextSpan(
                             children: [
@@ -258,10 +259,10 @@ class _CreatePageState extends State<CreateBody> {
                   if (val != null)
                     setState(() {
                       idSystemIsEnable = true;
-                      _listOfSystems = _getListSystems(int.parse(val));
+                      _listOfSystems = _getListSystems(val);
                     });
                 },
-                valueTransformer: (val) => val?.toString(),
+                valueTransformer: (val) => val,
                 validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
               );
           },
@@ -275,7 +276,7 @@ class _CreatePageState extends State<CreateBody> {
             else if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active && !snapshot.hasData))
               return CircularProgressIndicator();
             else
-              return FormBuilderDropdown<String>(
+              return FormBuilderDropdown<int>(
                 name: 'idSystem',
                 enabled: idSystemIsEnable,
                 menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
@@ -290,7 +291,7 @@ class _CreatePageState extends State<CreateBody> {
                 items: snapshot.data!.data
                     .map(
                       (item) => DropdownMenuItem(
-                        value: item.id.toString(),
+                        value: item.id,
                         child: Text.rich(
                           TextSpan(
                             children: [
@@ -303,7 +304,7 @@ class _CreatePageState extends State<CreateBody> {
                       ),
                     )
                     .toList(),
-                valueTransformer: (val) => val?.toString(),
+                valueTransformer: (val) => val,
                 validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
               );
           },
