@@ -62,12 +62,6 @@ class _BodyPageState extends State<Body> {
     });
   }
 
-  @override
-  void dispose() {
-    subscription.cancel();
-    super.dispose();
-  }
-
   Future<DefectAnalysisModels> _getlistOfDefectAnalysis() async {
     List<dynamic> sortOptions = [
       {"selector": "totalDetail", "desc": "true"},
@@ -168,6 +162,12 @@ class _BodyPageState extends State<Body> {
     } else {
       throw Exception('StatusCode: ${response.statusCode}');
     }
+  }
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
   }
 
   @override
@@ -421,52 +421,45 @@ class _BodyPageState extends State<Body> {
                 child: FutureBuilder<DefectAnalysisModels>(
                   future: _listOfDefectAnalysis,
                   builder: (BuildContext context, AsyncSnapshot<DefectAnalysisModels> snapshot) {
-                    if (snapshot.hasError)
-                      return DataErrorWidget(error: snapshot.error.toString());
-                    else {
-                      if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !isLoading)
-                        return LoadingWidget();
-                      else {
-                        if (snapshot.hasData && snapshot.data!.data.isNotEmpty) {
-                          return Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: getProportionateScreenHeight(10.0),
-                              horizontal: getProportionateScreenWidth(0.0),
+                    if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
+                    if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !isLoading) return LoadingWidget();
+                    if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty)) return NoDataWidget(message: "Không tìm thấy dữ liệu");
+
+                    return Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: getProportionateScreenHeight(10.0),
+                        horizontal: getProportionateScreenWidth(0.0),
+                      ),
+                      child: AnimationLimiter(
+                          child: GroupedListView<dynamic, String>(
+                        elements: snapshot.data!.data,
+                        groupBy: (element) => "${element.project.name} (${element.project.customer})",
+                        groupSeparatorBuilder: (String value) => Container(
+                          width: MediaQuery.of(context).size.width,
+                          color: kPrimaryColor,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
+                            child: Text(
+                              value,
+                              textAlign: TextAlign.left,
+                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
                             ),
-                            child: AnimationLimiter(
-                                child: GroupedListView<dynamic, String>(
-                              elements: snapshot.data!.data,
-                              groupBy: (element) => "${element.project.name} (${element.project.customer})",
-                              groupSeparatorBuilder: (String value) => Container(
-                                width: MediaQuery.of(context).size.width,
-                                color: kPrimaryColor,
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
-                                  child: Text(
-                                    value,
-                                    textAlign: TextAlign.left,
-                                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                              itemBuilder: (BuildContext context, dynamic item) {
-                                return AnimationConfiguration.staggeredList(
-                                  position: 0,
-                                  duration: const Duration(milliseconds: 400),
-                                  child: SlideAnimation(
-                                    child: FadeInAnimation(child: _item(item)),
-                                  ),
-                                );
-                              },
-                              separator: Divider(thickness: 1),
-                              floatingHeader: false,
-                              useStickyGroupSeparators: true,
-                            )),
+                          ),
+                        ),
+                        itemBuilder: (BuildContext context, dynamic item) {
+                          return AnimationConfiguration.staggeredList(
+                            position: 0,
+                            duration: const Duration(milliseconds: 400),
+                            child: SlideAnimation(
+                              child: FadeInAnimation(child: _item(item)),
+                            ),
                           );
-                        } else
-                          return NoDataWidget(message: "Không tìm thấy dữ liệu");
-                      }
-                    }
+                        },
+                        separator: Divider(thickness: 1),
+                        floatingHeader: false,
+                        useStickyGroupSeparators: true,
+                      )),
+                    );
                   },
                 ),
               ),

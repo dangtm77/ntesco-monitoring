@@ -154,7 +154,7 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
                   padding: EdgeInsets.only(left: 0),
                   child: Badge(
                     showBadge: item.ghiChu.isNotEmpty,
-                    padding: EdgeInsets.all(5.0),
+                    //padding: EdgeInsets.all(5.0),
                     badgeContent: Icon(Icons.insert_comment_sharp, color: Colors.white, size: 13),
                     child: CircleAvatar(
                       radius: 18.0,
@@ -183,7 +183,7 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
                   padding: EdgeInsets.only(left: 0),
                   child: Badge(
                     showBadge: item.ghiChu.isNotEmpty,
-                    padding: EdgeInsets.all(5.0),
+                    //padding: EdgeInsets.all(5.0),
                     badgeContent: Icon(Icons.insert_comment_sharp, color: Colors.white, size: 13),
                     child: CircleAvatar(
                       radius: 18.0,

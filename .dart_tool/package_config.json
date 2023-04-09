@@ -33,9 +33,9 @@
     },
     {
       "name": "badges",
-      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/badges-2.0.3",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/badges-3.0.3",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.17"
     },
     {
       "name": "bmprogresshud",
@@ -57,21 +57,21 @@
     },
     {
       "name": "cached_network_image",
-      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/cached_network_image-3.2.1",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/cached_network_image-3.2.3",
       "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "2.18"
     },
     {
       "name": "cached_network_image_platform_interface",
-      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/cached_network_image_platform_interface-1.0.0",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/cached_network_image_platform_interface-2.0.0",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.18"
     },
     {
       "name": "cached_network_image_web",
-      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/cached_network_image_web-1.0.1",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/cached_network_image_web-1.0.2",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.18"
     },
     {
       "name": "characters",
@@ -728,7 +728,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2023-04-08T10:01:53.240307Z",
+  "generated": "2023-04-09T16:08:28.489391Z",
   "generator": "pub",
   "generatorVersion": "2.18.6"
 }

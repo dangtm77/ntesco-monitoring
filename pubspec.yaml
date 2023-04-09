@@ -19,11 +19,11 @@ dependencies:
   provider: ^6.0.0
   shared_preferences: ^2.0.7
   easy_localization: ^3.0.0
-  cached_network_image: ^3.1.0
+  cached_network_image: ^3.2.3
   url_launcher: ^6.0.9
   hexcolor: ^2.0.5
   flutter_tags: ^0.4.9+1
-  badges: ^2.0.3
+  badges: ^3.0.3
   awesome_select: ^6.0.0
   sticky_headers: ^0.3.0+2
   flutter_slidable: ^2.0.0

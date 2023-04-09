@@ -36,7 +36,7 @@ class DefectAnalysisDetailsModel {
   final DateTime? dateCreate;
   final DateTime? dateUpdate;
   final int sortIndex;
-  final FileDinhKemModel pictures;
+  final List<FileDinhKemModel>? pictures;
   DefectAnalysisDetailsModel({
     required this.id,
     required this.idDefectAnalysis,
@@ -60,7 +60,7 @@ class DefectAnalysisDetailsModel {
     this.dateCreate,
     this.dateUpdate,
     required this.sortIndex,
-    required this.pictures,
+    this.pictures,
   });
 
   factory DefectAnalysisDetailsModel.fromJson(dynamic map) {
@@ -87,9 +87,7 @@ class DefectAnalysisDetailsModel {
       dateCreate: map['dateCreate'] != null ? DateTime.parse(map['dateCreate']) : null,
       dateUpdate: map['dateUpdate'] != null ? DateTime.parse(map['dateUpdate']) : null,
       sortIndex: map['sortIndex'] as int,
-      pictures: map['pictures'].map<FileDinhKemModel>((json) {
-        return FileDinhKemModel.fromJson(json);
-      }).toList(),
+      pictures: map['pictures'] != null ? map['pictures'].map<FileDinhKemModel>((json) => FileDinhKemModel.fromJson(json)).toList() : null,
     );
   }
 }
