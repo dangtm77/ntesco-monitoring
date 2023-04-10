@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/core/auth.dart';
 import 'package:ntesco_smart_monitoring/screens/signin/signin_screen.dart';
-import 'package:provider/provider.dart';
 import '../constants.dart';
 import 'package:easy_localization/easy_localization.dart';
 

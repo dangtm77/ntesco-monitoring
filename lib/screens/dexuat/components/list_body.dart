@@ -1,3 +1,5 @@
+// ignore_for_file: import_of_legacy_library_into_null_safe
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -6,7 +8,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:flutter_tags/flutter_tags.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,7 +18,6 @@ import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/core/dx_phieudexuat.dart';
-import 'package:ntesco_smart_monitoring/helper/number.dart';
 import 'package:ntesco_smart_monitoring/helper/string.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/Login.dart';
@@ -207,7 +207,7 @@ class _BodyPageState extends State<Body> {
           children: [
             _header(context),
             isOnline ? _searchBar(context) : SizedBox.shrink(),
-            isOnline ? _thongKePanel(context) : SizedBox.shrink(),
+            //isOnline ? _thongKePanel(context) : SizedBox.shrink(),
             _listAll(context),
             Container(
               height: isLoading ? 30.0 : 0,
@@ -460,6 +460,7 @@ class _BodyPageState extends State<Body> {
     );
   }
 
+/*
   Widget _thongKePanel(BuildContext context) {
     return Container(
       height: 45.0,
@@ -519,7 +520,7 @@ class _BodyPageState extends State<Body> {
       ),
     );
   }
-
+*/
   Widget _listAll(BuildContext context) {
     return Expanded(
       child: NotificationListener<ScrollNotification>(

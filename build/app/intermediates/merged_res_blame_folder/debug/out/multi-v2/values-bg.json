@@ -4,7 +4,7 @@
             "outputFile": "D:\\GitHub\\ntesco-monitoring\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-bg\\values-bg.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\DangTM-Home\\.gradle\\caches\\transforms-3\\ea576d89faa9eaea2d1082a4e39b0086\\transformed\\core-1.6.0\\res\\values-bg\\values-bg.xml",
+                    "source": "C:\\Users\\DangTM-Home\\.gradle\\caches\\transforms-3\\4f1e5b8a302eacaf72677da1bd25d4d1\\transformed\\core-1.9.0\\res\\values-bg\\values-bg.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
