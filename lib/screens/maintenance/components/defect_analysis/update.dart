@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-
+import 'package:ntesco_smart_monitoring/components/photoview_gallery.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:badges/badges.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -735,22 +736,27 @@ class _DetailsPageViewState extends State<DetailsPageView> {
   }
 
   Widget _item(DefectAnalysisDetailsModel item) {
+    List<String> imagesList = (item.pictures != null && item.pictures!.length > 0) ? item.pictures!.map((e) => Common.System_DowloadFile_ByID(e.id, 'view')).toList() : [urlNoImage];
+
     return ListTile(
       onTap: () => {},
       leading: Badge(
-        showBadge: (item.pictures != null && item.pictures!.length > 1),
-        badgeContent: Text('${item.pictures!.length}', style: TextStyle(fontSize: 12, color: Colors.white)),
+        showBadge: imagesList.length > 1,
+        badgeContent: Text('${imagesList.length}', style: TextStyle(fontSize: 12, color: Colors.white)),
         badgeAnimation: BadgeAnimation.scale(),
         badgeStyle: BadgeStyle(badgeColor: kPrimaryColor),
         child: CachedNetworkImage(
-          imageUrl: (item.pictures != null && item.pictures!.length > 0) ? Common.System_DowloadFile_ByID(item.pictures!.first.id, 'view') : urlNoImage,
-          imageBuilder: (context, imageProvider) => Container(
-            width: 100,
-            height: 60,
-            decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(5.0),
-              image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+          imageUrl: imagesList.first,
+          imageBuilder: (context, imageProvider) => GestureDetector(
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => PhotoViewGalleryScreen(imageUrls: imagesList, initialIndex: 0))),
+            child: Container(
+              width: 100,
+              height: 60,
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(5.0),
+                image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+              ),
             ),
           ),
           placeholder: (context, url) => SizedBox(width: 30, height: 30, child: CircularProgressIndicator()),

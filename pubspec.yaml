@@ -36,6 +36,7 @@ dependencies:
   form_builder_validators: ^8.4.0  
   image_picker: ^0.8.7+1
   get: ^4.6.5
+  photo_view: ^0.14.0
 
 dev_dependencies:
   flutter_test:

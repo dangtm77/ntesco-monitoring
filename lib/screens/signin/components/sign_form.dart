@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:bmprogresshud/progresshud.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ntesco_smart_monitoring/components/change_language.dart';
@@ -19,17 +22,27 @@ class SignForm extends StatefulWidget {
 
 class _SignFormState extends State<SignForm> {
   final _formKey = GlobalKey<FormState>();
-  LoginRequestModel? model;
+  LoginRequestModel? model = new LoginRequestModel();
   String? username;
   String? password;
   bool _isObscure = true;
   //Biến check thiết bị có kết nối với internet hay không
   late bool isOnline = false;
+  late StreamSubscription<ConnectivityResult> subscription;
 
   @override
   void initState() {
     super.initState();
-    model = new LoginRequestModel();
+    checkConnectivity(null);
+    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) => checkConnectivity(result));
+  }
+
+  Future<void> checkConnectivity(ConnectivityResult? result) async {
+    Util.checkConnectivity(result, (status) {
+      setState(() {
+        isOnline = status;
+      });
+    });
   }
 
   @override

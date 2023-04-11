@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -78,6 +80,40 @@ class _CreatePageState extends State<CreateBody> {
               child: ElevatedButton.icon(
                 onPressed: imagePickerOption,
                 icon: const Icon(Icons.add_a_photo_sharp),
+                label: const Text('CHOOSE IMAGE'),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  // if (pickedImage != null) {
+                  //   // Đọc nội dung file
+                  //   var imageBytes = pickedImage!.readAsBytesSync();
+
+                  //   // Encode dữ liệu sang base64 để gửi đi
+                  //   String base64Image = base64Encode(imageBytes);
+
+                  //   // Thực hiện yêu cầu HTTP POST
+                  //   var response = await http.post(
+                  //     Uri.parse('https://your-api-url'),
+                  //     headers: {
+                  //       'Content-Type': 'application/json',
+                  //     },
+                  //     body: jsonEncode(<String, String>{
+                  //       'image': base64Image,
+                  //     }),
+                  //   );
+
+                  //   // Xử lý phản hồi từ API ở đây
+                  // } else {
+                  //   print('No image selected.');
+                  // }
+                },
+                icon: const Icon(Icons.send),
                 label: const Text('UPLOAD IMAGE'),
               ),
             )
@@ -140,18 +176,52 @@ class _CreatePageState extends State<CreateBody> {
     );
   }
 
-  pickImage(ImageSource imageType) async {
+  pickImage(ImageSource imageSource) async {
     try {
-      XFile? photo = await ImagePicker().pickImage(source: imageType, imageQuality: 50, preferredCameraDevice: CameraDevice.front);
-      if (photo != null) {
-        setState(() {
-          pickedImage = File(photo.path);
-        });
+      List<XFile> _imageList = [];
+
+      if (imageSource == ImageSource.camera) {
+        var _image = await ImagePicker().pickImage(
+          source: ImageSource.camera, imageQuality: 80, // Chất lượng ảnh (0 - 100)
+          maxWidth: 800, // Chiều rộng tối đa của ảnh
+          maxHeight: 800, // Chiều cao tối đa của ảnh
+          preferredCameraDevice: CameraDevice.front,
+        );
+        if (_image != null) {
+          _imageList.add(_image);
+        }
+      } else {
+        _imageList = await ImagePicker().pickMultiImage(
+          imageQuality: 80, // Chất lượng ảnh (0 - 100)
+          maxWidth: 800, // Chiều rộng tối đa của ảnh
+          maxHeight: 800, // Chiều cao tối đa của ảnh
+        );
       }
 
-      Get.back();
+      print(_imageList.length);
+      _uploadImages(_imageList);
     } catch (error) {
       debugPrint(error.toString());
+    }
+  }
+
+  Future<void> _uploadImages(_imageList) async {
+    for (int i = 0; i < _imageList.length; i++) {
+      final XFile imageFile = _imageList[i];
+      final List<int> imageBytes = await imageFile.readAsBytes();
+      final String base64Image = base64Encode(imageBytes);
+
+      final http.Response response = await http.post(
+        Uri.parse('https://portal-api.ntesco.com/v2/common/test'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'source': base64Image,
+          'key': 1,
+        }),
+      );
+      print(response.body);
     }
   }
 
