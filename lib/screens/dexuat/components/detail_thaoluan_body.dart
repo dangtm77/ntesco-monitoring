@@ -1,12 +1,8 @@
-// ignore_for_file: unnecessary_null_comparison
-
-import 'dart:ui';
+// ignore_for_file: unused_field
 
 import 'package:flutter/material.dart';
-import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/models/dx/PhieuDeXuatDetail.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 
 class DetailThaoLuanBody extends StatefulWidget {
   final int id;
@@ -22,7 +18,7 @@ class _DetailThaoLuanBodyPageState extends State<DetailThaoLuanBody> {
   final PhieuDeXuatDetailModel? phieuDeXuat;
   _DetailThaoLuanBodyPageState(this.id, this.phieuDeXuat);
 
-  var MessageList = [
+  var messageList = [
     {
       "author": {
         "firstName": "John",
@@ -111,7 +107,7 @@ class _DetailThaoLuanBodyPageState extends State<DetailThaoLuanBody> {
 
   @override
   void initState() {
-    final messages = MessageList.map((e) => types.Message.fromJson(e)).toList();
+    final messages = messageList.map((e) => types.Message.fromJson(e)).toList();
     setState(() {
       _messages = messages;
     });

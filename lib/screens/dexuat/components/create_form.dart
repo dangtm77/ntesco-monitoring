@@ -1,12 +1,9 @@
-// ignore_for_file: unnecessary_statements
+// ignore_for_file: unnecessary_null_comparison
 
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/models/dx/DanhMuc.dart';
-import 'package:ntesco_smart_monitoring/screens/dexuat/dexuat_screen.dart';
 import 'package:ntesco_smart_monitoring/theme.dart';
 
 class CreateForm extends StatefulWidget {

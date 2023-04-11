@@ -21,8 +21,7 @@ dependencies:
   easy_localization: ^3.0.0
   cached_network_image: ^3.2.3
   url_launcher: ^6.0.9
-  hexcolor: ^2.0.5
-  flutter_tags: ^0.4.9+1
+  hexcolor: ^2.0.5 
   badges: ^3.0.3
   awesome_select: ^6.0.0
   sticky_headers: ^0.3.0+2
@@ -35,6 +34,7 @@ dependencies:
   connectivity_plus: ^3.0.2 
   flutter_form_builder: ^7.7.0
   form_builder_validators: ^8.4.0  
+  image_picker: ^0.8.7+1
   get: ^4.6.5
 
 dev_dependencies:

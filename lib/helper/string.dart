@@ -24,7 +24,7 @@ class StringHelper {
     for (var i = 0; i < lengthChar; i++) {
       result += charactersList[random.nextInt(charactersList.length)];
     }
-    if (char != null) result += char;
+    if (char.length > 0) result += char;
 
     for (var i = 0; i < lengthNum; i++) {
       result += numberList[random.nextInt(numberList.length)];

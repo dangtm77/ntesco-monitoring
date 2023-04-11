@@ -1,6 +1,7 @@
 import 'package:bmprogresshud/bmprogresshud.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:ntesco_smart_monitoring/language/codegen_loader.g.dart';
@@ -84,7 +85,7 @@ class _MyAppState extends State<MyApp> {
 
     return ProgressHud(
       isGlobalHud: true,
-      child: MaterialApp(
+      child: GetMaterialApp(
         supportedLocales: context.supportedLocales,
         localizationsDelegates: context.localizationDelegates,
         locale: context.locale,

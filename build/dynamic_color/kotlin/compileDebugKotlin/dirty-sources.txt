@@ -1,1 +1,0 @@
-C:\flutter\.pub-cache\hosted\pub.dartlang.org\dynamic_color-1.4.0\android\src\main\kotlin\io\material\plugins\dynamic_color\DynamicColorPlugin.kt
