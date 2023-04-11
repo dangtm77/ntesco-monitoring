@@ -1,31 +1,40 @@
-import 'dart:convert';
-import 'dart:io';
-import 'package:http/http.dart' as http;
-
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:ionicons/ionicons.dart';
 
+import 'package:ntesco_smart_monitoring/components/default_button.dart';
+import 'package:ntesco_smart_monitoring/components/top_header.dart';
+import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
+import 'package:ntesco_smart_monitoring/theme.dart';
 
 class DefectAnalysisDetailsCreateScreen extends StatelessWidget {
   static String routeName = "/maintenance/defect-analysis-details/create";
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return Scaffold(drawerScrimColor: Colors.transparent, body: CreateBody());
+    final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, dynamic>{}) as Map;
+    int id = int.parse(arguments['id'].toString());
+    return Scaffold(drawerScrimColor: Colors.transparent, body: CreateBody(id: id));
   }
 }
 
 class CreateBody extends StatefulWidget {
-  CreateBody({Key? key}) : super(key: key);
+  final int id;
+  CreateBody({Key? key, required this.id}) : super(key: key);
 
   @override
-  _CreatePageState createState() => new _CreatePageState();
+  _CreatePageState createState() => new _CreatePageState(id);
 }
 
 class _CreatePageState extends State<CreateBody> {
-  File? pickedImage;
+  final int id;
+  _CreatePageState(this.id);
+
+  final _formKey = GlobalKey<FormBuilderState>();
 
   @override
   void initState() {
@@ -33,195 +42,162 @@ class _CreatePageState extends State<CreateBody> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            const SizedBox(height: 50),
-            Align(
-              alignment: Alignment.center,
-              child: Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.indigo, width: 5),
-                      borderRadius: const BorderRadius.all(Radius.circular(100)),
-                    ),
-                    child: ClipOval(
-                      child: pickedImage != null
-                          ? Image.file(pickedImage!, width: 170, height: 170, fit: BoxFit.cover)
-                          : Image.network(
-                              'https://upload.wikimedia.org/wikipedia/commons/5/5f/Alberto_conversi_profile_pic.jpg',
-                              width: 170,
-                              height: 170,
-                              fit: BoxFit.cover,
-                            ),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 5,
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.add_a_photo_outlined, color: Colors.blue, size: 30),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton.icon(
-                onPressed: imagePickerOption,
-                icon: const Icon(Icons.add_a_photo_sharp),
-                label: const Text('CHOOSE IMAGE'),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  // if (pickedImage != null) {
-                  //   // Đọc nội dung file
-                  //   var imageBytes = pickedImage!.readAsBytesSync();
-
-                  //   // Encode dữ liệu sang base64 để gửi đi
-                  //   String base64Image = base64Encode(imageBytes);
-
-                  //   // Thực hiện yêu cầu HTTP POST
-                  //   var response = await http.post(
-                  //     Uri.parse('https://your-api-url'),
-                  //     headers: {
-                  //       'Content-Type': 'application/json',
-                  //     },
-                  //     body: jsonEncode(<String, String>{
-                  //       'image': base64Image,
-                  //     }),
-                  //   );
-
-                  //   // Xử lý phản hồi từ API ở đây
-                  // } else {
-                  //   print('No image selected.');
-                  // }
-                },
-                icon: const Icon(Icons.send),
-                label: const Text('UPLOAD IMAGE'),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  void imagePickerOption() {
-    Get.bottomSheet(
-      SingleChildScrollView(
-        child: ClipRRect(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(10.0),
-            topRight: Radius.circular(10.0),
-          ),
-          child: Container(
-            color: Colors.white,
-            height: 250,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Text(
-                    "Pic Image From",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () => pickImage(ImageSource.camera),
-                    icon: const Icon(Icons.camera),
-                    label: const Text("CAMERA"),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () => pickImage(ImageSource.gallery),
-                    icon: const Icon(Icons.image),
-                    label: const Text("GALLERY"),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    icon: const Icon(Icons.close),
-                    label: const Text("CANCEL"),
-                  ),
-                ],
-              ),
-            ),
+  Widget build(BuildContext context) => SafeArea(
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              _header(),
+              _form(context),
+            ],
           ),
         ),
-      ),
-    );
-  }
-
-  pickImage(ImageSource imageSource) async {
-    try {
-      List<XFile> _imageList = [];
-
-      if (imageSource == ImageSource.camera) {
-        var _image = await ImagePicker().pickImage(
-          source: ImageSource.camera, imageQuality: 80, // Chất lượng ảnh (0 - 100)
-          maxWidth: 800, // Chiều rộng tối đa của ảnh
-          maxHeight: 800, // Chiều cao tối đa của ảnh
-          preferredCameraDevice: CameraDevice.front,
-        );
-        if (_image != null) {
-          _imageList.add(_image);
-        }
-      } else {
-        _imageList = await ImagePicker().pickMultiImage(
-          imageQuality: 80, // Chất lượng ảnh (0 - 100)
-          maxWidth: 800, // Chiều rộng tối đa của ảnh
-          maxHeight: 800, // Chiều cao tối đa của ảnh
-        );
-      }
-
-      print(_imageList.length);
-      _uploadImages(_imageList);
-    } catch (error) {
-      debugPrint(error.toString());
-    }
-  }
-
-  Future<void> _uploadImages(_imageList) async {
-    for (int i = 0; i < _imageList.length; i++) {
-      final XFile imageFile = _imageList[i];
-      final List<int> imageBytes = await imageFile.readAsBytes();
-      final String base64Image = base64Encode(imageBytes);
-
-      final http.Response response = await http.post(
-        Uri.parse('https://portal-api.ntesco.com/v2/common/test'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(<String, dynamic>{
-          'source': base64Image,
-          'key': 1,
-        }),
       );
-      print(response.body);
+
+  Widget _header() => Container(
+        child: TopHeaderSub(
+          title: "maintenance.defect_analysis_details.create_title".tr(),
+          subtitle: "maintenance.defect_analysis_details.create_subtitle",
+          buttonLeft: InkWell(
+            borderRadius: BorderRadius.circular(15),
+            onTap: () => Navigator.pop(context),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
+            ),
+          ),
+        ),
+      );
+
+  Widget _form(BuildContext context) => Expanded(
+        child: Container(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              children: [
+                FormBuilder(
+                  key: _formKey,
+                  autovalidateMode: AutovalidateMode.always,
+                  autoFocusOnValidationFailure: true,
+                  initialValue: {
+                    'idDefectAnalysis': id,
+                    'partName': null,
+                    'partQuantity': null,
+                    'partManufacturer': null,
+                    'partModel': null,
+                    'partSpecifications': null,
+                    'analysisProblemCause': null,
+                    'solution': null,
+                    'departmentInCharge': null,
+                    'executionTime': null,
+                    'note': null,
+                  },
+                  child: Column(
+                    children: <Widget>[
+                      editorForm("partName"),
+                      SizedBox(height: 20),
+                      editorForm("partManufacturer"),
+                      SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Expanded(child: editorForm("partQuantity")),
+                          SizedBox(width: 10),
+                          Expanded(child: editorForm("partModel")),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      editorForm("partSpecifications"),
+                      SizedBox(height: 20),
+                      // editorForm("currentSuitation"),
+                      // SizedBox(height: 20),
+                      // editorForm("maintenanceStaff"),
+                      // SizedBox(height: 20),
+                      // editorForm("qcStaff"),
+                      // SizedBox(height: 20),
+                      // editorForm("cncStaff"),
+                      // SizedBox(height: 20),
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 4,
+                            child: DefaultButton(
+                              press: () => _formKey.currentState?.reset(),
+                              text: "Đặt lại",
+                              color: kTextColor,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            flex: 8,
+                            child: DefaultButton(
+                              text: 'Xác nhận thông tin',
+                              color: kPrimaryColor,
+                              press: () async => {},
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+  Widget editorForm(key) {
+    switch (key) {
+      case "partName":
+        return FormBuilderTextField(
+          name: key,
+          decoration: const InputDecoration(
+            labelText: 'Tên thiết bị',
+            hintText: "Vui lòng nhập thông tin...",
+          ).applyDefaults(inputDecorationTheme()),
+          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+        );
+      case "partManufacturer":
+        return FormBuilderTextField(
+          name: key,
+          decoration: const InputDecoration(
+            labelText: 'Nhà sản xuất',
+            hintText: "Vui lòng nhập thông tin...",
+          ).applyDefaults(inputDecorationTheme()),
+          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+        );
+      case "partQuantity":
+        return FormBuilderTextField(
+          name: key,
+          decoration: const InputDecoration(
+            labelText: 'Số lượng',
+            hintText: "Vui lòng nhập thông tin...",
+          ).applyDefaults(inputDecorationTheme()),
+          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+        );
+      case "partModel":
+        return FormBuilderTextField(
+          name: key,
+          decoration: const InputDecoration(
+            labelText: 'Loại',
+            hintText: "Vui lòng nhập thông tin...",
+          ).applyDefaults(inputDecorationTheme()),
+          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+        );
+      case "partSpecifications":
+        return FormBuilderTextField(
+          name: key,
+          maxLines: 4,
+          decoration: const InputDecoration(
+            labelText: 'Thông số kỹ thuật',
+            hintText: "Vui lòng nhập thông tin...",
+            contentPadding: EdgeInsets.fromLTRB(15, 25, 15, 0),
+          ).applyDefaults(inputDecorationTheme()),
+          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+        );
+      default:
+        return SizedBox.shrink();
     }
   }
 

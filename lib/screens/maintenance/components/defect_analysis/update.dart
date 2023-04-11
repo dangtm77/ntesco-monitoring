@@ -152,7 +152,7 @@ class _UpdateBodyState extends State<UpdateBody> {
                           floatingActionButton: Visibility(
                             visible: (_currentIndex == 1),
                             child: FloatingActionButton(
-                              onPressed: () => Navigator.pushNamed(context, DefectAnalysisDetailsCreateScreen.routeName),
+                              onPressed: () => Navigator.pushNamed(context, DefectAnalysisDetailsCreateScreen.routeName, arguments: {'id': item.id}),
                               child: Icon(Icons.add),
                             ),
                           ),
