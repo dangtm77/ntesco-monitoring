@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -168,53 +169,73 @@ class _CreatePageState extends State<CreateBody> {
                   ),
                 ),
                 SizedBox(height: 20),
-                // Row(
-                //   crossAxisAlignment: CrossAxisAlignment.center,
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [
-                //     Text(
-                //       'Hình ảnh đính kèm',
-                //       style: TextStyle(color: kPrimaryColor, fontSize: 18.0, fontWeight: FontWeight.bold),
-                //     ),
-                //     TextButton(
-                //       onPressed: () {},
-                //       child: Text(
-                //         'Tải lên',
-                //         style: TextStyle(fontSize: 18, color: kPrimaryColor, fontWeight: FontWeight.bold, letterSpacing: 0.8),
-                //       ),
-                //     )
-                //   ],
-                // ),
-                // SizedBox(height: 5),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Hình ảnh đính kèm',
+                      style: TextStyle(color: kPrimaryColor, fontSize: 18.0, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
                 Container(
                   alignment: Alignment.centerLeft,
-                  child: Row(
+                  child: Wrap(
+                    spacing: 2,
+                    runSpacing: 2,
                     children: [
-                      Card(
-                        color: kPrimaryColor,
-                        child: Container(
-                          width: 110.0,
-                          height: 100.0,
-                          child: Center(
-                            child: Text('Card 1'),
-                          ),
-                        ),
-                      ),
-                      Wrap(
-                        spacing: 2.0,
-                        runSpacing: 2.0,
-                        children: List.generate(10, (index) {
-                          return Card(
-                            color: kPrimaryColor,
-                            child: Container(
-                              width: 110.0,
-                              height: 100.0,
-                              child: Center(
-                                child: Text('Card ${index + 1}'),
+                      ..._imageList.map((item) {
+                        return Stack(
+                          children: [
+                            Card(
+                              elevation: 8,
+                              margin: EdgeInsets.all(10),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  border: Border.all(color: Colors.grey, width: 2),
+                                ),
+                                child: SizedBox(
+                                  width: 110.0,
+                                  height: 110.0,
+                                  child: Image.file(File(item.path), fit: BoxFit.cover),
+                                ),
                               ),
                             ),
-                          );
-                        }),
+                            Positioned(
+                              top: 0.0,
+                              right: 0.0,
+                              child: GestureDetector(
+                                onTap: () => setState(() => _imageList.remove(item)),
+                                child: CircleAvatar(
+                                  radius: 15,
+                                  backgroundColor: Color.fromARGB(228, 244, 67, 54),
+                                  child: Icon(Icons.close, color: Colors.white, size: 18),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
+                      GestureDetector(
+                        onTap: _pickerOption,
+                        child: Card(
+                          elevation: 8,
+                          margin: EdgeInsets.all(10),
+                          color: kPrimaryColor,
+                          child: SizedBox(
+                              width: 120.0,
+                              height: 120.0,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.camera_alt_outlined, size: 30.0, color: Colors.white),
+                                  Text("Chọn ảnh", style: TextStyle(color: Colors.white, fontSize: 15.0)),
+                                ],
+                              )),
+                        ),
                       ),
                     ],
                   ),
@@ -368,6 +389,102 @@ class _CreatePageState extends State<CreateBody> {
       default:
         return SizedBox.shrink();
     }
+  }
+
+  Future<void> _pickerOption() {
+    return showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(10.0),
+              topRight: Radius.circular(10.0),
+            ),
+            child: Container(
+              color: Colors.white,
+              height: 250,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text(
+                      "Chọn hình ảnh đính kèm từ ...",
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 150,
+                            child: TextButton(
+                              style: TextButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)), backgroundColor: kPrimaryColor),
+                              onPressed: () async {
+                                var _image = await ImagePicker().pickImage(source: ImageSource.camera, imageQuality: 80, maxWidth: 800, maxHeight: 800, preferredCameraDevice: CameraDevice.front);
+                                if (_image != null) {
+                                  setState(() {
+                                    _imageList.add(_image);
+                                  });
+                                  Navigator.pop(context);
+                                }
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.camera, color: Colors.white, size: 60),
+                                  SizedBox(height: 10),
+                                  Text('CAMERA', style: TextStyle(fontSize: 16, color: Colors.white)),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 150,
+                            child: TextButton(
+                              style: TextButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)), backgroundColor: kPrimaryColor),
+                              onPressed: () async {
+                                await ImagePicker().pickMultiImage(imageQuality: 80, maxWidth: 800, maxHeight: 800).then((value) {
+                                  if (value.length > 0) {
+                                    setState(() {
+                                      _imageList.addAll(value);
+                                    });
+                                    Navigator.pop(context);
+                                  }
+                                });
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.image, color: Colors.white, size: 60),
+                                  SizedBox(height: 10),
+                                  Text('THƯ VIỆN', style: TextStyle(fontSize: 16, color: Colors.white)),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
