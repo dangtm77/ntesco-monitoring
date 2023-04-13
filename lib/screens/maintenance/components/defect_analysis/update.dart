@@ -38,27 +38,30 @@ class DefectAnalysisUpdateScreen extends StatelessWidget {
     SizeConfig().init(context);
     final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, dynamic>{}) as Map;
     int id = int.parse(arguments['id'].toString());
-    return Scaffold(drawerScrimColor: Colors.transparent, body: UpdateBody(id: id));
+    int tabIndex = int.parse(arguments['tabIndex'].toString());
+    return Scaffold(drawerScrimColor: Colors.transparent, body: UpdateBody(id: id, tabIndex: tabIndex));
   }
 }
 
 class UpdateBody extends StatefulWidget {
   final int id;
-  UpdateBody({Key? key, required this.id}) : super(key: key);
+  final int tabIndex;
+  UpdateBody({Key? key, required this.id, required this.tabIndex}) : super(key: key);
 
   @override
-  _UpdateBodyState createState() => new _UpdateBodyState(id);
+  _UpdateBodyState createState() => new _UpdateBodyState(id, tabIndex);
 }
 
 class _UpdateBodyState extends State<UpdateBody> {
   final int id;
-  _UpdateBodyState(this.id);
+  final int tabIndex;
+  _UpdateBodyState(this.id, this.tabIndex);
 
   //Biến check thiết bị có kết nối với internet hay không
   late bool isOnline = false;
   late StreamSubscription<ConnectivityResult> subscription;
 
-  late int _currentIndex = 0;
+  late int _currentIndex = tabIndex;
   late PageController _pageController;
   late Future<DefectAnalysisModel> _defectAnalysis;
 
@@ -73,8 +76,8 @@ class _UpdateBodyState extends State<UpdateBody> {
     Util.checkConnectivity(result, (status) {
       setState(() {
         isOnline = status;
-        _currentIndex = 0;
-        _pageController = PageController();
+        _currentIndex = tabIndex;
+        _pageController = PageController(initialPage: tabIndex);
         _defectAnalysis = _getDetailOfDefectAnalysis();
       });
     });
@@ -99,15 +102,18 @@ class _UpdateBodyState extends State<UpdateBody> {
   }
 
   @override
-  Widget build(BuildContext context) => SafeArea(
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[_header(), _main(context)],
-          ),
+  Widget build(BuildContext context) {
+    print(_currentIndex);
+    return SafeArea(
+      child: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[_header(), _main(context)],
         ),
-      );
+      ),
+    );
+  }
 
   Widget _header() => Container(
         child: TopHeaderSub(

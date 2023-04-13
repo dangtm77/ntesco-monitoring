@@ -1,29 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-
-// class FullScreenImage extends StatelessWidget {
-//   final ImageProvider<Object> imageProvider;
-
-//   const FullScreenImage({Key? key, required this.imageProvider}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: GestureDetector(
-//         onTap: () => Navigator.of(context).pop(),
-//         child: Center(
-//           child: PhotoView(
-//             imageProvider: imageProvider,
-//             initialScale: PhotoViewComputedScale.contained,
-//             maxScale: PhotoViewComputedScale.covered,
-//             enableRotation: true,
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class PhotoViewGalleryScreen extends StatefulWidget {
   final List<String> imageUrls;
@@ -53,25 +31,33 @@ class _PhotoViewGalleryScreenState extends State<PhotoViewGalleryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(children: [
-      Container(
-        child: PhotoViewGallery.builder(
-          itemCount: widget.imageUrls.length,
-          builder: (BuildContext context, int index) {
-            return PhotoViewGalleryPageOptions(
-              imageProvider: NetworkImage(widget.imageUrls[index]),
-              initialScale: PhotoViewComputedScale.contained,
-              heroAttributes: PhotoViewHeroAttributes(tag: widget.imageUrls[index]),
-            );
-          },
-          onPageChanged: (int index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          pageController: _pageController,
-        ),
+      body: Stack(
+        children: [
+          Container(
+            child: PhotoViewGallery.builder(
+              itemCount: widget.imageUrls.length,
+              builder: (_, index) => PhotoViewGalleryPageOptions(
+                imageProvider: NetworkImage(widget.imageUrls[index]),
+                initialScale: PhotoViewComputedScale.contained,
+                heroAttributes: PhotoViewHeroAttributes(tag: widget.imageUrls[index]),
+              ),
+              onPageChanged: (index) => setState(() => _currentIndex = index),
+              pageController: _pageController,
+              scrollPhysics: const BouncingScrollPhysics(),
+              backgroundDecoration: BoxDecoration(color: kPrimaryColor),
+            ),
+          ),
+          Positioned(
+            top: 50,
+            right: 50,
+            child: IconButton(
+              icon: Icon(Icons.close, size: 50),
+              color: Colors.white,
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
+        ],
       ),
-    ]));
+    );
   }
 }

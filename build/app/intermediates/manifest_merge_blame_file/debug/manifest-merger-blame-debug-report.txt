@@ -12,36 +12,36 @@
 12         to allow setting breakpoints, to provide hot reload, etc.
 13    -->
 14    <uses-permission android:name="android.permission.INTERNET" />
-14-->D:\GitHub\ntesco-monitoring\android\app\src\main\AndroidManifest.xml:8:5-67
-14-->D:\GitHub\ntesco-monitoring\android\app\src\main\AndroidManifest.xml:8:22-64
+14-->D:\01. Github\ntesco-monitoring\android\app\src\main\AndroidManifest.xml:8:5-67
+14-->D:\01. Github\ntesco-monitoring\android\app\src\main\AndroidManifest.xml:8:22-64
 15    <uses-permission android:name="android.permission.CAMERA" />
-15-->D:\GitHub\ntesco-monitoring\android\app\src\main\AndroidManifest.xml:9:5-65
-15-->D:\GitHub\ntesco-monitoring\android\app\src\main\AndroidManifest.xml:9:22-62
+15-->D:\01. Github\ntesco-monitoring\android\app\src\main\AndroidManifest.xml:9:5-65
+15-->D:\01. Github\ntesco-monitoring\android\app\src\main\AndroidManifest.xml:9:22-62
 16    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-16-->D:\GitHub\ntesco-monitoring\android\app\src\main\AndroidManifest.xml:10:5-80
-16-->D:\GitHub\ntesco-monitoring\android\app\src\main\AndroidManifest.xml:10:22-77
+16-->D:\01. Github\ntesco-monitoring\android\app\src\main\AndroidManifest.xml:10:5-80
+16-->D:\01. Github\ntesco-monitoring\android\app\src\main\AndroidManifest.xml:10:22-77
 17    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-17-->D:\GitHub\ntesco-monitoring\android\app\src\main\AndroidManifest.xml:11:5-81
-17-->D:\GitHub\ntesco-monitoring\android\app\src\main\AndroidManifest.xml:11:22-78
+17-->D:\01. Github\ntesco-monitoring\android\app\src\main\AndroidManifest.xml:11:5-81
+17-->D:\01. Github\ntesco-monitoring\android\app\src\main\AndroidManifest.xml:11:22-78
 18    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-18-->[:connectivity_plus] D:\GitHub\ntesco-monitoring\build\connectivity_plus\intermediates\merged_manifest\debug\AndroidManifest.xml:9:5-79
-18-->[:connectivity_plus] D:\GitHub\ntesco-monitoring\build\connectivity_plus\intermediates\merged_manifest\debug\AndroidManifest.xml:9:22-76
+18-->[:connectivity_plus] D:\01. Github\ntesco-monitoring\build\connectivity_plus\intermediates\merged_manifest\debug\AndroidManifest.xml:9:5-79
+18-->[:connectivity_plus] D:\01. Github\ntesco-monitoring\build\connectivity_plus\intermediates\merged_manifest\debug\AndroidManifest.xml:9:22-76
 19
 20    <permission
-20-->[androidx.core:core:1.9.0] C:\Users\DangTM-Home\.gradle\caches\transforms-3\4f1e5b8a302eacaf72677da1bd25d4d1\transformed\core-1.9.0\AndroidManifest.xml:22:5-24:47
+20-->[androidx.core:core:1.9.0] C:\Users\dangtm.TAYHO\.gradle\caches\transforms-3\4f1e5b8a302eacaf72677da1bd25d4d1\transformed\core-1.9.0\AndroidManifest.xml:22:5-24:47
 21        android:name="com.example.ntesco_smart_monitoring.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
-21-->[androidx.core:core:1.9.0] C:\Users\DangTM-Home\.gradle\caches\transforms-3\4f1e5b8a302eacaf72677da1bd25d4d1\transformed\core-1.9.0\AndroidManifest.xml:23:9-81
+21-->[androidx.core:core:1.9.0] C:\Users\dangtm.TAYHO\.gradle\caches\transforms-3\4f1e5b8a302eacaf72677da1bd25d4d1\transformed\core-1.9.0\AndroidManifest.xml:23:9-81
 22        android:protectionLevel="signature" />
-22-->[androidx.core:core:1.9.0] C:\Users\DangTM-Home\.gradle\caches\transforms-3\4f1e5b8a302eacaf72677da1bd25d4d1\transformed\core-1.9.0\AndroidManifest.xml:24:9-44
+22-->[androidx.core:core:1.9.0] C:\Users\dangtm.TAYHO\.gradle\caches\transforms-3\4f1e5b8a302eacaf72677da1bd25d4d1\transformed\core-1.9.0\AndroidManifest.xml:24:9-44
 23
 24    <uses-permission android:name="com.example.ntesco_smart_monitoring.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-24-->[androidx.core:core:1.9.0] C:\Users\DangTM-Home\.gradle\caches\transforms-3\4f1e5b8a302eacaf72677da1bd25d4d1\transformed\core-1.9.0\AndroidManifest.xml:26:5-97
-24-->[androidx.core:core:1.9.0] C:\Users\DangTM-Home\.gradle\caches\transforms-3\4f1e5b8a302eacaf72677da1bd25d4d1\transformed\core-1.9.0\AndroidManifest.xml:26:22-94
+24-->[androidx.core:core:1.9.0] C:\Users\dangtm.TAYHO\.gradle\caches\transforms-3\4f1e5b8a302eacaf72677da1bd25d4d1\transformed\core-1.9.0\AndroidManifest.xml:26:5-97
+24-->[androidx.core:core:1.9.0] C:\Users\dangtm.TAYHO\.gradle\caches\transforms-3\4f1e5b8a302eacaf72677da1bd25d4d1\transformed\core-1.9.0\AndroidManifest.xml:26:22-94
 25
 26    <application
 27        android:name="android.app.Application"
 28        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-28-->[androidx.core:core:1.9.0] C:\Users\DangTM-Home\.gradle\caches\transforms-3\4f1e5b8a302eacaf72677da1bd25d4d1\transformed\core-1.9.0\AndroidManifest.xml:28:18-86
+28-->[androidx.core:core:1.9.0] C:\Users\dangtm.TAYHO\.gradle\caches\transforms-3\4f1e5b8a302eacaf72677da1bd25d4d1\transformed\core-1.9.0\AndroidManifest.xml:28:18-86
 29        android:debuggable="true"
 30        android:icon="@mipmap/ic_launcher"
 31        android:label="ntesco_smart_monitoring"
@@ -89,44 +89,44 @@
 73            android:value="2" />
 74
 75        <provider
-75-->[:image_picker_android] D:\GitHub\ntesco-monitoring\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:10:9-18:20
+75-->[:image_picker_android] D:\01. Github\ntesco-monitoring\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:10:9-18:20
 76            android:name="io.flutter.plugins.imagepicker.ImagePickerFileProvider"
-76-->[:image_picker_android] D:\GitHub\ntesco-monitoring\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:11:13-82
+76-->[:image_picker_android] D:\01. Github\ntesco-monitoring\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:11:13-82
 77            android:authorities="com.example.ntesco_smart_monitoring.flutter.image_provider"
-77-->[:image_picker_android] D:\GitHub\ntesco-monitoring\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:12:13-74
+77-->[:image_picker_android] D:\01. Github\ntesco-monitoring\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:12:13-74
 78            android:exported="false"
-78-->[:image_picker_android] D:\GitHub\ntesco-monitoring\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:13:13-37
+78-->[:image_picker_android] D:\01. Github\ntesco-monitoring\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:13:13-37
 79            android:grantUriPermissions="true" >
-79-->[:image_picker_android] D:\GitHub\ntesco-monitoring\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:14:13-47
+79-->[:image_picker_android] D:\01. Github\ntesco-monitoring\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:14:13-47
 80            <meta-data
-80-->[:image_picker_android] D:\GitHub\ntesco-monitoring\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:15:13-17:75
+80-->[:image_picker_android] D:\01. Github\ntesco-monitoring\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:15:13-17:75
 81                android:name="android.support.FILE_PROVIDER_PATHS"
-81-->[:image_picker_android] D:\GitHub\ntesco-monitoring\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:16:17-67
+81-->[:image_picker_android] D:\01. Github\ntesco-monitoring\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:16:17-67
 82                android:resource="@xml/flutter_image_picker_file_paths" />
-82-->[:image_picker_android] D:\GitHub\ntesco-monitoring\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:17:17-72
+82-->[:image_picker_android] D:\01. Github\ntesco-monitoring\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:17:17-72
 83        </provider>
 84
 85        <activity
-85-->[:url_launcher_android] D:\GitHub\ntesco-monitoring\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:10:9-13:74
+85-->[:url_launcher_android] D:\01. Github\ntesco-monitoring\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:10:9-13:74
 86            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
-86-->[:url_launcher_android] D:\GitHub\ntesco-monitoring\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:11:13-74
+86-->[:url_launcher_android] D:\01. Github\ntesco-monitoring\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:11:13-74
 87            android:exported="false"
-87-->[:url_launcher_android] D:\GitHub\ntesco-monitoring\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:12:13-37
+87-->[:url_launcher_android] D:\01. Github\ntesco-monitoring\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:12:13-37
 88            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-88-->[:url_launcher_android] D:\GitHub\ntesco-monitoring\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:13:13-71
+88-->[:url_launcher_android] D:\01. Github\ntesco-monitoring\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:13:13-71
 89
 90        <uses-library
-90-->[androidx.window:window:1.0.0-beta04] C:\Users\DangTM-Home\.gradle\caches\transforms-3\97426a1ec74b433be6f73d0aff383bdf\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:25:9-27:40
+90-->[androidx.window:window:1.0.0-beta04] C:\Users\dangtm.TAYHO\.gradle\caches\transforms-3\97426a1ec74b433be6f73d0aff383bdf\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:25:9-27:40
 91            android:name="androidx.window.extensions"
-91-->[androidx.window:window:1.0.0-beta04] C:\Users\DangTM-Home\.gradle\caches\transforms-3\97426a1ec74b433be6f73d0aff383bdf\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:26:13-54
+91-->[androidx.window:window:1.0.0-beta04] C:\Users\dangtm.TAYHO\.gradle\caches\transforms-3\97426a1ec74b433be6f73d0aff383bdf\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:26:13-54
 92            android:required="false" />
-92-->[androidx.window:window:1.0.0-beta04] C:\Users\DangTM-Home\.gradle\caches\transforms-3\97426a1ec74b433be6f73d0aff383bdf\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:27:13-37
+92-->[androidx.window:window:1.0.0-beta04] C:\Users\dangtm.TAYHO\.gradle\caches\transforms-3\97426a1ec74b433be6f73d0aff383bdf\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:27:13-37
 93        <uses-library
-93-->[androidx.window:window:1.0.0-beta04] C:\Users\DangTM-Home\.gradle\caches\transforms-3\97426a1ec74b433be6f73d0aff383bdf\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:28:9-30:40
+93-->[androidx.window:window:1.0.0-beta04] C:\Users\dangtm.TAYHO\.gradle\caches\transforms-3\97426a1ec74b433be6f73d0aff383bdf\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:28:9-30:40
 94            android:name="androidx.window.sidecar"
-94-->[androidx.window:window:1.0.0-beta04] C:\Users\DangTM-Home\.gradle\caches\transforms-3\97426a1ec74b433be6f73d0aff383bdf\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:29:13-51
+94-->[androidx.window:window:1.0.0-beta04] C:\Users\dangtm.TAYHO\.gradle\caches\transforms-3\97426a1ec74b433be6f73d0aff383bdf\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:29:13-51
 95            android:required="false" />
-95-->[androidx.window:window:1.0.0-beta04] C:\Users\DangTM-Home\.gradle\caches\transforms-3\97426a1ec74b433be6f73d0aff383bdf\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:30:13-37
+95-->[androidx.window:window:1.0.0-beta04] C:\Users\dangtm.TAYHO\.gradle\caches\transforms-3\97426a1ec74b433be6f73d0aff383bdf\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:30:13-37
 96    </application>
 97
 98</manifest>

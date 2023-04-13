@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:ntesco_smart_monitoring/core/auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:ntesco_smart_monitoring/constants.dart';
@@ -28,5 +27,16 @@ Future<http.Response> post(dynamic body, String urlApi) async {
     Uri.https(endPoint, urlApi),
     headers: headerValue,
     body: jsonEncode(data),
+  );
+}
+
+Future<http.Response> post_by_model(dynamic body, String urlApi) async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  LoginResponseModel userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  Map<String, String> headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
+  return await http.post(
+    Uri.https(endPoint, urlApi),
+    headers: headerValue,
+    body: jsonEncode(body),
   );
 }

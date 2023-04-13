@@ -470,7 +470,7 @@ class _BodyPageState extends State<Body> {
 
   Widget _item(DefectAnalysisModel item) {
     return ListTile(
-      onTap: () => Navigator.pushNamed(context, DefectAnalysisUpdateScreen.routeName, arguments: {'id': item.id}),
+      onTap: () => Navigator.pushNamed(context, DefectAnalysisUpdateScreen.routeName, arguments: {'id': item.id, 'tabIndex': 0}),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

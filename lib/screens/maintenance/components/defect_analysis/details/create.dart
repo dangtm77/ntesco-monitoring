@@ -1,7 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:bmprogresshud/bmprogresshud.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -9,9 +12,14 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ionicons/ionicons.dart';
 
+import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
+import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
+
 import 'package:ntesco_smart_monitoring/components/default_button.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
+import 'package:ntesco_smart_monitoring/helper/util.dart';
+import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/update.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:ntesco_smart_monitoring/theme.dart';
 
@@ -88,9 +96,8 @@ class _CreatePageState extends State<CreateBody> {
             autovalidateMode: AutovalidateMode.onUserInteraction,
             autoFocusOnValidationFailure: true,
             initialValue: {
-              'idDefectAnalysis': id,
               'partName': null,
-              'partQuantity': null,
+              'partQuantity': '1',
               'partManufacturer': null,
               'partModel': null,
               'partSpecifications': null,
@@ -136,14 +143,14 @@ class _CreatePageState extends State<CreateBody> {
                             Expanded(child: editorForm("partModel")),
                           ],
                         ),
+                        SizedBox(height: 20),
+                        editorForm("partSpecifications"),
                         SizedBox(height: 10),
                       ],
                     ),
                   ),
                 ),
                 SizedBox(height: 10),
-                editorForm("partSpecifications"),
-                SizedBox(height: 20),
                 editorForm("analysisProblemCause"),
                 SizedBox(height: 20),
                 editorForm("solution"),
@@ -226,13 +233,14 @@ class _CreatePageState extends State<CreateBody> {
                           margin: EdgeInsets.all(10),
                           color: kPrimaryColor,
                           child: SizedBox(
-                              width: 120.0,
+                              width: _imageList.length == 0 ? double.infinity : 120.0,
                               height: 120.0,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Icon(Icons.camera_alt_outlined, size: 30.0, color: Colors.white),
-                                  Text("Chọn ảnh", style: TextStyle(color: Colors.white, fontSize: 15.0)),
+                                  SizedBox(height: 5),
+                                  Text("Chọn hình ảnh", style: TextStyle(color: Colors.white, fontSize: 15.0)),
                                 ],
                               )),
                         ),
@@ -257,7 +265,10 @@ class _CreatePageState extends State<CreateBody> {
                       child: DefaultButton(
                         text: 'Xác nhận thông tin',
                         color: kPrimaryColor,
-                        press: () async => {},
+                        //press: () async => submitFunc(context),
+                        press: () {
+                          Navigator.pushNamed(context, DefectAnalysisUpdateScreen.routeName, arguments: {'id': id, 'tabIndex': 1});
+                        },
                       ),
                     ),
                   ],
@@ -485,6 +496,75 @@ class _CreatePageState extends State<CreateBody> {
         );
       },
     );
+  }
+
+  Future<void> submitFunc(BuildContext context) async {
+    if (_formKey.currentState?.saveAndValidate() ?? false) {
+      ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
+      try {
+        var pictures = [];
+        for (XFile file in _imageList) {
+          List<int> imageBytes = await file.readAsBytes();
+          pictures.add(base64Encode(imageBytes));
+        }
+
+        var model = <String, dynamic>{
+          'idDefectAnalysis': id,
+          'partName': _formKey.currentState?.fields['partName']?.value,
+          'partQuantity': _formKey.currentState?.fields['partQuantity']?.value ?? 1,
+          'partManufacturer': _formKey.currentState?.fields['partManufacturer']?.value,
+          'partModel': _formKey.currentState?.fields['partModel']?.value,
+          'partSpecifications': _formKey.currentState?.fields['partSpecifications']?.value,
+          'analysisProblemCause': _formKey.currentState?.fields['analysisProblemCause']?.value,
+          'solution': _formKey.currentState?.fields['solution']?.value,
+          'departmentInCharge': _formKey.currentState?.fields['departmentInCharge']?.value,
+          'executionTime': _formKey.currentState?.fields['executionTime']?.value,
+          'note': _formKey.currentState?.fields['note']?.value,
+          'pictures': pictures,
+        };
+
+        await Maintenance.DefectAnalysisDetails_Create(model).then((response) {
+          print('response');
+          print(response.statusCode);
+          print(response.body);
+          if (response.statusCode >= 200 && response.statusCode <= 299) {
+            ProgressHud.of(context)?.showSuccessAndDismiss(text: "Thành công");
+            // Navigator.pushReplacementNamed(context, DefectAnalysisScreen.routeName);
+          } else {
+            ProgressHud.of(context)?.dismiss();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.red,
+                duration: Duration(seconds: 2),
+                content: Text(response.body),
+              ),
+            );
+          }
+        }).catchError((error, stackTrace) {
+          print('catchError');
+          print(error);
+          ProgressHud.of(context)?.dismiss();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 5),
+              content: Text("Có lỗi xảy ra. Chi tiết: $error"),
+            ),
+          );
+        });
+      } on Exception catch (e) {
+        print('Exception');
+        print(e.toString());
+        ProgressHud.of(context)?.dismiss();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 5),
+            content: Text("Có lỗi xảy ra. Chi tiết: " + e.toString()),
+          ),
+        );
+      }
+    }
   }
 
   @override
