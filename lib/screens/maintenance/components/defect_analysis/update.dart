@@ -162,10 +162,12 @@ class _UpdateBodyState extends State<UpdateBody> {
                               child: Icon(Icons.add),
                             ),
                           ),
+                          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                           bottomNavigationBar: BottomNavyBar(
+                            iconSize: 25,
                             showElevation: true,
-                            itemCornerRadius: 10.0,
-                            containerHeight: 45.0,
+                            itemCornerRadius: 20.0,
+                            containerHeight: 50.0,
                             selectedIndex: _currentIndex,
                             onItemSelected: (value) {
                               setState(() => _currentIndex = value);

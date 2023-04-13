@@ -10,9 +10,6 @@ Future<http.Response> get(dynamic queryParameters, String urlApi) async {
   var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
   var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
   http.Response result = await http.get(Uri.https(endPoint, urlApi, queryParameters), headers: headerValue);
-
-  //if (result.statusCode == 401) if (await funcLogOut()) Get.offNamed('/sign_in');
-
   return result;
 }
 
