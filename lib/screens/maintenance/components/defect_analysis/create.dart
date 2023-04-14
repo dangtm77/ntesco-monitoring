@@ -20,27 +20,25 @@ import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
 import 'package:ntesco_smart_monitoring/models/common/UserModel.dart';
 import 'package:ntesco_smart_monitoring/models/mt/SystemModel.dart';
-import 'package:ntesco_smart_monitoring/screens/maintenance/defect_analysis_screen.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:ntesco_smart_monitoring/theme.dart';
 
 class DefectAnalysisCreateScreen extends StatelessWidget {
-  static String routeName = "/maintenance/defect-analysis/create";
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return Scaffold(drawerScrimColor: Colors.transparent, body: CreateBody());
+    return Scaffold(drawerScrimColor: Colors.transparent, body: _DefectAnalysisCreateBody());
   }
 }
 
-class CreateBody extends StatefulWidget {
-  CreateBody({Key? key}) : super(key: key);
+class _DefectAnalysisCreateBody extends StatefulWidget {
+  _DefectAnalysisCreateBody({Key? key}) : super(key: key);
 
   @override
-  _CreatePageState createState() => new _CreatePageState();
+  _DefectAnalysisCreateBodyState createState() => new _DefectAnalysisCreateBodyState();
 }
 
-class _CreatePageState extends State<CreateBody> {
+class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
   final _formKey = GlobalKey<FormBuilderState>();
   late Future<ProjectModels> _listOfProjects;
   late Future<SystemModels> _listOfSystems;
@@ -139,6 +137,14 @@ class _CreatePageState extends State<CreateBody> {
               children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
             ),
           ),
+          buttonRight: InkWell(
+            borderRadius: BorderRadius.circular(15),
+            onTap: () async => submitFunc(context),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [Icon(Ionicons.save_outline, color: kPrimaryColor, size: 30.0)],
+            ),
+          ),
         ),
       );
 
@@ -193,19 +199,19 @@ class _CreatePageState extends State<CreateBody> {
                             flex: 4,
                             child: DefaultButton(
                               press: () => _formKey.currentState?.reset(),
-                              text: "Đặt lại",
+                              text: "Đặt lại mặc định",
                               color: kTextColor,
                             ),
                           ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            flex: 8,
-                            child: DefaultButton(
-                              text: 'Xác nhận thông tin',
-                              color: kPrimaryColor,
-                              press: () async => submitFunc(context),
-                            ),
-                          ),
+                          // const SizedBox(width: 10),
+                          // Expanded(
+                          //   flex: 8,
+                          //   child: DefaultButton(
+                          //     text: 'Xác nhận thông tin',
+                          //     color: kPrimaryColor,
+                          //     press: () async => submitFunc(context),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ],
@@ -537,7 +543,8 @@ class _CreatePageState extends State<CreateBody> {
           await Maintenance.DefectAnalysis_Create(jsonEncode(model)).then((response) {
             if (response.statusCode >= 200 && response.statusCode <= 299) {
               ProgressHud.of(context)?.showSuccessAndDismiss(text: "Thành công");
-              Navigator.pushReplacementNamed(context, DefectAnalysisScreen.routeName);
+              //Navigator.pushReplacementNamed(context, DefectAnalysisScreen.routeName);
+              Navigator.of(context).pop();
             } else {
               ProgressHud.of(context)?.dismiss();
               ScaffoldMessenger.of(context).showSnackBar(

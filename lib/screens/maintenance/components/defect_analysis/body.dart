@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui';
 
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:awesome_select/awesome_select.dart';
+import 'package:bmprogresshud/bmprogresshud.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +12,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:http/http.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:ntesco_smart_monitoring/components/default_button.dart';
 import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
@@ -114,6 +118,9 @@ class _BodyPageState extends State<Body> {
       searchGroupFilterOptions.add(['project.name', 'contains', _keyword]);
       filterOptions.add(searchGroupFilterOptions);
     }
+
+    print(jsonEncode(sortOptions));
+    print(jsonEncode(filterOptions));
 
     LoadOptionsModel options = new LoadOptionsModel(take: itemPerPage * pageIndex, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
     Response response = await Maintenance.DefectAnalysis_GetList(options.toMap());
@@ -221,12 +228,18 @@ class _BodyPageState extends State<Body> {
       ),
       buttonRight: InkWell(
         borderRadius: BorderRadius.circular(15),
-        onTap: () => Navigator.pushNamed(context, DefectAnalysisCreateScreen.routeName),
-        child: Icon(
-          Icons.addchart_outlined,
-          color: kPrimaryColor,
-          size: 30.0,
-        ),
+        // onTap: () => Navigator.pushNamed(context, DefectAnalysisCreateScreen.routeName),
+        child: Icon(Icons.addchart_outlined, color: kPrimaryColor, size: 30.0),
+        onTap: () => showBarModalBottomSheet(
+          context: context,
+          builder: (context) => DefectAnalysisCreateScreen(),
+        ).then((value) {
+          setState(() {
+            isLoading = false;
+            _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+          });
+          print('Modal bottom sheet closed');
+        }),
       ),
     );
   }
@@ -470,7 +483,44 @@ class _BodyPageState extends State<Body> {
 
   Widget _item(DefectAnalysisModel item) {
     return ListTile(
-      onTap: () => Navigator.pushNamed(context, DefectAnalysisUpdateScreen.routeName, arguments: {'id': item.id, 'tabIndex': 0}),
+      onTap: () => showBarModalBottomSheet(
+        context: context,
+        builder: (_) => Material(
+          child: SafeArea(
+            top: true,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                ListTile(
+                  trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
+                  title: Row(
+                    children: [
+                      Icon(Ionicons.create_outline, color: kPrimaryColor),
+                      SizedBox(width: 10.0),
+                      Text('Xem / Cập nhật / chỉnh sửa thông tin', style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.pushNamed(context, DefectAnalysisUpdateScreen.routeName, arguments: {'id': item.id, 'tabIndex': 0});
+                  },
+                ),
+                ListTile(
+                  trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
+                  title: Row(
+                    children: [
+                      Icon(Ionicons.trash_bin_outline, color: kPrimaryColor),
+                      SizedBox(width: 10.0),
+                      Text('Xóa / Hủy bỏ thông tin', style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+                    ],
+                  ),
+                  onTap: () => deleteFunc(item.id),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -515,5 +565,36 @@ class _BodyPageState extends State<Body> {
         ],
       ),
     );
+  }
+
+  Future<void> deleteFunc(key) async {
+    Navigator.of(context).pop();
+    showOkCancelAlertDialog(
+      context: context,
+      title: "XÁC NHẬN THÔNG TIN",
+      message: "Bạn có chắc chắn là muốn xóa bỏ thông tin này không?",
+      okLabel: "Xóa bỏ",
+      cancelLabel: "Đóng lại",
+      isDestructiveAction: true,
+    ).then((result) async {
+      if (result == OkCancelResult.ok) {
+        ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
+        await Maintenance.DefectAnalysis_Delete(key).then((response) {
+          if (response.statusCode >= 200 && response.statusCode <= 299) {
+            ProgressHud.of(context)?.showSuccessAndDismiss(text: "Thành công");
+            setState(() {
+              isLoading = false;
+              _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+            });
+          } else {
+            ProgressHud.of(context)?.showErrorAndDismiss(text: "Thất bại");
+            Util.showNotification(context, "${response.body}", Colors.red, 5);
+          }
+        }).catchError((error, stackTrace) {
+          ProgressHud.of(context)?.showErrorAndDismiss(text: "Thất bại");
+          Util.showNotification(context, "Có lỗi xảy ra. Chi tiết: $error", Colors.red, 5);
+        });
+      }
+    });
   }
 }

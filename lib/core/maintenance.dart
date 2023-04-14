@@ -27,6 +27,7 @@ Future<http.Response> Plans_GetList(dynamic options) async => Core.get(options, 
 Future<http.Response> DefectAnalysis_GetDetail(dynamic options) async => Core.get(options, API_DEFECTANALYSIS_GETDETAIL);
 Future<http.Response> DefectAnalysis_GetList(dynamic options) async => Core.get(options, API_DEFECTANALYSIS_GETLIST);
 Future<http.Response> DefectAnalysis_Create(dynamic body) async => Core.post(body, API_DEFECTANALYSIS_GETLIST);
+Future<http.Response> DefectAnalysis_Delete(int key) async => Core.delete(key, API_DEFECTANALYSIS_GETLIST);
 //--------------------------DEFECT ANALYSIS DETAILS--------------------------//
 Future<http.Response> DefectAnalysisDetails_GetList(int id, dynamic options) async {
   var queryParameters = options;

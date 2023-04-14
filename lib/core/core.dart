@@ -37,3 +37,17 @@ Future<http.Response> post_by_model(dynamic body, String urlApi) async {
     body: jsonEncode(body),
   );
 }
+
+Future<http.Response> delete(int key, String urlApi) async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  LoginResponseModel userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  Map<String, String> headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
+  var data = [
+    {"Key": "key", "Value": key}
+  ];
+  return await http.delete(
+    Uri.https(endPoint, urlApi),
+    headers: headerValue,
+    body: jsonEncode(data),
+  );
+}

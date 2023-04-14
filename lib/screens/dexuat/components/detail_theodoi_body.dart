@@ -201,7 +201,7 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
                   textAlign: TextAlign.right,
                   style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic, color: kTextColor),
                 ),
-                onTap: (() => Util.showNotification(context, item.ghiChu, Colors.red)),
+                onTap: (() => Util.showNotification(context, item.ghiChu, Colors.red, 5)),
               ),
             )
           : null,

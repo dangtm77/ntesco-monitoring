@@ -25,7 +25,5 @@ final Map<String, WidgetBuilder> routes = {
   MaintenanceScreen.routeName: (context) => MaintenanceScreen(),
   PlanScreen.routeName: (context) => PlanScreen(),
   DefectAnalysisScreen.routeName: (context) => DefectAnalysisScreen(),
-  DefectAnalysisCreateScreen.routeName: (context) => DefectAnalysisCreateScreen(),
   DefectAnalysisUpdateScreen.routeName: (context) => DefectAnalysisUpdateScreen(),
-  DefectAnalysisDetailsCreateScreen.routeName: (context) => DefectAnalysisDetailsCreateScreen(),
 };

@@ -68,7 +68,7 @@ class _SignFormState extends State<SignForm> {
             children: [
               ChangeLanguage(),
               GestureDetector(
-                onTap: () => Util.showNotification(context, "Đang cập nhật tính năng...", kPrimaryColor),
+                onTap: () => Util.showNotification(context, "Đang cập nhật tính năng...", kPrimaryColor, 3),
                 child: Text(
                   "login.forgot_password_button".tr(),
                   style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w800, fontSize: 15),

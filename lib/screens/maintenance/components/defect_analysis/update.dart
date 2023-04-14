@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:ntesco_smart_monitoring/components/photoview_gallery.dart';
-import 'package:photo_view/photo_view.dart';
+import 'dart:ui';
+
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:badges/badges.dart';
+import 'package:bmprogresshud/bmprogresshud.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -13,8 +15,10 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:http/http.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'package:ntesco_smart_monitoring/components/default_button.dart';
+import 'package:ntesco_smart_monitoring/components/photoview_gallery.dart';
 import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
@@ -30,6 +34,8 @@ import 'package:ntesco_smart_monitoring/models/mt/SystemModel.dart';
 import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/details/create.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:ntesco_smart_monitoring/theme.dart';
+
+import '../../defect_analysis_screen.dart';
 
 class DefectAnalysisUpdateScreen extends StatelessWidget {
   static String routeName = "/maintenance/defect-analysis/update";
@@ -121,7 +127,7 @@ class _UpdateBodyState extends State<UpdateBody> {
           subtitle: "maintenance.defect_analysis.update_subtitle",
           buttonLeft: InkWell(
             borderRadius: BorderRadius.circular(15),
-            onTap: () => Navigator.pop(context),
+            onTap: () => Navigator.pushNamed(context, DefectAnalysisScreen.routeName),
             child: Stack(
               clipBehavior: Clip.none,
               children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
@@ -147,7 +153,7 @@ class _UpdateBodyState extends State<UpdateBody> {
                           body: SizedBox.expand(
                             child: PageView(
                               controller: _pageController,
-                              //physics: NeverScrollableScrollPhysics(),
+                              physics: NeverScrollableScrollPhysics(),
                               onPageChanged: ((value) => setState(() => _currentIndex = value)),
                               children: <Widget>[
                                 SummaryPageView(id: item.id, model: item),
@@ -155,32 +161,37 @@ class _UpdateBodyState extends State<UpdateBody> {
                               ],
                             ),
                           ),
-                          floatingActionButton: Visibility(
-                            visible: (_currentIndex == 1),
-                            child: FloatingActionButton(
-                              onPressed: () => Navigator.pushNamed(context, DefectAnalysisDetailsCreateScreen.routeName, arguments: {'id': item.id}),
-                              child: Icon(Icons.add),
-                            ),
-                          ),
                           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                           bottomNavigationBar: BottomNavyBar(
-                            iconSize: 25,
+                            iconSize: 30,
                             showElevation: true,
                             itemCornerRadius: 20.0,
-                            containerHeight: 50.0,
+                            containerHeight: 70.0,
                             selectedIndex: _currentIndex,
                             onItemSelected: (value) {
                               setState(() => _currentIndex = value);
-                              _pageController.jumpToPage(value);
+                              _pageController.animateToPage(_currentIndex, duration: Duration(milliseconds: 300), curve: Curves.ease);
                             },
                             items: <BottomNavyBarItem>[
                               BottomNavyBarItem(
-                                title: Text('CHUNG'),
+                                title: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('Thông tin'),
+                                    Text('CHUNG', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
                                 icon: Icon(Ionicons.reader_outline),
                                 textAlign: TextAlign.center,
                               ),
                               BottomNavyBarItem(
-                                title: Text('CHI TIẾT'),
+                                title: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('Chi tiết'),
+                                    Text('SỰ CỐ', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
                                 icon: Icon(Ionicons.git_branch_outline),
                                 textAlign: TextAlign.center,
                               ),
@@ -330,11 +341,13 @@ class _SummaryPageViewState extends State<SummaryPageView> {
                     SizedBox(height: 20),
                     editorForm("cncStaff"),
                     SizedBox(height: 20),
-                    DefaultButton(
-                      text: 'Cập nhật thông tin',
-                      color: kPrimaryColor,
-                      //press: () async => submitFunc(context),
-                    )
+                    Row(
+                      children: [
+                        Expanded(flex: 2, child: DefaultButton(text: 'Hủy bỏ thông tin', color: Colors.red, press: () async => deleteFunc(context, model))),
+                        SizedBox(width: 10),
+                        Expanded(flex: 3, child: DefaultButton(text: 'Cập nhật thông tin', color: kPrimaryColor, press: () async => submitFunc(context))),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -632,6 +645,35 @@ class _SummaryPageViewState extends State<SummaryPageView> {
         return SizedBox.shrink();
     }
   }
+
+  submitFunc(BuildContext context) async {}
+  Future<void> deleteFunc(BuildContext context, DefectAnalysisModel item) async {
+    print('object');
+    showOkCancelAlertDialog(
+      context: context,
+      title: item.code,
+      message: "Bạn có chắc chắn là muốn xóa bỏ thông tin này không?",
+      okLabel: "Xóa bỏ",
+      cancelLabel: "Đóng lại",
+      isDestructiveAction: true,
+    ).then((result) async {
+      if (result == OkCancelResult.ok) {
+        ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
+        await Maintenance.DefectAnalysis_Delete(this.id).then((response) {
+          if (response.statusCode >= 200 && response.statusCode <= 299) {
+            ProgressHud.of(context)?.showSuccessAndDismiss(text: "Thành công");
+            Navigator.pushReplacementNamed(context, DefectAnalysisScreen.routeName);
+          } else {
+            ProgressHud.of(context)?.showErrorAndDismiss(text: "Thất bại");
+            Util.showNotification(context, "${response.body}", Colors.red, 5);
+          }
+        }).catchError((error, stackTrace) {
+          ProgressHud.of(context)?.showErrorAndDismiss(text: "Thất bại");
+          Util.showNotification(context, "Có lỗi xảy ra. Chi tiết: $error", Colors.red, 5);
+        });
+      }
+    });
+  }
 }
 
 class DetailsPageView extends StatefulWidget {
@@ -684,8 +726,6 @@ class _DetailsPageViewState extends State<DetailsPageView> {
   Widget build(BuildContext context) {
     return Container(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: NotificationListener<ScrollNotification>(
@@ -738,6 +778,27 @@ class _DetailsPageViewState extends State<DetailsPageView> {
               ),
             ),
           ),
+          Container(
+            padding: EdgeInsets.symmetric(
+              vertical: getProportionateScreenHeight(10.0),
+              horizontal: getProportionateScreenWidth(10.0),
+            ),
+            child: Center(
+              child: DefaultButton(
+                text: 'THÊM THÔNG TIN SỰ CỐ',
+                press: () => showBarModalBottomSheet(
+                  context: context,
+                  builder: (context) => DefectAnalysisDetailsCreateScreen(id: id),
+                ).then((value) {
+                  setState(() {
+                    isLoading = false;
+                    _listOfDefectAnalysisDetails = _getListDefectAnalysisDetails();
+                  });
+                  print('Modal bottom sheet closed');
+                }),
+              ),
+            ),
+          )
         ],
       ),
     );

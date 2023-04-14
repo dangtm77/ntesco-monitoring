@@ -9,13 +9,14 @@ class Util {
     }
   }
 
-  static void showNotification(BuildContext context, String text, Color color) {
+  static void showNotification(BuildContext context, String text, Color color, int duration) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
           content: Text(text),
           backgroundColor: color,
+          duration: Duration(seconds: duration),
         ),
       );
   }

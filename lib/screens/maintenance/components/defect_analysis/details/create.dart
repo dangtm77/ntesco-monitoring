@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:bmprogresshud/bmprogresshud.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -12,24 +11,22 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ionicons/ionicons.dart';
 
-import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
 import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 
 import 'package:ntesco_smart_monitoring/components/default_button.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
-import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/update.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:ntesco_smart_monitoring/theme.dart';
 
 class DefectAnalysisDetailsCreateScreen extends StatelessWidget {
-  static String routeName = "/maintenance/defect-analysis-details/create";
+  final int id;
+  const DefectAnalysisDetailsCreateScreen({Key? key, required this.id}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, dynamic>{}) as Map;
-    int id = int.parse(arguments['id'].toString());
     return Scaffold(drawerScrimColor: Colors.transparent, body: CreateBody(id: id));
   }
 }
@@ -80,6 +77,14 @@ class _CreatePageState extends State<CreateBody> {
             child: Stack(
               clipBehavior: Clip.none,
               children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
+            ),
+          ),
+          buttonRight: InkWell(
+            borderRadius: BorderRadius.circular(15),
+            onTap: () async => submitFunc(context),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [Icon(Ionicons.save_outline, color: kPrimaryColor, size: 30.0)],
             ),
           ),
         ),
@@ -247,31 +252,6 @@ class _CreatePageState extends State<CreateBody> {
                       ),
                     ],
                   ),
-                ),
-                SizedBox(height: 20),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      flex: 4,
-                      child: DefaultButton(
-                        press: () => _formKey.currentState?.reset(),
-                        text: "Đặt lại",
-                        color: kTextColor,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      flex: 8,
-                      child: DefaultButton(
-                        text: 'Xác nhận thông tin',
-                        color: kPrimaryColor,
-                        //press: () async => submitFunc(context),
-                        press: () {
-                          Navigator.pushNamed(context, DefectAnalysisUpdateScreen.routeName, arguments: {'id': id, 'tabIndex': 1});
-                        },
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),
@@ -524,12 +504,10 @@ class _CreatePageState extends State<CreateBody> {
         };
 
         await Maintenance.DefectAnalysisDetails_Create(model).then((response) {
-          print('response');
-          print(response.statusCode);
-          print(response.body);
           if (response.statusCode >= 200 && response.statusCode <= 299) {
             ProgressHud.of(context)?.showSuccessAndDismiss(text: "Thành công");
             // Navigator.pushReplacementNamed(context, DefectAnalysisScreen.routeName);
+            Navigator.of(context).pop();
           } else {
             ProgressHud.of(context)?.dismiss();
             ScaffoldMessenger.of(context).showSnackBar(
@@ -541,8 +519,6 @@ class _CreatePageState extends State<CreateBody> {
             );
           }
         }).catchError((error, stackTrace) {
-          print('catchError');
-          print(error);
           ProgressHud.of(context)?.dismiss();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -553,8 +529,6 @@ class _CreatePageState extends State<CreateBody> {
           );
         });
       } on Exception catch (e) {
-        print('Exception');
-        print(e.toString());
         ProgressHud.of(context)?.dismiss();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
