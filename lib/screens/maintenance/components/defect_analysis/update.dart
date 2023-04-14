@@ -36,6 +36,7 @@ import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:ntesco_smart_monitoring/theme.dart';
 
 import '../../defect_analysis_screen.dart';
+import 'details/update.dart';
 
 class DefectAnalysisUpdateScreen extends StatelessWidget {
   static String routeName = "/maintenance/defect-analysis/update";
@@ -646,7 +647,33 @@ class _SummaryPageViewState extends State<SummaryPageView> {
     }
   }
 
-  submitFunc(BuildContext context) async {}
+  submitFunc(BuildContext context) async {
+    if (_formKey.currentState?.saveAndValidate() ?? false) {
+      ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
+      var model = {
+        'idSystem': _formKey.currentState?.fields['idSystem']?.value,
+        'code': _formKey.currentState?.fields['code']?.value,
+        'analysisDate': _formKey.currentState?.fields['analysisDate']?.value.toIso8601String(),
+        'analysisBy': _formKey.currentState?.fields['analysisBy']?.value,
+        'currentSuitation': _formKey.currentState?.fields['currentSuitation']?.value,
+        'maintenanceStaff': _formKey.currentState?.fields['maintenanceStaff']?.value,
+        'qcStaff': _formKey.currentState?.fields['qcStaff']?.value,
+        'cncStaff': _formKey.currentState?.fields['cncStaff']?.value,
+      };
+      await Maintenance.DefectAnalysis_Update(id, jsonEncode(model)).then((response) {
+        if (response.statusCode >= 200 && response.statusCode <= 299) {
+          ProgressHud.of(context)?.showSuccessAndDismiss(text: "Thành công");
+        } else {
+          ProgressHud.of(context)?.dismiss();
+          Util.showNotification(context, response.body, Colors.red, 5);
+        }
+      }).catchError((error, stackTrace) {
+        ProgressHud.of(context)?.dismiss();
+        Util.showNotification(context, "Có lỗi xảy ra. Chi tiết: $error", Colors.red, 5);
+      });
+    }
+  }
+
   Future<void> deleteFunc(BuildContext context, DefectAnalysisModel item) async {
     print('object');
     showOkCancelAlertDialog(
@@ -808,7 +835,44 @@ class _DetailsPageViewState extends State<DetailsPageView> {
     List<String> imagesList = (item.pictures != null && item.pictures!.length > 0) ? item.pictures!.map((e) => Common.System_DowloadFile_ByID(e.id, 'view')).toList() : [urlNoImage];
 
     return ListTile(
-      onTap: () => {},
+      onTap: () => showBarModalBottomSheet(
+        context: context,
+        builder: (_) => Material(
+          child: SafeArea(
+            top: true,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                ListTile(
+                  trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
+                  title: Row(
+                    children: [
+                      Icon(Ionicons.create_outline, color: kPrimaryColor),
+                      SizedBox(width: 10.0),
+                      Text('Xem / Cập nhật / chỉnh sửa thông tin', style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.pushNamed(context, DefectAnalysisDetailsUpdateScreen.routeName, arguments: {'id': item.id, 'tabIndex': 0});
+                  },
+                ),
+                ListTile(
+                  trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
+                  title: Row(
+                    children: [
+                      Icon(Ionicons.trash_bin_outline, color: kPrimaryColor),
+                      SizedBox(width: 10.0),
+                      Text('Xóa / Hủy bỏ thông tin', style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+                    ],
+                  ),
+                  onTap: () => deleteFunc(item.id),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
       leading: Badge(
         showBadge: imagesList.length > 1,
         badgeContent: Text('${imagesList.length}', style: TextStyle(fontSize: 12, color: Colors.white)),
@@ -895,5 +959,36 @@ class _DetailsPageViewState extends State<DetailsPageView> {
         ],
       ),
     );
+  }
+
+  Future<void> deleteFunc(key) async {
+    Navigator.of(context).pop();
+    showOkCancelAlertDialog(
+      context: context,
+      title: "XÁC NHẬN THÔNG TIN",
+      message: "Bạn có chắc chắn là muốn xóa bỏ thông tin này không?",
+      okLabel: "Xóa bỏ",
+      cancelLabel: "Đóng lại",
+      isDestructiveAction: true,
+    ).then((result) async {
+      if (result == OkCancelResult.ok) {
+        ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
+        await Maintenance.DefectAnalysisDetails_Delete(key).then((response) {
+          if (response.statusCode >= 200 && response.statusCode <= 299) {
+            ProgressHud.of(context)?.showSuccessAndDismiss(text: "Xóa bỏ thành công");
+            setState(() {
+              isLoading = false;
+              _listOfDefectAnalysisDetails = _getListDefectAnalysisDetails();
+            });
+          } else {
+            ProgressHud.of(context)?.showErrorAndDismiss(text: "Xóa bỏ thất bại");
+            Util.showNotification(context, "${response.body}", Colors.red, 5);
+          }
+        }).catchError((error, stackTrace) {
+          ProgressHud.of(context)?.showErrorAndDismiss(text: "Thất bại");
+          Util.showNotification(context, "Có lỗi xảy ra. Chi tiết: $error", Colors.red, 5);
+        });
+      }
+    });
   }
 }

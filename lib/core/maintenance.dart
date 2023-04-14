@@ -11,6 +11,7 @@ const API_DEFECTANALYSIS_GETLIST = "v2/mt/defectanalysis";
 const API_DEFECTANALYSIS_GETDETAIL = "v2/mt/defectanalysis/detail";
 
 const API_DEFECTANALYSISDETAILS_GETLIST = "v2/mt/defectanalysisdetails";
+const API_DEFECTANALYSISDETAILS_GETDETAIL = "v2/mt/defectanalysisdetails/detail";
 
 //--------------------------SYSTEMS--------------------------//
 Future<http.Response> Systems_GetList(dynamic options) async => Core.get(options, API_SYSTEMS_GETLIST);
@@ -27,6 +28,7 @@ Future<http.Response> Plans_GetList(dynamic options) async => Core.get(options, 
 Future<http.Response> DefectAnalysis_GetDetail(dynamic options) async => Core.get(options, API_DEFECTANALYSIS_GETDETAIL);
 Future<http.Response> DefectAnalysis_GetList(dynamic options) async => Core.get(options, API_DEFECTANALYSIS_GETLIST);
 Future<http.Response> DefectAnalysis_Create(dynamic body) async => Core.post(body, API_DEFECTANALYSIS_GETLIST);
+Future<http.Response> DefectAnalysis_Update(int key, dynamic body) async => Core.put(key, body, API_DEFECTANALYSIS_GETLIST);
 Future<http.Response> DefectAnalysis_Delete(int key) async => Core.delete(key, API_DEFECTANALYSIS_GETLIST);
 //--------------------------DEFECT ANALYSIS DETAILS--------------------------//
 Future<http.Response> DefectAnalysisDetails_GetList(int id, dynamic options) async {
@@ -35,4 +37,7 @@ Future<http.Response> DefectAnalysisDetails_GetList(int id, dynamic options) asy
   return Core.get(queryParameters, API_DEFECTANALYSISDETAILS_GETLIST);
 }
 
+Future<http.Response> DefectAnalysisDetails_GetDetail(dynamic options) async => Core.get(options, API_DEFECTANALYSISDETAILS_GETDETAIL);
 Future<http.Response> DefectAnalysisDetails_Create(dynamic body) async => Core.post_by_model(body, API_DEFECTANALYSISDETAILS_GETLIST);
+Future<http.Response> DefectAnalysisDetails_Update(int key, dynamic body) async => Core.put(key, body, API_DEFECTANALYSISDETAILS_GETLIST);
+Future<http.Response> DefectAnalysisDetails_Delete(int key) async => Core.delete(key, API_DEFECTANALYSISDETAILS_GETLIST);

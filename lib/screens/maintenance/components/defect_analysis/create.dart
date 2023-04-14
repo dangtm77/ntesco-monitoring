@@ -193,26 +193,10 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
                       SizedBox(height: 20),
                       editorForm("cncStaff"),
                       SizedBox(height: 20),
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            flex: 4,
-                            child: DefaultButton(
-                              press: () => _formKey.currentState?.reset(),
-                              text: "Đặt lại mặc định",
-                              color: kTextColor,
-                            ),
-                          ),
-                          // const SizedBox(width: 10),
-                          // Expanded(
-                          //   flex: 8,
-                          //   child: DefaultButton(
-                          //     text: 'Xác nhận thông tin',
-                          //     color: kPrimaryColor,
-                          //     press: () async => submitFunc(context),
-                          //   ),
-                          // ),
-                        ],
+                      DefaultButton(
+                        press: () => _formKey.currentState?.reset(),
+                        text: "Đặt lại mặc định",
+                        color: kTextColor,
                       ),
                     ],
                   ),
@@ -286,6 +270,7 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
                 name: 'idSystem',
                 enabled: idSystemIsEnable,
                 menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
+                validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
                 decoration: InputDecoration(
                   label: Text.rich(TextSpan(children: [TextSpan(text: 'Hệ thống cần phân tích'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
                   hintText: "Vui lòng chọn thông tin...",
@@ -311,7 +296,6 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
                     )
                     .toList(),
                 valueTransformer: (val) => val,
-                validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
               );
           },
         );
@@ -319,7 +303,7 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
         return FormBuilderTextField(
           name: "code",
           decoration: const InputDecoration(
-            labelText: 'Mã hiệu',
+            label: Text.rich(TextSpan(children: [TextSpan(text: 'Mã hiệu'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
             hintText: "Vui lòng nhập thông tin...",
           ).applyDefaults(inputDecorationTheme()),
           validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
@@ -331,7 +315,7 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
           inputType: InputType.date,
           format: DateFormat("dd/MM/yyyy"),
           decoration: InputDecoration(
-            labelText: 'Ngày phân tích',
+            label: Text.rich(TextSpan(children: [TextSpan(text: 'Ngày phân tích'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
             hintText: "Vui lòng chọn thông tin...",
             suffixIcon: IconButton(
               icon: const Icon(Icons.close),
@@ -356,7 +340,7 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
                 menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
                 decoration: InputDecoration(
-                    labelText: 'Nhân sự phân tích',
+                    label: Text.rich(TextSpan(children: [TextSpan(text: 'Nhân sự phân tích'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
                     hintText: "Vui lòng chọn thông tin...",
                     suffixIcon: IconButton(
                       icon: Icon(Icons.close),

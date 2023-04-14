@@ -38,6 +38,21 @@ Future<http.Response> post_by_model(dynamic body, String urlApi) async {
   );
 }
 
+Future<http.Response> put(int key, dynamic body, String urlApi) async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  LoginResponseModel userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  Map<String, String> headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
+  var data = [
+    {"Key": "key", "Value": key},
+    {"Key": "values", "Value": body}
+  ];
+  return await http.post(
+    Uri.https(endPoint, urlApi),
+    headers: headerValue,
+    body: jsonEncode(data),
+  );
+}
+
 Future<http.Response> delete(int key, String urlApi) async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
   LoginResponseModel userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
