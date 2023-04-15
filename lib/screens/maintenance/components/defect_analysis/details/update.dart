@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: unused_field
 
 import 'dart:async';
 import 'dart:convert';
@@ -6,16 +6,18 @@ import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:http/http.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/update.dart';
 
 import 'package:ntesco_smart_monitoring/size_config.dart';
 
 import '../../../../../components/top_header.dart';
 import '../../../../../constants.dart';
+import '../../../../../core/maintenance.dart' as Maintenance;
 import '../../../../../helper/util.dart';
 import '../../../../../models/mt/DefectAnalysisDetailsModel.dart';
-import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 
 class DefectAnalysisDetailsUpdateScreen extends StatelessWidget {
   static String routeName = "/maintenance/defect-analysis-details/update";
@@ -88,26 +90,28 @@ class _UpdateBodyState extends State<UpdateBody> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    print(_currentIndex);
+  Widget build(_) {
     return SafeArea(
       child: Container(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[_header()],
+          children: <Widget>[
+            _header(_),
+            _main(_),
+          ],
         ),
       ),
     );
   }
 
-  Widget _header() => Container(
+  Widget _header(BuildContext context) => Container(
         child: TopHeaderSub(
           title: "maintenance.defect_analysis_details.update_title".tr(),
           subtitle: "maintenance.defect_analysis_details.update_subtitle",
           buttonLeft: InkWell(
             borderRadius: BorderRadius.circular(15),
-            onTap: () => {},
+            onTap: () => Navigator.pushNamed(context, DefectAnalysisUpdateScreen.routeName, arguments: {'id': id, 'tabIndex': 1}),
             child: Stack(
               clipBehavior: Clip.none,
               children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
@@ -115,7 +119,7 @@ class _UpdateBodyState extends State<UpdateBody> {
           ),
         ),
       );
-/*
+
   Widget _main(BuildContext context) => Expanded(
         child: (isOnline)
             ? FutureBuilder<DefectAnalysisModel>(
@@ -187,5 +191,5 @@ class _UpdateBodyState extends State<UpdateBody> {
                 },
               )
             : NoConnectionWidget(),
-      );*/
+      );
 }

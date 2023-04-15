@@ -647,7 +647,7 @@ class _SummaryPageViewState extends State<SummaryPageView> {
     }
   }
 
-  submitFunc(BuildContext context) async {
+  Future<void> submitFunc(BuildContext context) async {
     if (_formKey.currentState?.saveAndValidate() ?? false) {
       ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
       var model = {
