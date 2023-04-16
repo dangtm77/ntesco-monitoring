@@ -120,9 +120,6 @@ class _BodyPageState extends State<Body> {
       filterOptions.add(searchGroupFilterOptions);
     }
 
-    print(jsonEncode(sortOptions));
-    print(jsonEncode(filterOptions));
-
     LoadOptionsModel options = new LoadOptionsModel(take: itemPerPage * pageIndex, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
     Response response = await Maintenance.DefectAnalysis_GetList(options.toMap());
     if (response.statusCode >= 200 && response.statusCode <= 299) {
@@ -131,9 +128,8 @@ class _BodyPageState extends State<Body> {
         isLoading = false;
       });
       return result;
-    } else {
-      throw Exception('StatusCode: ${response.statusCode}');
-    }
+    } else
+      throw Exception(response.body);
   }
 
   Future<List<S2Choice<int>>> _getListProjectsForSelect() async {
@@ -148,9 +144,8 @@ class _BodyPageState extends State<Body> {
         value: (index, item) => item.id,
         title: (index, item) => item.name,
       );
-    } else {
-      throw Exception('StatusCode: ${response.statusCode}');
-    }
+    } else
+      throw Exception(response.body);
   }
 
   Future<List<S2Choice<int>>> _getListVarialForSelect() async {
@@ -167,9 +162,8 @@ class _BodyPageState extends State<Body> {
         value: (index, item) => item.value,
         title: (index, item) => item.text,
       );
-    } else {
-      throw Exception('StatusCode: ${response.statusCode}');
-    }
+    } else
+      throw Exception(response.body);
   }
 
   @override
@@ -229,9 +223,8 @@ class _BodyPageState extends State<Body> {
       ),
       buttonRight: InkWell(
         borderRadius: BorderRadius.circular(15),
-        // onTap: () => Navigator.pushNamed(context, DefectAnalysisCreateScreen.routeName),
         child: Icon(Icons.addchart_outlined, color: kPrimaryColor, size: 30.0),
-        onTap: () => showBarModalBottomSheet(
+        onTap: () => showCupertinoModalBottomSheet(
           context: context,
           builder: (context) => DefectAnalysisCreateScreen(),
         ).then((value) {
@@ -239,7 +232,6 @@ class _BodyPageState extends State<Body> {
             isLoading = false;
             _listOfDefectAnalysis = _getlistOfDefectAnalysis();
           });
-          print('Modal bottom sheet closed');
         }),
       ),
     );
@@ -484,7 +476,7 @@ class _BodyPageState extends State<Body> {
 
   Widget _item(DefectAnalysisModel item) {
     return ListTile(
-      onTap: () => showBarModalBottomSheet(
+      onTap: () => showCupertinoModalBottomSheet(
         context: context,
         builder: (_) => Material(
           child: SafeArea(
@@ -498,7 +490,7 @@ class _BodyPageState extends State<Body> {
                     children: [
                       Icon(Ionicons.create_outline, color: kPrimaryColor),
                       SizedBox(width: 10.0),
-                      Text('Xem / Cập nhật / chỉnh sửa thông tin', style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+                      Text('Xem & chỉnh sửa thông tin', style: TextStyle(color: kPrimaryColor, fontSize: 18)),
                     ],
                   ),
                   onTap: () {
@@ -506,13 +498,27 @@ class _BodyPageState extends State<Body> {
                     Navigator.pushNamed(context, DefectAnalysisUpdateScreen.routeName, arguments: {'id': item.id, 'tabIndex': 0});
                   },
                 ),
+                Visibility(
+                  visible: (item.status == 0 && item.totalDetail > 0),
+                  child: ListTile(
+                    trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
+                    title: Row(
+                      children: [
+                        Icon(Ionicons.send_outline, color: kPrimaryColor),
+                        SizedBox(width: 10.0),
+                        Text('Gửi báo cáo phân tích', style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+                      ],
+                    ),
+                    onTap: () => sendFunc(item.id),
+                  ),
+                ),
                 ListTile(
                   trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
                   title: Row(
                     children: [
-                      Icon(Ionicons.trash_bin_outline, color: kPrimaryColor),
+                      Icon(Ionicons.trash_bin_outline, color: Colors.red),
                       SizedBox(width: 10.0),
-                      Text('Xóa / Hủy bỏ thông tin', style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+                      Text('Hủy bỏ thông tin', style: TextStyle(color: Colors.red, fontSize: 18)),
                     ],
                   ),
                   onTap: () => deleteFunc(item.id),
@@ -528,7 +534,7 @@ class _BodyPageState extends State<Body> {
           Text.rich(TextSpan(
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
             children: [
-              TextSpan(text: "Mã hiệu: ", style: TextStyle(color: kTextColor)),
+              //TextSpan(text: "Mã hiệu: ", style: TextStyle(color: kTextColor)),
               TextSpan(text: "${item.code}", style: TextStyle(color: kPrimaryColor)),
               WidgetSpan(child: SizedBox(width: 5.0)),
               TextSpan(text: " | ", style: TextStyle(color: kPrimaryColor)),
@@ -584,6 +590,37 @@ class _BodyPageState extends State<Body> {
           if (response.statusCode >= 200 && response.statusCode <= 299) {
             ProgressHud.of(context)?.dismiss();
             Util.showNotification(context, null, "Hủy bỏ thông tin thành công", ContentType.success, 3);
+            setState(() {
+              isLoading = false;
+              _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+            });
+          } else
+            Util.showNotification(context, null, response.body, ContentType.failure, 5);
+        }).catchError((error, stackTrace) {
+          ProgressHud.of(context)?.dismiss();
+          Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
+        });
+      }
+    });
+  }
+
+  Future<void> sendFunc(key) async {
+    Navigator.of(context).pop();
+    showOkCancelAlertDialog(
+      context: context,
+      title: "XÁC NHẬN THÔNG TIN",
+      message: "Bạn có chắc chắn là muốn gửi thông tin phân tích sự cố này đi không?",
+      okLabel: "Gửi đi",
+      cancelLabel: "Đóng lại",
+      isDestructiveAction: true,
+    ).then((result) async {
+      if (result == OkCancelResult.ok) {
+        ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
+        var defectAnalysisModel = {'status': 1};
+        await Maintenance.DefectAnalysis_Send(key, defectAnalysisModel).then((response) {
+          ProgressHud.of(context)?.dismiss();
+          if (response.statusCode >= 200 && response.statusCode <= 299) {
+            Util.showNotification(context, null, "Gửi thông tin đi thành công", ContentType.success, 3);
             setState(() {
               isLoading = false;
               _listOfDefectAnalysis = _getlistOfDefectAnalysis();

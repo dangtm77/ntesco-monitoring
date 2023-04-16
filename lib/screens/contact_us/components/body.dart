@@ -27,20 +27,14 @@ class _BodyPageState extends State<Body> {
   }
 
   Future<ContactUsModels> _getListContactUs(String lang) async {
-    var options = new LoadOptionsModel(
-        take: 0,
-        skip: 0,
-        sort: "[{\"selector\":\"sortIndex\", \"desc\":\"false\"}]",
-        filter: "[[\"code\",\"=\",\"$lang\"],\"and\",[\"type\",\"=\",1]]",
-        requireTotalCount: 'true');
+    var options = new LoadOptionsModel(take: 0, skip: 0, sort: "[{\"selector\":\"sortIndex\", \"desc\":\"false\"}]", filter: "[[\"code\",\"=\",\"$lang\"],\"and\",[\"type\",\"=\",1]]", requireTotalCount: 'true');
     var response = await funcGetListContactUs(options);
     if (response.statusCode == 200) {
-      print(response.body);
       return ContactUsModels.fromJson(jsonDecode(response.body));
     } else if (response.statusCode == 401)
       throw response.statusCode;
     else
-      throw Exception('StatusCode: ${response.statusCode}');
+      throw Exception(response.body);
   }
 
   @override
@@ -76,14 +70,12 @@ class _BodyPageState extends State<Body> {
               child: new RefreshIndicator(
                 onRefresh: () async {
                   setState(() {
-                    listContactUs =
-                        _getListContactUs(context.locale.languageCode);
+                    listContactUs = _getListContactUs(context.locale.languageCode);
                   });
                 },
                 child: FutureBuilder<ContactUsModels>(
                   future: listContactUs,
-                  builder: (BuildContext context,
-                      AsyncSnapshot<ContactUsModels> snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot<ContactUsModels> snapshot) {
                     if (snapshot.hasError)
                       return DataErrorWidget(error: snapshot.error.toString());
                     else {
@@ -97,17 +89,13 @@ class _BodyPageState extends State<Body> {
                                 child: ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: snapshot.data!.data.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    var item =
-                                        snapshot.data!.data.elementAt(index);
+                                  itemBuilder: (BuildContext context, int index) {
+                                    var item = snapshot.data!.data.elementAt(index);
                                     return AnimationConfiguration.staggeredList(
                                       position: index,
-                                      duration:
-                                          const Duration(milliseconds: 375),
+                                      duration: const Duration(milliseconds: 375),
                                       child: SlideAnimation(
-                                        child: FadeInAnimation(
-                                            child: contactUsItem(item)),
+                                        child: FadeInAnimation(child: contactUsItem(item)),
                                       ),
                                     );
                                   },
@@ -116,8 +104,7 @@ class _BodyPageState extends State<Body> {
                             ),
                           ]);
                         } else {
-                          return NoDataWidget(
-                              message: "Không tìm thấy bất kỳ thông tin nào");
+                          return NoDataWidget(message: "Không tìm thấy bất kỳ thông tin nào");
                         }
                       }
                     }
@@ -133,11 +120,8 @@ class _BodyPageState extends State<Body> {
 
   ListTile contactUsItem(ContactUsModel item) {
     return ListTile(
-      title: Text(item.title,
-          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600)),
-      subtitle: Text(item.value,
-          style:
-              TextStyle(color: kSecondaryColor, fontWeight: FontWeight.w600)),
+      title: Text(item.title, style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600)),
+      subtitle: Text(item.value, style: TextStyle(color: kSecondaryColor, fontWeight: FontWeight.w600)),
       trailing: Icon(Icons.arrow_right_rounded),
       leading: Container(
         padding: EdgeInsets.only(left: 10),

@@ -9,6 +9,7 @@ const API_PLANS_GETLIST = "v2/mt/plans";
 
 const API_DEFECTANALYSIS_GETLIST = "v2/mt/defectanalysis";
 const API_DEFECTANALYSIS_GETDETAIL = "v2/mt/defectanalysis/detail";
+const API_DEFECTANALYSIS_SEND = "v2/mt/defectanalysis/send";
 
 const API_DEFECTANALYSISDETAILS_GETLIST = "v2/mt/defectanalysisdetails";
 const API_DEFECTANALYSISDETAILS_GETDETAIL = "v2/mt/defectanalysisdetails/detail";
@@ -31,6 +32,7 @@ Future<http.Response> DefectAnalysis_GetList(dynamic options) async => Core.get(
 Future<http.Response> DefectAnalysis_Create(dynamic body) async => Core.post(body, API_DEFECTANALYSIS_GETLIST);
 Future<http.Response> DefectAnalysis_Update(int key, dynamic body) async => Core.put(key, body, API_DEFECTANALYSIS_GETLIST);
 Future<http.Response> DefectAnalysis_Delete(int key) async => Core.delete(key, API_DEFECTANALYSIS_GETLIST);
+Future<http.Response> DefectAnalysis_Send(int key, dynamic body) async => Core.put(key, body, API_DEFECTANALYSIS_SEND);
 //--------------------------DEFECT ANALYSIS DETAILS--------------------------//
 Future<http.Response> DefectAnalysisDetails_GetList(int id, dynamic options) async {
   var queryParameters = options;

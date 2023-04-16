@@ -144,7 +144,7 @@ class _BodyPageState extends State<Body> {
     } else if (response.statusCode == 401)
       throw response.statusCode;
     else
-      throw Exception('StatusCode: ${response.statusCode}');
+      throw Exception(response.body);
   }
 
   Future<List<S2Choice<int>>> _getListDanhMucForSelect() async {
@@ -166,7 +166,7 @@ class _BodyPageState extends State<Body> {
     } else if (response.statusCode == 401)
       throw response.statusCode;
     else
-      throw Exception('StatusCode: ${response.statusCode}');
+      throw Exception(response.body);
   }
 
   Future<DanhMucModels> _getListDanhMucForCreate() async {
@@ -184,7 +184,7 @@ class _BodyPageState extends State<Body> {
     } else if (response.statusCode == 401)
       throw response.statusCode;
     else
-      throw Exception('StatusCode: ${response.statusCode}');
+      throw Exception(response.body);
   }
 
   Future<ThongKeModel> _getThongKe(int year) async {
@@ -194,7 +194,7 @@ class _BodyPageState extends State<Body> {
     else if (response.statusCode == 401)
       throw response.statusCode;
     else
-      throw Exception('StatusCode: ${response.statusCode}');
+      throw Exception(response.body);
   }
 
   @override
@@ -356,7 +356,6 @@ class _BodyPageState extends State<Body> {
             initialData: [],
             future: optionsDanhMucFilter,
             builder: (context, snapshot) {
-              print(snapshot.data);
               return SmartSelect<int>.multiple(
                 title: 'Xem theo danh mục',
                 placeholder: "Vui lòng chọn ít nhất 1 danh mục",

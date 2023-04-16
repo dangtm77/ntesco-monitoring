@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ntesco_smart_monitoring/core/auth.dart';
 import 'package:ntesco_smart_monitoring/screens/signin/signin_screen.dart';
+import 'package:ntesco_smart_monitoring/size_config.dart';
 import '../constants.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -64,10 +65,13 @@ class _DataErrorWidgetState extends State<DataErrorWidget> {
             Text("state.error".tr().toUpperCase(), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: kPrimaryColor)),
             Text("state.error_subtitle".tr(), style: TextStyle(fontSize: 13, color: kSecondaryColor)),
             SizedBox(height: 20),
-            Text(
-              "$error",
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.red),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
+              child: Text(
+                "$error",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.red),
+              ),
             )
           ])),
           // Expanded(

@@ -182,8 +182,6 @@ class _SignFormState extends State<SignForm> {
             );
           }
         }).catchError((error, stackTrace) {
-          print(error);
-          print(stackTrace);
           ProgressHud.of(context)?.dismiss();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

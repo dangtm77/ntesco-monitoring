@@ -44,7 +44,7 @@ class _BodyPageState extends State<Body> {
     else if (response.statusCode == 401)
       throw response.statusCode;
     else
-      throw Exception('StatusCode: ${response.statusCode}');
+      throw Exception(response.body);
   }
 
   @override
@@ -79,60 +79,54 @@ class _BodyPageState extends State<Body> {
               child: FutureBuilder<PhieuDeXuatDetailModel>(
                 future: _phieuDeXuat,
                 builder: (BuildContext context, AsyncSnapshot<PhieuDeXuatDetailModel> snapshot) {
-                  if (snapshot.hasError) {
-                    print(snapshot);
-                    return DataErrorWidget(error: snapshot.error.toString());
+                  if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
+                  if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active)) return LoadingWidget();
+
+                  if (snapshot.hasData && snapshot.data != null) {
+                    var item = snapshot.data;
+                    return Scaffold(
+                      body: SizedBox.expand(
+                        child: PageView(
+                          controller: _pageController,
+                          onPageChanged: ((value) => setState(() => _currentIndex = value)),
+                          children: <Widget>[
+                            DetailChungBody(id: id, phieuDeXuat: item),
+                            DetailTheoDoiBody(id: id, phieuDeXuat: item),
+                            DetailThaoLuanBody(id: id, phieuDeXuat: item),
+                            //Container(color: Colors.blue),
+                          ],
+                        ),
+                      ),
+                      bottomNavigationBar: BottomNavyBar(
+                        itemCornerRadius: 10.0,
+                        containerHeight: 45.0,
+                        selectedIndex: _currentIndex,
+                        onItemSelected: (value) {
+                          setState(() => _currentIndex = value);
+                          _pageController.jumpToPage(value);
+                        },
+                        items: <BottomNavyBarItem>[
+                          BottomNavyBarItem(
+                            title: Text('Chung'),
+                            icon: Icon(Ionicons.reader_outline),
+                            textAlign: TextAlign.center,
+                          ),
+                          BottomNavyBarItem(
+                            title: Text('Phê duyệt'),
+                            icon: Icon(Ionicons.git_branch_outline),
+                            textAlign: TextAlign.center,
+                          ),
+                          BottomNavyBarItem(
+                            title: Text('Trao đổi'),
+                            icon: Icon(Ionicons.chatbubbles_outline),
+                            textAlign: TextAlign.center,
+                          ),
+                          //BottomNavyBarItem(title: Text('Khác'), icon: Icon(Ionicons.ellipsis_horizontal_circle_outline), textAlign: TextAlign.center),
+                        ],
+                      ),
+                    );
                   } else {
-                    if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active))
-                      return LoadingWidget();
-                    else {
-                      if (snapshot.hasData && snapshot.data != null) {
-                        var item = snapshot.data;
-                        return Scaffold(
-                          body: SizedBox.expand(
-                            child: PageView(
-                              controller: _pageController,
-                              onPageChanged: ((value) => setState(() => _currentIndex = value)),
-                              children: <Widget>[
-                                DetailChungBody(id: id, phieuDeXuat: item),
-                                DetailTheoDoiBody(id: id, phieuDeXuat: item),
-                                DetailThaoLuanBody(id: id, phieuDeXuat: item),
-                                //Container(color: Colors.blue),
-                              ],
-                            ),
-                          ),
-                          bottomNavigationBar: BottomNavyBar(
-                            itemCornerRadius: 10.0,
-                            containerHeight: 45.0,
-                            selectedIndex: _currentIndex,
-                            onItemSelected: (value) {
-                              setState(() => _currentIndex = value);
-                              _pageController.jumpToPage(value);
-                            },
-                            items: <BottomNavyBarItem>[
-                              BottomNavyBarItem(
-                                title: Text('Chung'),
-                                icon: Icon(Ionicons.reader_outline),
-                                textAlign: TextAlign.center,
-                              ),
-                              BottomNavyBarItem(
-                                title: Text('Phê duyệt'),
-                                icon: Icon(Ionicons.git_branch_outline),
-                                textAlign: TextAlign.center,
-                              ),
-                              BottomNavyBarItem(
-                                title: Text('Trao đổi'),
-                                icon: Icon(Ionicons.chatbubbles_outline),
-                                textAlign: TextAlign.center,
-                              ),
-                              //BottomNavyBarItem(title: Text('Khác'), icon: Icon(Ionicons.ellipsis_horizontal_circle_outline), textAlign: TextAlign.center),
-                            ],
-                          ),
-                        );
-                      } else {
-                        return NoDataWidget(message: "Không tìm thấy thông tin phiếu đề xuất!!!");
-                      }
-                    }
+                    return NoDataWidget(message: "Không tìm thấy thông tin phiếu đề xuất!!!");
                   }
                 },
               ),

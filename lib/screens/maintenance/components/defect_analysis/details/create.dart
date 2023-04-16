@@ -9,11 +9,13 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
 import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
+import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:ntesco_smart_monitoring/theme.dart';
 
@@ -417,38 +419,17 @@ class _CreatePageState extends State<CreateBody> {
 
         await Maintenance.DefectAnalysisDetails_Create(model).then((response) {
           if (response.statusCode >= 200 && response.statusCode <= 299) {
-            ProgressHud.of(context)?.showSuccessAndDismiss(text: "Thành công");
-            // Navigator.pushReplacementNamed(context, DefectAnalysisScreen.routeName);
+            Util.showNotification(context, null, 'Khởi tạo chi tiết cho báo cáo phân tích sự cố thành công', ContentType.success, 3);
             Navigator.of(context).pop();
-          } else {
-            ProgressHud.of(context)?.dismiss();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: Colors.red,
-                duration: Duration(seconds: 2),
-                content: Text(response.body),
-              ),
-            );
-          }
+          } else
+            Util.showNotification(context, null, response.body, ContentType.failure, 5);
         }).catchError((error, stackTrace) {
           ProgressHud.of(context)?.dismiss();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.red,
-              duration: Duration(seconds: 5),
-              content: Text("Có lỗi xảy ra. Chi tiết: $error"),
-            ),
-          );
+          Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
         });
       } on Exception catch (e) {
         ProgressHud.of(context)?.dismiss();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.red,
-            duration: Duration(seconds: 5),
-            content: Text("Có lỗi xảy ra. Chi tiết: " + e.toString()),
-          ),
-        );
+        Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: ${e.toString()}", ContentType.failure, 5);
       }
     }
   }

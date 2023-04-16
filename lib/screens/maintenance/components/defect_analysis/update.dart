@@ -1,6 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ui';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
@@ -104,14 +104,12 @@ class _UpdateBodyState extends State<UpdateBody> {
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       DefectAnalysisModel result = DefectAnalysisModel.fromJson(jsonDecode(response.body));
       return result;
-    } else {
-      throw Exception('StatusCode: ${response.statusCode}');
-    }
+    } else
+      throw Exception(response.body);
   }
 
   @override
   Widget build(BuildContext context) {
-    print(_currentIndex);
     return SafeArea(
       child: Container(
         child: Column(
@@ -155,15 +153,15 @@ class _UpdateBodyState extends State<UpdateBody> {
                           body: SizedBox.expand(
                             child: PageView(
                               controller: _pageController,
-                              physics: NeverScrollableScrollPhysics(),
+                              //physics: NeverScrollableScrollPhysics(),
                               onPageChanged: ((value) => setState(() => _currentIndex = value)),
                               children: <Widget>[
                                 SummaryPageView(id: item.id, model: item),
                                 DetailsPageView(id: item.id, model: item),
+                                CommentsPageView(id: item.id, model: item),
                               ],
                             ),
                           ),
-                          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                           bottomNavigationBar: BottomNavyBar(
                             iconSize: 30,
                             showElevation: true,
@@ -176,28 +174,47 @@ class _UpdateBodyState extends State<UpdateBody> {
                             },
                             items: <BottomNavyBarItem>[
                               BottomNavyBarItem(
-                                title: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text('Thông tin'),
-                                    Text('CHUNG', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                                  ],
-                                ),
                                 icon: Icon(Ionicons.reader_outline),
                                 textAlign: TextAlign.center,
+                                title: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Thông tin', style: TextStyle(fontSize: 15)),
+                                      Text('CHUNG', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                    ],
+                                  ),
+                                ),
                               ),
                               BottomNavyBarItem(
-                                title: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text('Chi tiết'),
-                                    Text('SỰ CỐ', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                                  ],
-                                ),
                                 icon: Icon(Ionicons.git_branch_outline),
                                 textAlign: TextAlign.center,
+                                title: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Chi tiết', style: TextStyle(fontSize: 15)),
+                                      Text('SỰ CỐ', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                    ],
+                                  ),
+                                ),
                               ),
-                              //BottomNavyBarItem(title: Text('Khác'), icon: Icon(Ionicons.ellipsis_horizontal_circle_outline), textAlign: TextAlign.center),
+                              BottomNavyBarItem(
+                                icon: Icon(Icons.comment_outlined),
+                                textAlign: TextAlign.center,
+                                title: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Ý kiến', style: TextStyle(fontSize: 15)),
+                                      Text('PHẢN HỒI', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         );
@@ -241,7 +258,7 @@ class _SummaryPageViewState extends State<SummaryPageView> {
       if (response.statusCode >= 200 && response.statusCode <= 299)
         return ProjectModels.fromJson(jsonDecode(response.body));
       else
-        throw Exception('StatusCode: ${response.statusCode}');
+        throw Exception(response.body);
     } catch (ex) {
       throw ex;
     }
@@ -262,7 +279,7 @@ class _SummaryPageViewState extends State<SummaryPageView> {
       if (response.statusCode >= 200 && response.statusCode <= 299)
         return SystemModels.fromJson(jsonDecode(response.body));
       else
-        throw Exception('StatusCode: ${response.statusCode}');
+        throw Exception(response.body);
     } catch (ex) {
       throw ex;
     }
@@ -279,10 +296,8 @@ class _SummaryPageViewState extends State<SummaryPageView> {
       Response response = await Common.Users_GetList(options.toMap());
       if (response.statusCode >= 200 && response.statusCode <= 299)
         return UserModels.fromJson(jsonDecode(response.body));
-      else {
-        print(response.body);
-        throw Exception('StatusCode: ${response.statusCode}');
-      }
+      else
+        throw Exception(response.body);
     } catch (ex) {
       throw ex;
     }
@@ -664,7 +679,7 @@ class _SummaryPageViewState extends State<SummaryPageView> {
       await Maintenance.DefectAnalysis_Update(id, defectAnalysisModel).then((response) {
         ProgressHud.of(context)?.dismiss();
         if (response.statusCode >= 200 && response.statusCode <= 299)
-          Util.showNotification(context, null, 'Cập nhật thông tin thành công', ContentType.success, 3);
+          Util.showNotification(context, null, 'Cập nhật thông tin phân tích sự cố thành công', ContentType.success, 3);
         else
           Util.showNotification(context, null, response.body, ContentType.failure, 5);
       }).catchError((error, stackTrace) {
@@ -734,7 +749,7 @@ class _DetailsPageViewState extends State<DetailsPageView> {
         });
         return result;
       } else
-        throw Exception('StatusCode: ${response.statusCode}');
+        throw Exception(response.body);
     } catch (ex) {
       throw ex;
     }
@@ -810,7 +825,7 @@ class _DetailsPageViewState extends State<DetailsPageView> {
             child: Center(
               child: DefaultButton(
                 text: 'THÊM THÔNG TIN SỰ CỐ',
-                press: () => showBarModalBottomSheet(
+                press: () => showCupertinoModalBottomSheet(
                   context: context,
                   builder: (context) => DefectAnalysisDetailsCreateScreen(id: id),
                 ).then((value) {
@@ -818,7 +833,6 @@ class _DetailsPageViewState extends State<DetailsPageView> {
                     isLoading = false;
                     _listOfDefectAnalysisDetails = _getListDefectAnalysisDetails();
                   });
-                  print('Modal bottom sheet closed');
                 }),
               ),
             ),
@@ -832,7 +846,7 @@ class _DetailsPageViewState extends State<DetailsPageView> {
     List<String> imagesList = (item.pictures != null && item.pictures!.length > 0) ? item.pictures!.map((e) => Common.System_DowloadFile_ByID(e.id, 'view')).toList() : [urlNoImage];
 
     return ListTile(
-      onTap: () => showBarModalBottomSheet(
+      onTap: () => showCupertinoModalBottomSheet(
         context: context,
         builder: (_) => Material(
           child: SafeArea(
@@ -872,7 +886,7 @@ class _DetailsPageViewState extends State<DetailsPageView> {
       ),
       leading: Badge(
         showBadge: imagesList.length > 1,
-        badgeContent: Text('${imagesList.length}', style: TextStyle(fontSize: 12, color: Colors.white)),
+        badgeContent: Text('${imagesList.length}', style: TextStyle(fontSize: 15, color: Colors.white)),
         badgeAnimation: BadgeAnimation.scale(),
         badgeStyle: BadgeStyle(badgeColor: kPrimaryColor),
         child: CachedNetworkImage(
@@ -985,5 +999,26 @@ class _DetailsPageViewState extends State<DetailsPageView> {
         });
       }
     });
+  }
+}
+
+class CommentsPageView extends StatefulWidget {
+  final int id;
+  final DefectAnalysisModel model;
+  const CommentsPageView({Key? key, required this.id, required this.model}) : super(key: key);
+
+  @override
+  State<CommentsPageView> createState() => _CommentsPageViewState(id, model);
+}
+
+class _CommentsPageViewState extends State<CommentsPageView> {
+  final int id;
+  final DefectAnalysisModel model;
+  _CommentsPageViewState(this.id, this.model);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Center(child: Text("ĐANG CẬP NHẬT ...")),
+    );
   }
 }

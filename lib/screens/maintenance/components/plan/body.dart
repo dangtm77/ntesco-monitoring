@@ -81,7 +81,7 @@ class _BodyPageState extends State<Body> {
     if (response.statusCode >= 200 && response.statusCode <= 299)
       return PlanModels.fromJson(jsonDecode(response.body));
     else
-      throw Exception('StatusCode: ${response.statusCode}');
+      throw Exception(response.body);
   }
 
   Future<List<S2Choice<int>>> _getListProjectsForSelect() async {
@@ -97,7 +97,7 @@ class _BodyPageState extends State<Body> {
         title: (index, item) => item.name,
       );
     else
-      throw Exception('StatusCode: ${response.statusCode}');
+      throw Exception(response.body);
   }
 
   @override

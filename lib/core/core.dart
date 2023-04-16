@@ -46,7 +46,6 @@ Future<http.Response> put(int key, dynamic body, String urlApi) async {
     {"Key": "key", "Value": key},
     {"Key": "values", "Value": jsonEncode(body)}
   ];
-  print(jsonEncode(data));
   var result = await http.put(
     Uri.https(endPoint, urlApi),
     headers: headerValue,

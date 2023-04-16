@@ -18,7 +18,6 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/update.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
@@ -105,9 +104,8 @@ class _UpdateBodyState extends State<UpdateBody> {
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       DefectAnalysisDetailsModel result = DefectAnalysisDetailsModel.fromJson(jsonDecode(response.body));
       return result;
-    } else {
-      throw Exception('StatusCode: ${response.statusCode}');
-    }
+    } else
+      throw Exception(response.body);
   }
 
   @override
@@ -519,7 +517,7 @@ class _AttachmentsPageViewState extends State<AttachmentsPageView> {
         });
         return result;
       } else
-        throw Exception('StatusCode: ${response.statusCode}');
+        throw Exception(response.body);
     } catch (ex) {
       throw ex;
     }
@@ -594,7 +592,6 @@ class _AttachmentsPageViewState extends State<AttachmentsPageView> {
   }
 
   Widget _item(int index, List<FileDinhKemModel> list) {
-    print('length: ${list.length}');
     if (index >= list.length)
       return GestureDetector(
         onTap: () => showModalBottomSheet(
@@ -696,7 +693,6 @@ class _AttachmentsPageViewState extends State<AttachmentsPageView> {
   }
 
   Future<void> deleteFunc(int key) async {
-    print(key);
     try {
       ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
       await Maintenance.DefectAnalysisDetails_WithFileDinhKem_Delete(key).then((response) {

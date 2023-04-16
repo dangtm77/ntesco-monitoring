@@ -9,8 +9,6 @@ Future<LoginResponseModel> funcLogin(LoginRequestModel? loginRequestModel) async
   String url = "https://$endPoint/gYcRGGODYwQVihLCHgZzhtYeqxpXyl";
   var body = loginRequestModel!.toJson();
   final response = await http.post(Uri.parse(url), headers: <String, String>{'Content-Type': 'application/x-www-form-urlencoded'}, body: body);
-  print(response.statusCode);
-  print(response.body);
   if (response.statusCode == 200 || response.statusCode == 400) {
     return LoginResponseModel.fromJson(json.decode(response.body));
   } else {

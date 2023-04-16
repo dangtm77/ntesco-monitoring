@@ -45,11 +45,10 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
 
     var options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
     var response = await getListTheoDoi(id, options);
-    print(response.body);
     if (response.statusCode == 200)
       return TheoDoiModels.fromJson(jsonDecode(response.body));
     else
-      throw Exception('StatusCode: ${response.statusCode}');
+      throw Exception(response.body);
   }
 
   @override

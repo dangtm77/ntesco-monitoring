@@ -35,8 +35,16 @@
     "subtitle": "System maintenance of Projects",
     "plan_title": "Maintenance plan",
     "plan_subtitle": "Detailed maintenance plans of projects",
-    "defect_analysis_title": "Defect analysis",
-    "defect_analysis_subtitle": "Analysis and report defect of projects"
+    "defect_analysis": {
+      "title": "Defect analysis",
+      "subtitle": "Analysis and report defect of projects",
+      "update_title": "Update defect analysis",
+      "update_subtitle": "Update report defect of projects"
+    },
+    "defect_analysis_details": {
+      "update_title": "Update defect analysis details",
+      "update_subtitle": "Update detail defect of projects"
+    }
   },
   "language_display": "Language display:",
   "hello_message": "Hi, {}\r\n",

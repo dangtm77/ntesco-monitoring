@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:bmprogresshud/progresshud.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
 import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 import 'package:ntesco_smart_monitoring/helper/string.dart';
+import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
 import 'package:ntesco_smart_monitoring/models/common/UserModel.dart';
@@ -54,7 +56,7 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
       if (response.statusCode >= 200 && response.statusCode <= 299)
         return ProjectModels.fromJson(jsonDecode(response.body));
       else
-        throw Exception('StatusCode: ${response.statusCode}');
+        throw Exception(response.body);
     } catch (ex) {
       throw ex;
     }
@@ -73,10 +75,9 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
       );
       Response response = await Maintenance.Systems_GetList_ByProject(id, options.toMap());
       if (response.statusCode >= 200 && response.statusCode <= 299) {
-        print(response.body);
         return SystemModels.fromJson(jsonDecode(response.body));
       } else
-        throw Exception('StatusCode: ${response.statusCode}');
+        throw Exception(response.body);
     } catch (ex) {
       throw ex;
     }
@@ -93,10 +94,8 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
       Response response = await Common.Users_GetList(options.toMap());
       if (response.statusCode >= 200 && response.statusCode <= 299)
         return UserModels.fromJson(jsonDecode(response.body));
-      else {
-        print(response.body);
-        throw Exception('StatusCode: ${response.statusCode}');
-      }
+      else
+        throw Exception(response.body);
     } catch (ex) {
       throw ex;
     }
@@ -525,29 +524,15 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
             'cncStaff': _formKey.currentState?.fields['cncStaff']?.value,
           };
           await Maintenance.DefectAnalysis_Create(jsonEncode(model)).then((response) {
+            ProgressHud.of(context)?.dismiss();
             if (response.statusCode >= 200 && response.statusCode <= 299) {
-              ProgressHud.of(context)?.showSuccessAndDismiss(text: "Thành công");
-              //Navigator.pushReplacementNamed(context, DefectAnalysisScreen.routeName);
+              Util.showNotification(context, null, 'Khởi tạo thông tin báo cáo phân tích sự cố thành công', ContentType.success, 3);
               Navigator.of(context).pop();
-            } else {
-              ProgressHud.of(context)?.dismiss();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: Colors.red,
-                  duration: Duration(seconds: 2),
-                  content: Text("Có lỗi xảy ra"),
-                ),
-              );
-            }
+            } else
+              Util.showNotification(context, null, response.body, ContentType.failure, 5);
           }).catchError((error, stackTrace) {
             ProgressHud.of(context)?.dismiss();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: Colors.red,
-                duration: Duration(seconds: 2),
-                content: Text("Có lỗi xảy ra. Chi tiết: $error"),
-              ),
-            );
+            Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
           });
         }
       });
