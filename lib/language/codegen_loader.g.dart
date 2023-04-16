@@ -51,8 +51,16 @@ class CodegenLoader extends AssetLoader{
     "subtitle": "System maintenance of Projects",
     "plan_title": "Maintenance plan",
     "plan_subtitle": "Detailed maintenance plans of projects",
-    "defect_analysis_title": "Defect analysis",
-    "defect_analysis_subtitle": "Analysis and report defect of projects"
+    "defect_analysis": {
+      "title": "Defect analysis",
+      "subtitle": "Analysis and report defect of projects",
+      "update_title": "Update defect analysis",
+      "update_subtitle": "Update report defect of projects"
+    },
+    "defect_analysis_details": {
+      "update_title": "Update defect analysis details",
+      "update_subtitle": "Update detail defect of projects"
+    }
   },
   "language_display": "Language display:",
   "hello_message": "Hi, {}\r\n",
@@ -69,6 +77,10 @@ class CodegenLoader extends AssetLoader{
   }
 };
 static const Map<String,dynamic> vi_VN = {
+  "common": {
+    "hint_text_input": "Vui lòng nhập thông tin...",
+    "hint_text_select": "Vui lòng chọn thông tin..."
+  },
   "login": {
     "username_label": "Tên đăng nhập",
     "password_label": "Mật khẩu",
@@ -105,8 +117,16 @@ static const Map<String,dynamic> vi_VN = {
     "subtitle": "Bảo trì các hệ thống của dự án",
     "plan_title": "Kế hoạch bảo trì",
     "plan_subtitle": "Chi tiết kế hoạch bảo trì của các dự án",
-    "defect_analysis_title": "Phân tích sự cố",
-    "defect_analysis_subtitle": "Phân tích và báo cáo sự cố của hệ thống"
+    "defect_analysis": {
+      "title": "Phân tích sự cố",
+      "subtitle": "Phân tích và báo cáo sự cố của hệ thống",
+      "update_title": "Cập nhật phân tích sự cố",
+      "update_subtitle": "Cập nhật thông tin báo cáo sự cố của hệ thống"
+    },
+    "defect_analysis_details": {
+      "update_title": "Cập nhật chi tiết sự cố",
+      "update_subtitle": "Cập nhật thông tin chi tiết sự cố của hệ thống"
+    }
   },
   "language_display": "Ngôn ngữ hiển thị:",
   "hello_message": "Xin chào, {}\r\n",

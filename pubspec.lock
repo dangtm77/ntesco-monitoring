@@ -36,6 +36,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "6.0.0"
+  awesome_snackbar_content:
+    dependency: "direct main"
+    description:
+      name: awesome_snackbar_content
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.2"
   badges:
     dependency: "direct main"
     description:
@@ -306,12 +313,12 @@ packages:
     source: hosted
     version: "1.0.0"
   flutter_svg:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_svg
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.22.0"
+    version: "1.0.3"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -510,14 +517,14 @@ packages:
       name: path_drawing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.1+1"
+    version: "1.0.1"
   path_parsing:
     dependency: transitive
     description:
       name: path_parsing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.1"
+    version: "1.0.1"
   path_provider:
     dependency: transitive
     description:

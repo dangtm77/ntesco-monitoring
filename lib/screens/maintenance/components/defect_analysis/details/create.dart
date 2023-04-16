@@ -17,6 +17,8 @@ import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:ntesco_smart_monitoring/theme.dart';
 
+import '../../../../../components/image_picker_options.dart';
+
 class DefectAnalysisDetailsCreateScreen extends StatelessWidget {
   final int id;
   const DefectAnalysisDetailsCreateScreen({Key? key, required this.id}) : super(key: key);
@@ -229,7 +231,14 @@ class _CreatePageState extends State<CreateBody> {
                         );
                       }),
                       GestureDetector(
-                        onTap: _pickerOption,
+                        onTap: () => showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return ImagePickerOptions(
+                              callBack: (_) => setState(() => _imageList.addAll(_)),
+                            );
+                          },
+                        ),
                         child: Card(
                           elevation: 8,
                           margin: EdgeInsets.all(10),
@@ -240,7 +249,7 @@ class _CreatePageState extends State<CreateBody> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.camera_alt_outlined, size: 30.0, color: Colors.white),
+                                  Icon(Icons.add_a_photo_outlined, size: 30.0, color: Colors.white),
                                   SizedBox(height: 5),
                                   Text("Chọn hình ảnh", style: TextStyle(color: Colors.white, fontSize: 15.0)),
                                 ],
@@ -287,6 +296,8 @@ class _CreatePageState extends State<CreateBody> {
             hintText: "Vui lòng nhập thông tin...",
             labelText: 'Số lượng thiết bị',
           ).applyDefaults(inputDecorationTheme()),
+          valueTransformer: (value) => int.parse(value!),
+          keyboardType: TextInputType.number,
         );
       case "partModel":
         return FormBuilderTextField(
@@ -377,102 +388,6 @@ class _CreatePageState extends State<CreateBody> {
       default:
         return SizedBox.shrink();
     }
-  }
-
-  Future<void> _pickerOption() {
-    return showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return SingleChildScrollView(
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(10.0),
-              topRight: Radius.circular(10.0),
-            ),
-            child: Container(
-              color: Colors.white,
-              height: 250,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Text(
-                      "Chọn hình ảnh đính kèm từ ...",
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: 150,
-                            child: TextButton(
-                              style: TextButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)), backgroundColor: kPrimaryColor),
-                              onPressed: () async {
-                                var _image = await ImagePicker().pickImage(source: ImageSource.camera, imageQuality: 80, maxWidth: 800, maxHeight: 800, preferredCameraDevice: CameraDevice.front);
-                                if (_image != null) {
-                                  setState(() {
-                                    _imageList.add(_image);
-                                  });
-                                  Navigator.pop(context);
-                                }
-                              },
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.camera, color: Colors.white, size: 60),
-                                  SizedBox(height: 10),
-                                  Text('CAMERA', style: TextStyle(fontSize: 16, color: Colors.white)),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Expanded(
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: 150,
-                            child: TextButton(
-                              style: TextButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)), backgroundColor: kPrimaryColor),
-                              onPressed: () async {
-                                await ImagePicker().pickMultiImage(imageQuality: 80, maxWidth: 800, maxHeight: 800).then((value) {
-                                  if (value.length > 0) {
-                                    setState(() {
-                                      _imageList.addAll(value);
-                                    });
-                                    Navigator.pop(context);
-                                  }
-                                });
-                              },
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.image, color: Colors.white, size: 60),
-                                  SizedBox(height: 10),
-                                  Text('THƯ VIỆN', style: TextStyle(fontSize: 16, color: Colors.white)),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
   }
 
   Future<void> submitFunc(BuildContext context) async {

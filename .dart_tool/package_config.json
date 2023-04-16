@@ -32,6 +32,12 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "awesome_snackbar_content",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/awesome_snackbar_content-0.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
       "name": "badges",
       "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/badges-3.0.3",
       "packageUri": "lib/",
@@ -267,7 +273,7 @@
     },
     {
       "name": "flutter_svg",
-      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_svg-0.22.0",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_svg-1.0.3",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -441,13 +447,13 @@
     },
     {
       "name": "path_drawing",
-      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/path_drawing-0.5.1+1",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/path_drawing-1.0.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "path_parsing",
-      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/path_parsing-0.2.1",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/path_parsing-1.0.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -758,7 +764,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2023-04-14T15:46:08.594050Z",
+  "generated": "2023-04-16T06:43:36.167082Z",
   "generator": "pub",
   "generatorVersion": "2.18.6"
 }

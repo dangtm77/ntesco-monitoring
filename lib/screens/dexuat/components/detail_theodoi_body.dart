@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_null_comparison
 import 'dart:convert';
 
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -201,7 +202,7 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
                   textAlign: TextAlign.right,
                   style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic, color: kTextColor),
                 ),
-                onTap: (() => Util.showNotification(context, item.ghiChu, Colors.red, 5)),
+                onTap: (() => Util.showNotification(context, null, item.ghiChu, ContentType.help, 10)),
               ),
             )
           : null,

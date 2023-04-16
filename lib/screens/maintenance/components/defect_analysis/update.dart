@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:badges/badges.dart';
 import 'package:bmprogresshud/bmprogresshud.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
@@ -125,7 +126,7 @@ class _UpdateBodyState extends State<UpdateBody> {
   Widget _header() => Container(
         child: TopHeaderSub(
           title: "maintenance.defect_analysis.update_title".tr(),
-          subtitle: "maintenance.defect_analysis.update_subtitle",
+          subtitle: "maintenance.defect_analysis.update_subtitle".tr(),
           buttonLeft: InkWell(
             borderRadius: BorderRadius.circular(15),
             onTap: () => Navigator.pushNamed(context, DefectAnalysisScreen.routeName),
@@ -650,7 +651,7 @@ class _SummaryPageViewState extends State<SummaryPageView> {
   Future<void> submitFunc(BuildContext context) async {
     if (_formKey.currentState?.saveAndValidate() ?? false) {
       ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
-      var model = {
+      var defectAnalysisModel = {
         'idSystem': _formKey.currentState?.fields['idSystem']?.value,
         'code': _formKey.currentState?.fields['code']?.value,
         'analysisDate': _formKey.currentState?.fields['analysisDate']?.value.toIso8601String(),
@@ -660,22 +661,20 @@ class _SummaryPageViewState extends State<SummaryPageView> {
         'qcStaff': _formKey.currentState?.fields['qcStaff']?.value,
         'cncStaff': _formKey.currentState?.fields['cncStaff']?.value,
       };
-      await Maintenance.DefectAnalysis_Update(id, jsonEncode(model)).then((response) {
-        if (response.statusCode >= 200 && response.statusCode <= 299) {
-          ProgressHud.of(context)?.showSuccessAndDismiss(text: "Thành công");
-        } else {
-          ProgressHud.of(context)?.dismiss();
-          Util.showNotification(context, response.body, Colors.red, 5);
-        }
+      await Maintenance.DefectAnalysis_Update(id, defectAnalysisModel).then((response) {
+        ProgressHud.of(context)?.dismiss();
+        if (response.statusCode >= 200 && response.statusCode <= 299)
+          Util.showNotification(context, null, 'Cập nhật thông tin thành công', ContentType.success, 3);
+        else
+          Util.showNotification(context, null, response.body, ContentType.failure, 5);
       }).catchError((error, stackTrace) {
         ProgressHud.of(context)?.dismiss();
-        Util.showNotification(context, "Có lỗi xảy ra. Chi tiết: $error", Colors.red, 5);
+        Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
       });
     }
   }
 
   Future<void> deleteFunc(BuildContext context, DefectAnalysisModel item) async {
-    print('object');
     showOkCancelAlertDialog(
       context: context,
       title: item.code,
@@ -687,16 +686,14 @@ class _SummaryPageViewState extends State<SummaryPageView> {
       if (result == OkCancelResult.ok) {
         ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
         await Maintenance.DefectAnalysis_Delete(this.id).then((response) {
-          if (response.statusCode >= 200 && response.statusCode <= 299) {
-            ProgressHud.of(context)?.showSuccessAndDismiss(text: "Thành công");
+          ProgressHud.of(context)?.dismiss();
+          if (response.statusCode >= 200 && response.statusCode <= 299)
             Navigator.pushReplacementNamed(context, DefectAnalysisScreen.routeName);
-          } else {
-            ProgressHud.of(context)?.showErrorAndDismiss(text: "Thất bại");
-            Util.showNotification(context, "${response.body}", Colors.red, 5);
-          }
+          else
+            Util.showNotification(context, null, response.body, ContentType.failure, 5);
         }).catchError((error, stackTrace) {
-          ProgressHud.of(context)?.showErrorAndDismiss(text: "Thất bại");
-          Util.showNotification(context, "Có lỗi xảy ra. Chi tiết: $error", Colors.red, 5);
+          ProgressHud.of(context)?.dismiss();
+          Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
         });
       }
     });
@@ -854,7 +851,7 @@ class _DetailsPageViewState extends State<DetailsPageView> {
                   ),
                   onTap: () {
                     Navigator.of(context).pop();
-                    Navigator.pushNamed(context, DefectAnalysisDetailsUpdateScreen.routeName, arguments: {'id': item.id, 'tabIndex': 0});
+                    Navigator.pushNamed(context, DefectAnalysisDetailsUpdateScreen.routeName, arguments: {'id': item.id, 'idDefectAnalysis': item.idDefectAnalysis, 'tabIndex': 0});
                   },
                 ),
                 ListTile(
@@ -975,18 +972,16 @@ class _DetailsPageViewState extends State<DetailsPageView> {
         ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
         await Maintenance.DefectAnalysisDetails_Delete(key).then((response) {
           if (response.statusCode >= 200 && response.statusCode <= 299) {
-            ProgressHud.of(context)?.showSuccessAndDismiss(text: "Xóa bỏ thành công");
+            Util.showNotification(context, 'Xóa bỏ thành công', response.body, ContentType.success, 3);
             setState(() {
               isLoading = false;
               _listOfDefectAnalysisDetails = _getListDefectAnalysisDetails();
             });
-          } else {
-            ProgressHud.of(context)?.showErrorAndDismiss(text: "Xóa bỏ thất bại");
-            Util.showNotification(context, "${response.body}", Colors.red, 5);
-          }
+          } else
+            Util.showNotification(context, null, response.body, ContentType.failure, 5);
         }).catchError((error, stackTrace) {
-          ProgressHud.of(context)?.showErrorAndDismiss(text: "Thất bại");
-          Util.showNotification(context, "Có lỗi xảy ra. Chi tiết: $error", Colors.red, 5);
+          ProgressHud.of(context)?.dismiss();
+          Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
         });
       }
     });

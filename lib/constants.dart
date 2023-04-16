@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 
 const endPoint = "portal-api.ntesco.com";
+
 const urlNoImage = 'https://via.placeholder.com/200x120/CCCCCC/000000?text=No+image';
+const UPLOAD_IMAGE_QUALITY = 80;
+const UPLOAD_IMAGE_WIDTH_MAX = 800.0;
+const UPLOAD_IMAGE_HEIGHT_MAX = 800.0;
 
 const kPrimaryColor = Color(0xFF0005493);
 const kPrimaryLightColor = Color.fromARGB(255, 83, 176, 247);

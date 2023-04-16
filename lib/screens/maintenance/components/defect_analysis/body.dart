@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:awesome_select/awesome_select.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:bmprogresshud/bmprogresshud.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -216,8 +217,8 @@ class _BodyPageState extends State<Body> {
 
   Widget _header(BuildContext context) {
     return TopHeaderSub(
-      title: "maintenance.defect_analysis_title".tr(),
-      subtitle: "maintenance.defect_analysis_subtitle".tr(),
+      title: "maintenance.defect_analysis.title".tr(),
+      subtitle: "maintenance.defect_analysis.subtitle".tr(),
       buttonLeft: InkWell(
         borderRadius: BorderRadius.circular(15),
         onTap: () => Navigator.pushNamed(context, HomeScreen.routeName),
@@ -581,18 +582,17 @@ class _BodyPageState extends State<Body> {
         ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
         await Maintenance.DefectAnalysis_Delete(key).then((response) {
           if (response.statusCode >= 200 && response.statusCode <= 299) {
-            ProgressHud.of(context)?.showSuccessAndDismiss(text: "Thành công");
+            ProgressHud.of(context)?.dismiss();
+            Util.showNotification(context, null, "Hủy bỏ thông tin thành công", ContentType.success, 3);
             setState(() {
               isLoading = false;
               _listOfDefectAnalysis = _getlistOfDefectAnalysis();
             });
-          } else {
-            ProgressHud.of(context)?.showErrorAndDismiss(text: "Thất bại");
-            Util.showNotification(context, "${response.body}", Colors.red, 5);
-          }
+          } else
+            Util.showNotification(context, null, response.body, ContentType.failure, 5);
         }).catchError((error, stackTrace) {
-          ProgressHud.of(context)?.showErrorAndDismiss(text: "Thất bại");
-          Util.showNotification(context, "Có lỗi xảy ra. Chi tiết: $error", Colors.red, 5);
+          ProgressHud.of(context)?.dismiss();
+          Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
         });
       }
     });

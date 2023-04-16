@@ -44,13 +44,15 @@ Future<http.Response> put(int key, dynamic body, String urlApi) async {
   Map<String, String> headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
   var data = [
     {"Key": "key", "Value": key},
-    {"Key": "values", "Value": body}
+    {"Key": "values", "Value": jsonEncode(body)}
   ];
-  return await http.post(
+  print(jsonEncode(data));
+  var result = await http.put(
     Uri.https(endPoint, urlApi),
     headers: headerValue,
     body: jsonEncode(data),
   );
+  return result;
 }
 
 Future<http.Response> delete(int key, String urlApi) async {

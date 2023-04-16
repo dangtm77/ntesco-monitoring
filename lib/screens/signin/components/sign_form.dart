@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:bmprogresshud/progresshud.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -68,7 +69,7 @@ class _SignFormState extends State<SignForm> {
             children: [
               ChangeLanguage(),
               GestureDetector(
-                onTap: () => Util.showNotification(context, "Đang cập nhật tính năng...", kPrimaryColor, 3),
+                onTap: () => Util.showNotification(context, null, "Đang cập nhật tính năng...", ContentType.help, 3),
                 child: Text(
                   "login.forgot_password_button".tr(),
                   style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w800, fontSize: 15),
