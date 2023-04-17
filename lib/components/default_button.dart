@@ -9,6 +9,7 @@ class DefaultButton extends StatelessWidget {
     this.color,
     this.press,
   }) : super(key: key);
+
   final String text;
   final Color? color;
   final Function? press;

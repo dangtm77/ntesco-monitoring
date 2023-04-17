@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:awesome_select/awesome_select.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -26,12 +27,18 @@ import 'package:ntesco_smart_monitoring/models/dx/PhieuDeXuatList.dart';
 import 'package:ntesco_smart_monitoring/models/dx/ThongKe.dart';
 import 'package:ntesco_smart_monitoring/screens/dexuat/dexuat_screen.dart';
 
+import '../../../helper/util.dart';
+
 class Body extends StatefulWidget {
   @override
   _BodyPageState createState() => new _BodyPageState();
 }
 
 class _BodyPageState extends State<Body> {
+  //Biến check thiết bị có kết nối với internet hay không
+  late bool isOnline = false;
+  late StreamSubscription<ConnectivityResult> subscription;
+
   TextEditingController _keywordForSearchEditingController = TextEditingController();
 
   late Future<PhieuDeXuatListModels> listPhieuDeXuat;
@@ -45,19 +52,29 @@ class _BodyPageState extends State<Body> {
   late int pageIndex = 1;
   late int itemPerPage = 15;
   late bool isLoading = false;
-  //Biến check thiết bị có kết nối với internet hay không
-  late bool isOnline = false;
 
   @override
   void initState() {
     _keywordForSearchEditingController.text = "";
-    listPhieuDeXuat = _getListPhieuDeXuat();
-    thongKe = _getThongKe(yearCurrent);
     super.initState();
+
+    checkConnectivity(null);
+    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) => checkConnectivity(result));
+  }
+
+  Future<void> checkConnectivity(ConnectivityResult? result) async {
+    Util.checkConnectivity(result, (status) {
+      setState(() {
+        isOnline = status;
+        listPhieuDeXuat = _getListPhieuDeXuat();
+        thongKe = _getThongKe(yearCurrent);
+      });
+    });
   }
 
   @override
   void dispose() {
+    subscription.cancel();
     super.dispose();
   }
 

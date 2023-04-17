@@ -5,6 +5,8 @@ import 'package:ntesco_smart_monitoring/size_config.dart';
 import '../constants.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import 'default_button.dart';
+
 class DataErrorWidget extends StatefulWidget {
   final String error;
   const DataErrorWidget({
@@ -130,7 +132,6 @@ class NoConnectionWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Icon(Icons.wifi_off_outlined, size: 100, color: Colors.redAccent),
-        //Text("502", style: TextStyle(fontSize: 60, fontWeight: FontWeight.w800, color: Colors.redAccent)),
         Text("state.no_connection".tr().toUpperCase(), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Colors.redAccent)),
         Text("state.no_connection_subtitle".tr(), style: TextStyle(fontSize: 13, color: kSecondaryColor, fontStyle: FontStyle.italic)),
       ],
