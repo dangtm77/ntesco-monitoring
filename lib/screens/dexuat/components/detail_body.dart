@@ -125,9 +125,8 @@ class _BodyPageState extends State<Body> {
                         ],
                       ),
                     );
-                  } else {
-                    return NoDataWidget(message: "Không tìm thấy thông tin phiếu đề xuất!!!");
-                  }
+                  } else
+                    return NoDataWidget();
                 },
               ),
             )

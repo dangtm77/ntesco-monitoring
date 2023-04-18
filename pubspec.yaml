@@ -14,12 +14,12 @@ dependencies:
   intl: ^0.17.0
   adaptive_dialog: ^1.8.3
   cupertino_icons: ^1.0.3
-  ionicons: ^0.2.1 
-  provider: ^6.0.0
+  ionicons: ^0.2.1  
+  path_provider: ^2.0.14
   shared_preferences: ^2.0.7
   easy_localization: ^3.0.0
   cached_network_image: ^3.2.3
-  url_launcher: ^6.0.9
+  url_launcher: ^6.1.10
   hexcolor: ^2.0.5 
   badges: ^3.0.3
   awesome_select: ^6.0.0

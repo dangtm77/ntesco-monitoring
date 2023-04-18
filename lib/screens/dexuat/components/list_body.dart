@@ -589,7 +589,7 @@ class _BodyPageState extends State<Body> {
                             ),
                           ]);
                         } else
-                          return NoDataWidget(message: "Không tìm thấy phiếu đề xuất nào liên quan đến bạn !!!");
+                          return NoDataWidget();
                       }
                     }
                   },
@@ -788,7 +788,7 @@ class _BodyPageState extends State<Body> {
                         ),
                       );
                     } else
-                      return NoDataWidget(message: "Không tìm thấy phiếu đề xuất liên quan nào !!!");
+                      return NoDataWidget();
                   }
                 }
               },

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
+import 'package:http/http.dart' as http;
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:awesome_select/awesome_select.dart';
@@ -22,6 +24,7 @@ import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
 import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
+import 'package:ntesco_smart_monitoring/models/Login.dart';
 import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
 import 'package:ntesco_smart_monitoring/models/common/VariableModel.dart';
 import 'package:ntesco_smart_monitoring/models/mt/DefectAnalysisModel.dart';
@@ -29,6 +32,9 @@ import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/create.dart';
 import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/update.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -313,8 +319,8 @@ class _BodyPageState extends State<Body> {
                 selectedValue: _projectsCurrent,
                 choiceItems: snapshot.data,
                 modalHeader: true,
-                choiceType: S2ChoiceType.checkboxes,
-                modalType: S2ModalType.popupDialog,
+                choiceType: S2ChoiceType.chips,
+                modalType: S2ModalType.bottomSheet,
                 onChange: (state) => setState(() => _projectsCurrent = state.value),
                 tileBuilder: (context, state) {
                   return S2Tile.fromState(
@@ -335,11 +341,11 @@ class _BodyPageState extends State<Body> {
                 title: 'Xem theo trạng thái',
                 placeholder: "Vui lòng chọn ít nhất 1 trạng thái",
                 modalFilter: true,
+                modalHeader: true,
                 selectedValue: _statusCurrent,
                 choiceItems: snapshot.data,
-                modalHeader: true,
-                choiceType: S2ChoiceType.checkboxes,
-                modalType: S2ModalType.popupDialog,
+                choiceType: S2ChoiceType.chips,
+                modalType: S2ModalType.bottomSheet,
                 onChange: (state) => setState(() => _statusCurrent = state.value),
                 tileBuilder: (context, state) {
                   return S2Tile.fromState(
@@ -429,7 +435,7 @@ class _BodyPageState extends State<Body> {
                   builder: (BuildContext context, AsyncSnapshot<DefectAnalysisModels> snapshot) {
                     if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
                     if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !isLoading) return LoadingWidget();
-                    if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty)) return NoDataWidget(message: "Không tìm thấy dữ liệu");
+                    if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty)) return NoDataWidget(subtitle: "Vui lòng kiểm tra lại điều kiện lọc hoặc liên hệ trực tiếp đến quản trị viên...");
 
                     return Padding(
                       padding: EdgeInsets.symmetric(
@@ -497,6 +503,20 @@ class _BodyPageState extends State<Body> {
                     Navigator.of(context).pop();
                     Navigator.pushNamed(context, DefectAnalysisUpdateScreen.routeName, arguments: {'id': item.id, 'tabIndex': 0});
                   },
+                ),
+                Visibility(
+                  visible: (item.status > 0 && item.totalDetail > 0),
+                  child: ListTile(
+                    trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
+                    title: Row(
+                      children: [
+                        Icon(Ionicons.cloud_download_outline, color: kPrimaryColor),
+                        SizedBox(width: 10.0),
+                        Text('Xuất file báo cáo phân tích', style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+                      ],
+                    ),
+                    onTap: () => exportFunc(item.id),
+                  ),
                 ),
                 Visibility(
                   visible: (item.status == 0 && item.totalDetail > 0),
@@ -632,6 +652,20 @@ class _BodyPageState extends State<Body> {
           Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
         });
       }
+    });
+  }
+
+  Future<void> exportFunc(key) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+    var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
+    Map<String, dynamic> params = {"id": "2"};
+    await http.get(Uri.https(endPoint, 'v1/mt/DefectAnalysis/Export', params), headers: headerValue).then((rs) async {
+      print(rs.body);
+      final bytes = rs.bodyBytes;
+      final directory = await getExternalStorageDirectory();
+      final file = File(directory!.path + '/downloaded_file.pdf');
+      await file.writeAsBytes(bytes);
     });
   }
 }

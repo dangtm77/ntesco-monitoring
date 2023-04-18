@@ -100,25 +100,26 @@ class LoadingWidget extends StatelessWidget {
         new SizedBox(
           height: 10.0,
         ),
-        Text("state.loading".tr().toUpperCase(), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: kPrimaryColor)),
-        Text("state.loading_subtitle".tr(), style: TextStyle(fontSize: 13, color: kSecondaryColor)),
+        Text("state.loading".tr().toUpperCase(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: kPrimaryColor)),
+        Text("state.loading_subtitle".tr(), style: TextStyle(fontSize: 15, color: kSecondaryColor)),
       ],
     );
   }
 }
 
 class NoDataWidget extends StatelessWidget {
-  final String? message;
-  const NoDataWidget({Key? key, this.message}) : super(key: key);
+  final String? title;
+  final String? subtitle;
+  const NoDataWidget({Key? key, this.title, this.subtitle}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text("404", style: TextStyle(fontSize: 60, fontWeight: FontWeight.w800, color: Colors.redAccent)),
-        Text(message ?? "state.nodata".tr().toUpperCase(), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: kPrimaryColor)),
-        Text("state.nodata_subtitle".tr(), style: TextStyle(fontSize: 13, color: kSecondaryColor, fontStyle: FontStyle.italic)),
+        Text("#404#", style: TextStyle(fontSize: 70, fontWeight: FontWeight.w800, color: Colors.redAccent)),
+        Text(title ?? "state.nodata".tr().toUpperCase(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Colors.redAccent)),
+        Text(subtitle ?? "state.nodata_subtitle".tr(), style: TextStyle(fontSize: 15, color: kSecondaryColor, fontStyle: FontStyle.italic)),
       ],
     );
   }
@@ -132,8 +133,8 @@ class NoConnectionWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Icon(Icons.wifi_off_outlined, size: 100, color: Colors.redAccent),
-        Text("state.no_connection".tr().toUpperCase(), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Colors.redAccent)),
-        Text("state.no_connection_subtitle".tr(), style: TextStyle(fontSize: 13, color: kSecondaryColor, fontStyle: FontStyle.italic)),
+        Text("state.no_connection".tr().toUpperCase(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Colors.redAccent)),
+        Text("state.no_connection_subtitle".tr(), style: TextStyle(fontSize: 15, color: kSecondaryColor, fontStyle: FontStyle.italic)),
       ],
     );
   }

@@ -219,7 +219,7 @@ class _UpdateBodyState extends State<UpdateBody> {
                           ),
                         );
                       } else {
-                        return NoDataWidget(message: "Không tìm thấy thông tin phiếu đề xuất!!!");
+                        return NoDataWidget(subtitle: "Không tìm thấy thông tin phiếu đề xuất liên quan đến bạn!!!");
                       }
                     }
                   }
@@ -790,7 +790,7 @@ class _DetailsPageViewState extends State<DetailsPageView> {
                   builder: (BuildContext context, AsyncSnapshot<DefectAnalysisDetailsModels> snapshot) {
                     if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
                     if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !isLoading) return LoadingWidget();
-                    if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty)) return NoDataWidget(message: "Không tìm thấy dữ liệu");
+                    if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty)) return NoDataWidget();
 
                     return Padding(
                       padding: EdgeInsets.symmetric(

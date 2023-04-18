@@ -104,7 +104,7 @@ class _BodyPageState extends State<Body> {
                             ),
                           ]);
                         } else {
-                          return NoDataWidget(message: "Không tìm thấy bất kỳ thông tin nào");
+                          return NoDataWidget();
                         }
                       }
                     }
