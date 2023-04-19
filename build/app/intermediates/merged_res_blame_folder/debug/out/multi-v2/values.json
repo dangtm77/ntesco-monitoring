@@ -21,25 +21,6 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\dangtm.TAYHO\\.gradle\\caches\\transforms-3\\9c9b070d6e5e9404ecdc25e9e3cc9c86\\transformed\\jetified-android-pdf-viewer-3.2.0-beta.3\\res\\values\\values.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endLines": "7",
-                        "endColumns": "24",
-                        "endOffsets": "380"
-                    },
-                    "to": {
-                        "startLines": "240",
-                        "startColumns": "4",
-                        "startOffsets": "11467",
-                        "endLines": "245",
-                        "endColumns": "24",
-                        "endOffsets": "11792"
-                    }
-                },
-                {
                     "source": "C:\\Users\\dangtm.TAYHO\\.gradle\\caches\\transforms-3\\5eda8120bfef2e6f738165e57cbdb443\\transformed\\jetified-savedstate-1.2.0\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2",
@@ -67,12 +48,12 @@
                         "endOffsets": "229,289,341,386,446,864,1061,1785,2899,3292"
                     },
                     "to": {
-                        "startLines": "3,8,9,10,72,119,127,246,257,274",
+                        "startLines": "3,8,9,10,72,119,127,240,251,268",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "115,294,354,406,4332,7087,7505,11797,12521,13635",
-                        "endLines": "7,8,9,10,72,126,130,256,273,281",
+                        "startOffsets": "115,294,354,406,4332,7087,7505,11467,12191,13305",
+                        "endLines": "7,8,9,10,72,126,130,250,267,275",
                         "endColumns": "11,59,51,44,59,24,24,24,24,24",
-                        "endOffsets": "289,349,401,446,4387,7500,7697,12516,13630,14023"
+                        "endOffsets": "289,349,401,446,4387,7500,7697,12186,13300,13693"
                     }
                 },
                 {
