@@ -15,6 +15,8 @@ const API_DEFECTANALYSISDETAILS_GETLIST = "v2/mt/defectanalysisdetails";
 const API_DEFECTANALYSISDETAILS_GETDETAIL = "v2/mt/defectanalysisdetails/detail";
 const API_DEFECTANALYSISDETAILS_WITH_FILEDINHKEM = "v2/mt/defectanalysisdetails/withFileDinhKem";
 
+const API_SYSTEM_REPORTS = "v2/mt/systemreports";
+
 //--------------------------SYSTEMS--------------------------//
 Future<http.Response> Systems_GetList(dynamic options) async => Core.get(options, API_SYSTEMS_GETLIST);
 Future<http.Response> Systems_GetList_ByProject(int id, dynamic options) async {
@@ -53,3 +55,5 @@ Future<http.Response> DefectAnalysisDetails_WithFileDinhKem_GetList(int id, dyna
 
 Future<http.Response> DefectAnalysisDetails_WithFileDinhKem_Create(dynamic body) async => Core.post_by_model(body, API_DEFECTANALYSISDETAILS_WITH_FILEDINHKEM);
 Future<http.Response> DefectAnalysisDetails_WithFileDinhKem_Delete(int key) async => Core.delete(key, API_DEFECTANALYSISDETAILS_WITH_FILEDINHKEM);
+//--------------------------SYSTEM REPORT--------------------------//
+Future<http.Response> SystemReports_GetList(dynamic options) async => Core.get(options, API_SYSTEM_REPORTS);

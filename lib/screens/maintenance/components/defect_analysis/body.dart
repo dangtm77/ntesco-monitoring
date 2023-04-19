@@ -34,7 +34,6 @@ import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_an
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class Body extends StatefulWidget {
   @override

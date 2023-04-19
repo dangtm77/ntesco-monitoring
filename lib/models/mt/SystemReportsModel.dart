@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 class SystemReportsModels {
@@ -7,28 +8,13 @@ class SystemReportsModels {
     required this.totalCount,
     required this.data,
   });
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'totalCount': totalCount,
-      'data': data.map((x) => x.toMap()).toList(),
-    };
-  }
-
-  factory SystemReportsModels.fromMap(Map<String, dynamic> map) {
+  factory SystemReportsModels.fromJson(dynamic json) {
     return SystemReportsModels(
-      totalCount: map['totalCount'] as int,
-      data: List<SystemReportsModel>.from(
-        (map['data'] as List<int>).map<SystemReportsModel>(
-          (x) => SystemReportsModel.fromMap(x as Map<String, dynamic>),
-        ),
-      ),
-    );
+        totalCount: json['totalCount'],
+        data: json['data'].map<SystemReportsModel>((json) {
+          return SystemReportsModel.fromJson(json);
+        }).toList());
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory SystemReportsModels.fromJson(String source) => SystemReportsModels.fromMap(json.decode(source) as Map<String, dynamic>);
 }
 
 class SystemReportsModel {
@@ -43,30 +29,12 @@ class SystemReportsModel {
     required this.totalDetail,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'idSystem': idSystem,
-      'code': code,
-      'totalDetail': totalDetail,
-    };
-  }
-
-  factory SystemReportsModel.fromMap(Map<String, dynamic> map) {
+  factory SystemReportsModel.fromJson(dynamic json) {
     return SystemReportsModel(
-      id: map['id'] as int,
-      idSystem: map['idSystem'] as int,
-      code: map['code'] as String,
-      totalDetail: map['totalDetail'] as int,
+      id: json['id'] as int,
+      idSystem: json['idSystem'] as int,
+      code: json['code'] as String,
+      totalDetail: json['totalDetail'] as int,
     );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory SystemReportsModel.fromJson(String source) => SystemReportsModel.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() {
-    return 'SystemReportsModel(id: $id, idSystem: $idSystem, code: $code, totalDetail: $totalDetail)';
   }
 }
