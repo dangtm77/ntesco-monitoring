@@ -110,7 +110,8 @@ class LoadingWidget extends StatelessWidget {
 class NoDataWidget extends StatelessWidget {
   final String? title;
   final String? subtitle;
-  const NoDataWidget({Key? key, this.title, this.subtitle}) : super(key: key);
+  final Widget? button;
+  const NoDataWidget({Key? key, this.title, this.subtitle, this.button}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -120,6 +121,13 @@ class NoDataWidget extends StatelessWidget {
         Text("#404#", style: TextStyle(fontSize: 70, fontWeight: FontWeight.w800, color: Colors.redAccent)),
         Text(title ?? "state.nodata".tr().toUpperCase(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Colors.redAccent)),
         Text(subtitle ?? "state.nodata_subtitle".tr(), style: TextStyle(fontSize: 15, color: kSecondaryColor, fontStyle: FontStyle.italic)),
+        Visibility(
+          visible: button != null,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: SizedBox(width: 100, height: 40, child: button ?? SizedBox(height: 0.0)),
+          ),
+        )
       ],
     );
   }

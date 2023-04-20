@@ -67,6 +67,7 @@ class _BodyPageState extends State<Body> {
     Util.checkConnectivity(result, (status) {
       setState(() {
         isOnline = status;
+        isLoading = false;
         _listOfDefectAnalysis = _getlistOfDefectAnalysis();
       });
     });

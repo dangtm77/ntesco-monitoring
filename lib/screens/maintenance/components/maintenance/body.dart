@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:http/http.dart';
+import 'package:ionicons/ionicons.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:ntesco_smart_monitoring/components/default_button.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
@@ -17,6 +20,7 @@ import '../../../../constants.dart';
 import '../../../../models/LoadOptions.dart';
 import '../../../../models/mt/SystemReportsModel.dart';
 import '../../../../size_config.dart';
+import '../../../home/home_screen.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -42,6 +46,7 @@ class _BodyPageState extends State<Body> {
     Util.checkConnectivity(result, (status) {
       setState(() {
         isOnline = status;
+        isLoading = false;
         _listOfSystemReports = _getlistOfSystemReports();
       });
     });
@@ -88,6 +93,22 @@ class _BodyPageState extends State<Body> {
     return TopHeaderSub(
       title: "maintenance.title".tr(),
       subtitle: "maintenance.subtitle".tr(),
+      buttonLeft: InkWell(
+        borderRadius: BorderRadius.circular(15),
+        onTap: () => Navigator.pushNamed(context, HomeScreen.routeName),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
+        ),
+      ),
+      buttonRight: InkWell(
+        borderRadius: BorderRadius.circular(15),
+        child: Icon(Icons.addchart_outlined, color: kPrimaryColor, size: 30.0),
+        onTap: () => showCupertinoModalBottomSheet(
+          context: context,
+          builder: (context) => BeforeCreate(),
+        ),
+      ),
     );
   }
 
@@ -99,6 +120,7 @@ class _BodyPageState extends State<Body> {
                 if (!isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
                   setState(() {
                     isLoading = true;
+                    isLoading = false;
                     _listOfSystemReports = _getlistOfSystemReports();
                   });
                 }
@@ -116,7 +138,19 @@ class _BodyPageState extends State<Body> {
                   builder: (BuildContext context, AsyncSnapshot<SystemReportsModels> snapshot) {
                     if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
                     if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !isLoading) return LoadingWidget();
-                    if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty)) return NoDataWidget(subtitle: "Vui lòng kiểm tra lại điều kiện lọc hoặc liên hệ trực tiếp đến quản trị viên...");
+                    if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty))
+                      return NoDataWidget(
+                        subtitle: "Vui lòng kiểm tra lại điều kiện lọc hoặc liên hệ trực tiếp đến quản trị viên...",
+                        button: DefaultButton(
+                          text: "Tải lại",
+                          press: () {
+                            setState(() {
+                              isLoading = false;
+                              _listOfSystemReports = _getlistOfSystemReports();
+                            });
+                          },
+                        ),
+                      );
 
                     return Padding(
                       padding: EdgeInsets.symmetric(
@@ -160,5 +194,14 @@ class _BodyPageState extends State<Body> {
             )
           : NoConnectionWidget(),
     );
+  }
+}
+
+class BeforeCreate extends StatelessWidget {
+  const BeforeCreate({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }

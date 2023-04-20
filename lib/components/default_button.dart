@@ -3,12 +3,7 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 
 class DefaultButton extends StatelessWidget {
-  const DefaultButton({
-    Key? key,
-    required this.text,
-    this.color,
-    this.press,
-  }) : super(key: key);
+  const DefaultButton({Key? key, required this.text, this.color, this.press}) : super(key: key);
 
   final String text;
   final Color? color;
