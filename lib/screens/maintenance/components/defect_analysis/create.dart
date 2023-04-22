@@ -22,8 +22,11 @@ import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
 import 'package:ntesco_smart_monitoring/models/common/UserModel.dart';
 import 'package:ntesco_smart_monitoring/models/mt/SystemModel.dart';
+import 'package:ntesco_smart_monitoring/repository/common/projects.dart';
+import 'package:ntesco_smart_monitoring/repository/mt/systems.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:ntesco_smart_monitoring/theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DefectAnalysisCreateScreen extends StatelessWidget {
   @override
@@ -45,42 +48,16 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
   late Future<ProjectModels> _listOfProjects;
   late Future<SystemModels> _listOfSystems;
   late Future<UserModels> _listOfUsers;
-  late bool idSystemIsEnable;
+  late int _projectCurrent = 0;
 
-  Future<ProjectModels> _getListProjects() async {
-    try {
-      List<dynamic> sortOptions = [];
-      List<dynamic> filterOptions = [];
-      LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
-      Response response = await Common.Projects_GetList(options.toMap());
-      if (response.statusCode >= 200 && response.statusCode <= 299)
-        return ProjectModels.fromJson(jsonDecode(response.body));
-      else
-        throw Exception(response.body);
-    } catch (ex) {
-      throw ex;
-    }
-  }
-
-  Future<SystemModels> _getListSystems(int id) async {
-    try {
-      List<dynamic> sortOptions = [];
-      List<dynamic> filterOptions = [];
-      LoadOptionsModel options = new LoadOptionsModel(
-        take: 0,
-        skip: 0,
-        sort: jsonEncode(sortOptions),
-        filter: jsonEncode(filterOptions),
-        requireTotalCount: 'true',
-      );
-      Response response = await Maintenance.Systems_GetList_ByProject(id, options.toMap());
-      if (response.statusCode >= 200 && response.statusCode <= 299) {
-        return SystemModels.fromJson(jsonDecode(response.body));
-      } else
-        throw Exception(response.body);
-    } catch (ex) {
-      throw ex;
-    }
+  Future<void> _getLocalStore() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _projectCurrent = prefs.getInt('MAINTENANCE-IDPROJECT') ?? 0;
+      _listOfProjects = CommonTepository.getListProjects(null);
+      _listOfSystems = MaintenanceSystemTepository.getListSystemsByIDProject(_projectCurrent, null);
+      _listOfUsers = _getListUsers();
+    });
   }
 
   Future<UserModels> _getListUsers() async {
@@ -103,26 +80,25 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
 
   @override
   void initState() {
-    _listOfProjects = _getListProjects();
-    _listOfSystems = _getListSystems(0);
-    _listOfUsers = _getListUsers();
-    idSystemIsEnable = false;
     super.initState();
+    _getLocalStore();
   }
 
   @override
-  Widget build(BuildContext context) => SafeArea(
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              _header(),
-              _form(context),
-            ],
-          ),
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            _header(),
+            _form(context),
+          ],
         ),
-      );
+      ),
+    );
+  }
 
   Widget _header() => Container(
         child: TopHeaderSub(
@@ -158,7 +134,7 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
                   autovalidateMode: AutovalidateMode.always,
                   autoFocusOnValidationFailure: true,
                   initialValue: {
-                    'idProject': null,
+                    'idProject': _projectCurrent != 0 ? _projectCurrent : null,
                     'idSystem': null,
                     'code': StringHelper.autoGenCode(3, 7, '#'),
                     'analysisDate': DateTime.now(),
@@ -212,13 +188,13 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
         return FutureBuilder(
           future: _listOfProjects,
           builder: (BuildContext context, AsyncSnapshot<ProjectModels> snapshot) {
-            if (snapshot.hasError)
-              return DataErrorWidget(error: snapshot.error.toString());
-            else if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active && !snapshot.hasData))
+            if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
+            if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active && !snapshot.hasData))
               return CircularProgressIndicator();
-            else
+            else {
               return FormBuilderDropdown<int>(
                 name: 'idProject',
+                enabled: true,
                 menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 decoration: InputDecoration(
                   label: Text.rich(TextSpan(children: [TextSpan(text: 'Dự án / Công trình'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
@@ -247,13 +223,13 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
                 onChanged: (dynamic val) {
                   if (val != null)
                     setState(() {
-                      idSystemIsEnable = true;
-                      _listOfSystems = _getListSystems(val);
+                      _listOfSystems = MaintenanceSystemTepository.getListSystemsByIDProject(val, null);
                     });
                 },
                 valueTransformer: (val) => val,
                 validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
               );
+            }
           },
         );
       case "idSystem":
@@ -267,7 +243,6 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
             else
               return FormBuilderDropdown<int>(
                 name: 'idSystem',
-                enabled: idSystemIsEnable,
                 menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
                 decoration: InputDecoration(

@@ -51,7 +51,7 @@ class _BodyPageState extends State<Body> {
 
   TextEditingController _keywordForSearchEditingController = TextEditingController();
 
-  late List<int> _projectsCurrent = [];
+  late int _projectCurrent = 0;
   late List<int> _statusCurrent = [];
   late Future<DefectAnalysisModels> _listOfDefectAnalysis;
 
@@ -74,6 +74,9 @@ class _BodyPageState extends State<Body> {
   }
 
   Future<DefectAnalysisModels> _getlistOfDefectAnalysis() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _projectCurrent = prefs.getInt('MAINTENANCE-IDPROJECT') ?? 0;
+
     List<dynamic> sortOptions = [
       {"selector": "totalDetail", "desc": "true"},
       {"selector": "analysisDate", "desc": "true"},
@@ -81,17 +84,11 @@ class _BodyPageState extends State<Body> {
     ];
     List<dynamic> filterOptions = [];
     //FILTER BY PROJECT
-    if (_projectsCurrent.isNotEmpty && _projectsCurrent.length > 0) {
-      List<dynamic> projectsFilterOptions = [];
-      _projectsCurrent.forEach((id) {
-        projectsFilterOptions.add(['system.idProject', '=', id]);
-        projectsFilterOptions.add("or");
-      });
-      if (projectsFilterOptions.length > 0) {
-        if (filterOptions.length > 0) filterOptions.add('and');
-        if (projectsFilterOptions.last == "or") projectsFilterOptions.removeAt(projectsFilterOptions.length - 1);
-        if (projectsFilterOptions.length > 0) filterOptions.add(projectsFilterOptions);
-      }
+    List<dynamic> projectsFilterOptions = [];
+    projectsFilterOptions.add(['system.idProject', '=', _projectCurrent]);
+    if (projectsFilterOptions.length > 0) {
+      if (filterOptions.length > 0) filterOptions.add('and');
+      if (projectsFilterOptions.length > 0) filterOptions.add(projectsFilterOptions);
     }
     //FILTER BY STATUS
     if (_statusCurrent.isNotEmpty && _statusCurrent.length > 0) {
@@ -125,7 +122,7 @@ class _BodyPageState extends State<Body> {
       searchGroupFilterOptions.add(['project.name', 'contains', _keyword]);
       filterOptions.add(searchGroupFilterOptions);
     }
-
+    print(jsonEncode(filterOptions));
     LoadOptionsModel options = new LoadOptionsModel(take: itemPerPage * pageIndex, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
     Response response = await Maintenance.DefectAnalysis_GetList(options.toMap());
     if (response.statusCode >= 200 && response.statusCode <= 299) {
@@ -227,19 +224,36 @@ class _BodyPageState extends State<Body> {
           children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
         ),
       ),
-      buttonRight: InkWell(
-        borderRadius: BorderRadius.circular(15),
-        child: Icon(Icons.addchart_outlined, color: kPrimaryColor, size: 30.0),
-        onTap: () => showCupertinoModalBottomSheet(
-          context: context,
-          builder: (context) => DefectAnalysisCreateScreen(),
-        ).then((value) {
-          setState(() {
-            isLoading = false;
-            _listOfDefectAnalysis = _getlistOfDefectAnalysis();
-          });
-        }),
+      buttonRight: IconButton(
+        enableFeedback: true,
+        color: (_projectCurrent != 0) ? kPrimaryColor : Colors.grey,
+        icon: Icon(Icons.addchart_outlined, size: 30.0),
+        onPressed: () => (_projectCurrent != 0)
+            ? showCupertinoModalBottomSheet(
+                context: context,
+                builder: (context) => DefectAnalysisCreateScreen(),
+              ).then((value) {
+                setState(() {
+                  isLoading = false;
+                  _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+                });
+              })
+            : null,
       ),
+      // buttonRight: InkWell(
+
+      //   borderRadius: BorderRadius.circular(15),
+      //   child: Icon(Icons.addchart_outlined, color: kPrimaryColor, size: 30.0),
+      //   onTap: () => showCupertinoModalBottomSheet(
+      //     context: context,
+      //     builder: (context) => DefectAnalysisCreateScreen(),
+      //   ).then((value) {
+      //     setState(() {
+      //       isLoading = false;
+      //       _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+      //     });
+      //   }),
+      // ),
     );
   }
 
@@ -282,10 +296,17 @@ class _BodyPageState extends State<Body> {
                         icon: Icon(Ionicons.close_circle, color: Colors.grey.shade500, size: 20),
                       ),
                     IconButton(
-                      onPressed: () => showModalBottomSheet(builder: (BuildContext context) => _filter(context), context: context),
+                      onPressed: () => showModalBottomSheet(
+                        builder: (BuildContext context) => _filter(context),
+                        context: context,
+                      ).then((e) {
+                        setState(() {
+                          _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+                        });
+                      }),
                       icon: Icon(
                         Ionicons.filter,
-                        color: (_statusCurrent.length > 0 || _projectsCurrent.length > 0) ? kPrimaryColor : Colors.grey.shade500,
+                        color: (_statusCurrent.length > 0 || _projectCurrent != 0) ? kPrimaryColor : Colors.grey.shade500,
                         size: 20,
                       ),
                     ),
@@ -312,16 +333,20 @@ class _BodyPageState extends State<Body> {
             initialData: [],
             future: projectFilter,
             builder: (context, snapshot) {
-              return SmartSelect<int>.multiple(
+              return SmartSelect<int>.single(
                 title: 'Xem theo dự án',
                 placeholder: "Vui lòng chọn ít nhất 1 dự án",
                 modalFilter: true,
-                selectedValue: _projectsCurrent,
+                selectedValue: _projectCurrent,
                 choiceItems: snapshot.data,
                 modalHeader: true,
                 choiceType: S2ChoiceType.chips,
                 modalType: S2ModalType.bottomSheet,
-                onChange: (state) => setState(() => _projectsCurrent = state.value),
+                onChange: (state) async {
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  prefs.setInt('MAINTENANCE-IDPROJECT', state.value);
+                  setState(() => _projectCurrent = state.value);
+                },
                 tileBuilder: (context, state) {
                   return S2Tile.fromState(
                     state,
@@ -379,7 +404,6 @@ class _BodyPageState extends State<Body> {
                       color: kTextColor,
                       press: () {
                         setState(() {
-                          _projectsCurrent = [];
                           _statusCurrent = [];
                           _listOfDefectAnalysis = _getlistOfDefectAnalysis();
                         });

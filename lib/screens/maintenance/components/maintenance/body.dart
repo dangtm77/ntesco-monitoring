@@ -1,6 +1,8 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:awesome_select/awesome_select.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -9,18 +11,22 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:http/http.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:ntesco_smart_monitoring/components/default_button.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
-import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
 import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
+import 'package:ntesco_smart_monitoring/helper/util.dart';
 
 import '../../../../components/state_widget.dart';
 import '../../../../constants.dart';
 import '../../../../models/LoadOptions.dart';
+import '../../../../models/common/ProjectModel.dart';
 import '../../../../models/mt/SystemReportsModel.dart';
 import '../../../../size_config.dart';
 import '../../../home/home_screen.dart';
+import 'create.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -32,7 +38,11 @@ class _BodyPageState extends State<Body> {
   late bool isOnline = false;
   late StreamSubscription<ConnectivityResult> subscription;
 
+  late int pageIndex = 1;
+  late int itemPerPage = 15;
   late bool isLoading = false;
+  late TextEditingController _keywordForSearchEditingController = TextEditingController();
+  late int _projectCurrent = 0;
   late Future<SystemReportsModels> _listOfSystemReports;
 
   @override
@@ -53,8 +63,19 @@ class _BodyPageState extends State<Body> {
   }
 
   Future<SystemReportsModels> _getlistOfSystemReports() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _projectCurrent = prefs.getInt('MAINTENANCE-IDPROJECT') ?? 0;
+
     List<dynamic> sortOptions = [];
     List<dynamic> filterOptions = [];
+    // //FILTER BY PROJECT
+    // List<dynamic> projectsFilterOptions = [];
+    // projectsFilterOptions.add(['idProject', '=', _projectCurrent]);
+    // if (projectsFilterOptions.length > 0) {
+    //   if (filterOptions.length > 0) filterOptions.add('and');
+    //   if (projectsFilterOptions.length > 0) filterOptions.add(projectsFilterOptions);
+    // }
+
     LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
     Response response = await Maintenance.SystemReports_GetList(options.toMap());
     if (response.statusCode >= 200 && response.statusCode <= 299) {
@@ -63,6 +84,22 @@ class _BodyPageState extends State<Body> {
         isLoading = false;
       });
       return result;
+    } else
+      throw Exception(response.body);
+  }
+
+  Future<List<S2Choice<int>>> _getListProjectsForSelect() async {
+    List<dynamic> sortOptions = [];
+    List<dynamic> filterOptions = [];
+    LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+    Response response = await Common.Projects_GetList(options.toMap());
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
+      ProjectModels result = ProjectModels.fromJson(jsonDecode(response.body));
+      return S2Choice.listFrom<int, dynamic>(
+        source: result.data,
+        value: (index, item) => item.id,
+        title: (index, item) => item.name,
+      );
     } else
       throw Exception(response.body);
   }
@@ -82,6 +119,7 @@ class _BodyPageState extends State<Body> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _header(context),
+            isOnline ? _searchBar(context) : SizedBox.shrink(),
             _listAll(context),
           ],
         ),
@@ -101,13 +139,156 @@ class _BodyPageState extends State<Body> {
           children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
         ),
       ),
-      buttonRight: InkWell(
-        borderRadius: BorderRadius.circular(15),
-        child: Icon(Icons.addchart_outlined, color: kPrimaryColor, size: 30.0),
-        onTap: () => showCupertinoModalBottomSheet(
-          context: context,
-          builder: (context) => BeforeCreate(),
+      buttonRight: IconButton(
+        enableFeedback: true,
+        color: (_projectCurrent != 0) ? kPrimaryColor : Colors.grey,
+        icon: Icon(Icons.addchart_outlined, size: 30.0),
+        onPressed: () => (_projectCurrent != 0)
+            ? showCupertinoModalBottomSheet(
+                context: context,
+                builder: (context) => MaintenanceCreateScreen(),
+              )
+            : null,
+      ),
+    );
+  }
+
+  Widget _searchBar(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 40,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 5.0),
+        child: TextField(
+          controller: _keywordForSearchEditingController,
+          onChanged: (value) {
+            setState(() {
+              if (value.isNotEmpty && value.trim().length > 3) {
+                isLoading = false;
+                _listOfSystemReports = _getlistOfSystemReports();
+              }
+            });
+          },
+          decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.grey.shade100,
+              contentPadding: EdgeInsets.all(0.0),
+              prefixIcon: Icon(Ionicons.search, size: 20, color: Colors.grey.shade600),
+              suffixIcon: Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    if (_keywordForSearchEditingController.text.isNotEmpty)
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _keywordForSearchEditingController.clear();
+                            isLoading = false;
+                            _listOfSystemReports = _getlistOfSystemReports();
+                          });
+                        },
+                        icon: Icon(Ionicons.close_circle, color: Colors.grey.shade500, size: 20),
+                      ),
+                    IconButton(
+                      onPressed: () => showModalBottomSheet(
+                        builder: (BuildContext context) => _filter(context),
+                        context: context,
+                      ).then((e) {
+                        setState(() {
+                          isLoading = false;
+                          _listOfSystemReports = _getlistOfSystemReports();
+                        });
+                      }),
+                      icon: Icon(
+                        Ionicons.filter,
+                        color: (_projectCurrent != 0) ? kPrimaryColor : Colors.grey.shade500,
+                        size: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+              hintStyle: TextStyle(fontSize: 15, color: Colors.grey.shade500),
+              hintText: "Nhập từ khóa để tìm kiếm..."),
         ),
+      ),
+    );
+  }
+
+  Widget _filter(BuildContext context) {
+    Future<List<S2Choice<int>>> projectFilter = _getListProjectsForSelect();
+
+    return Scrollbar(
+      child: ListView(
+        addAutomaticKeepAlives: true,
+        children: [
+          FutureBuilder<List<S2Choice<int>>>(
+            initialData: [],
+            future: projectFilter,
+            builder: (context, snapshot) {
+              return SmartSelect<int>.single(
+                title: 'Xem theo dự án',
+                placeholder: "Vui lòng chọn ít nhất 1 dự án",
+                modalFilter: true,
+                selectedValue: _projectCurrent,
+                choiceItems: snapshot.data,
+                modalHeader: true,
+                choiceType: S2ChoiceType.chips,
+                modalType: S2ModalType.bottomSheet,
+                onChange: (state) async {
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  prefs.setInt('MAINTENANCE-IDPROJECT', state.value);
+                  setState(() => _projectCurrent = state.value);
+                },
+                tileBuilder: (context, state) {
+                  return S2Tile.fromState(
+                    state,
+                    isTwoLine: true,
+                    trailing: state.selected.length > 0 ? CircleAvatar(radius: 15, backgroundColor: kPrimaryColor, child: Text('${state.selected.length}', style: TextStyle(color: Colors.white))) : null,
+                    isLoading: snapshot.connectionState == ConnectionState.waiting,
+                  );
+                },
+              );
+            },
+          ),
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: DefaultButton(
+                      text: "Đặt lại",
+                      color: kTextColor,
+                      press: () {
+                        setState(() {});
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 6,
+                    child: DefaultButton(
+                      text: "Lọc dữ liệu",
+                      press: () {
+                        setState(() {
+                          isLoading = false;
+                          _listOfSystemReports = _getlistOfSystemReports();
+                        });
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -194,14 +375,5 @@ class _BodyPageState extends State<Body> {
             )
           : NoConnectionWidget(),
     );
-  }
-}
-
-class BeforeCreate extends StatelessWidget {
-  const BeforeCreate({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }

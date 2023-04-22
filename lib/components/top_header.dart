@@ -34,8 +34,8 @@ class TopHeader extends StatelessWidget {
 class TopHeaderSub extends StatelessWidget {
   final String title;
   final String subtitle;
-  final InkWell? buttonLeft;
-  final InkWell? buttonRight;
+  final Widget? buttonLeft;
+  final Widget? buttonRight;
 
   const TopHeaderSub({
     Key? key,
