@@ -23,6 +23,7 @@ import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
 import 'package:ntesco_smart_monitoring/models/common/UserModel.dart';
 import 'package:ntesco_smart_monitoring/models/mt/SystemModel.dart';
 import 'package:ntesco_smart_monitoring/repository/common/projects.dart';
+import 'package:ntesco_smart_monitoring/repository/common/users.dart';
 import 'package:ntesco_smart_monitoring/repository/mt/systems.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:ntesco_smart_monitoring/theme.dart';
@@ -56,26 +57,8 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
       _projectCurrent = prefs.getInt('MAINTENANCE-IDPROJECT') ?? 0;
       _listOfProjects = CommonTepository.getListProjects(null);
       _listOfSystems = MaintenanceSystemTepository.getListSystemsByIDProject(_projectCurrent, null);
-      _listOfUsers = _getListUsers();
+      _listOfUsers = UsersTepository.getListUsers(null);
     });
-  }
-
-  Future<UserModels> _getListUsers() async {
-    try {
-      List<dynamic> sortOptions = [
-        {"selector": "phongBan_SapXep", "desc": "false"},
-        {"selector": "chucDanh_SapXep", "desc": "true"},
-      ];
-      List<dynamic> filterOptions = [];
-      LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
-      Response response = await Common.Users_GetList(options.toMap());
-      if (response.statusCode >= 200 && response.statusCode <= 299)
-        return UserModels.fromJson(jsonDecode(response.body));
-      else
-        throw Exception(response.body);
-    } catch (ex) {
-      throw ex;
-    }
   }
 
   @override
@@ -92,7 +75,7 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            _header(),
+            _header(context),
             _form(context),
           ],
         ),
@@ -100,7 +83,7 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
     );
   }
 
-  Widget _header() => Container(
+  Widget _header(BuildContext context) => Container(
         child: TopHeaderSub(
           title: "maintenance.defect_analysis.create_title".tr(),
           subtitle: "maintenance.defect_analysis.create_subtitle",
@@ -194,7 +177,7 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
             else {
               return FormBuilderDropdown<int>(
                 name: 'idProject',
-                enabled: true,
+                enabled: false,
                 menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 decoration: InputDecoration(
                   label: Text.rich(TextSpan(children: [TextSpan(text: 'Dự án / Công trình'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
@@ -221,10 +204,12 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
                     )
                     .toList(),
                 onChanged: (dynamic val) {
-                  if (val != null)
+                  if (val != null) {
+                    _formKey.currentState!.fields['idSystem']?.didChange(null);
                     setState(() {
                       _listOfSystems = MaintenanceSystemTepository.getListSystemsByIDProject(val, null);
                     });
+                  }
                 },
                 valueTransformer: (val) => val,
                 validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),

@@ -351,7 +351,6 @@ class _BodyPageState extends State<Body> {
                   return S2Tile.fromState(
                     state,
                     isTwoLine: true,
-                    trailing: state.selected.length > 0 ? CircleAvatar(radius: 15, backgroundColor: kPrimaryColor, child: Text('${state.selected.length}', style: TextStyle(color: Colors.white))) : null,
                     isLoading: snapshot.connectionState == ConnectionState.waiting,
                   );
                 },

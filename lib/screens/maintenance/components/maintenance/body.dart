@@ -23,7 +23,9 @@ import '../../../../components/state_widget.dart';
 import '../../../../constants.dart';
 import '../../../../models/LoadOptions.dart';
 import '../../../../models/common/ProjectModel.dart';
+import '../../../../models/mt/SystemModel.dart';
 import '../../../../models/mt/SystemReportsModel.dart';
+import '../../../../repository/mt/systems.dart';
 import '../../../../size_config.dart';
 import '../../../home/home_screen.dart';
 import 'create.dart';
@@ -40,7 +42,7 @@ class _BodyPageState extends State<Body> {
 
   late int pageIndex = 1;
   late int itemPerPage = 15;
-  late bool isLoading = false;
+  late bool _isLoading = false;
   late TextEditingController _keywordForSearchEditingController = TextEditingController();
   late int _projectCurrent = 0;
   late Future<SystemReportsModels> _listOfSystemReports;
@@ -53,10 +55,12 @@ class _BodyPageState extends State<Body> {
   }
 
   Future<void> checkConnectivity(ConnectivityResult? result) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     Util.checkConnectivity(result, (status) {
       setState(() {
         isOnline = status;
-        isLoading = false;
+        _projectCurrent = prefs.getInt('MAINTENANCE-IDPROJECT') ?? 0;
+        _isLoading = false;
         _listOfSystemReports = _getlistOfSystemReports();
       });
     });
@@ -81,7 +85,7 @@ class _BodyPageState extends State<Body> {
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       SystemReportsModels result = SystemReportsModels.fromJson(jsonDecode(response.body));
       setState(() {
-        isLoading = false;
+        _isLoading = false;
       });
       return result;
     } else
@@ -143,12 +147,7 @@ class _BodyPageState extends State<Body> {
         enableFeedback: true,
         color: (_projectCurrent != 0) ? kPrimaryColor : Colors.grey,
         icon: Icon(Icons.addchart_outlined, size: 30.0),
-        onPressed: () => (_projectCurrent != 0)
-            ? showCupertinoModalBottomSheet(
-                context: context,
-                builder: (context) => MaintenanceCreateScreen(),
-              )
-            : null,
+        onPressed: () => (_projectCurrent != 0) ? showModalBottomSheet(context: context, builder: (context) => _selectSystemForCreate(context)) : null,
       ),
     );
   }
@@ -164,7 +163,7 @@ class _BodyPageState extends State<Body> {
           onChanged: (value) {
             setState(() {
               if (value.isNotEmpty && value.trim().length > 3) {
-                isLoading = false;
+                _isLoading = false;
                 _listOfSystemReports = _getlistOfSystemReports();
               }
             });
@@ -185,7 +184,7 @@ class _BodyPageState extends State<Body> {
                         onPressed: () {
                           setState(() {
                             _keywordForSearchEditingController.clear();
-                            isLoading = false;
+                            _isLoading = false;
                             _listOfSystemReports = _getlistOfSystemReports();
                           });
                         },
@@ -197,7 +196,7 @@ class _BodyPageState extends State<Body> {
                         context: context,
                       ).then((e) {
                         setState(() {
-                          isLoading = false;
+                          _isLoading = false;
                           _listOfSystemReports = _getlistOfSystemReports();
                         });
                       }),
@@ -277,7 +276,7 @@ class _BodyPageState extends State<Body> {
                       text: "Lọc dữ liệu",
                       press: () {
                         setState(() {
-                          isLoading = false;
+                          _isLoading = false;
                           _listOfSystemReports = _getlistOfSystemReports();
                         });
                         Navigator.pop(context);
@@ -298,10 +297,9 @@ class _BodyPageState extends State<Body> {
       child: (isOnline)
           ? NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification scrollInfo) {
-                if (!isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+                if (!_isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
                   setState(() {
-                    isLoading = true;
-                    isLoading = false;
+                    _isLoading = false;
                     _listOfSystemReports = _getlistOfSystemReports();
                   });
                 }
@@ -310,7 +308,7 @@ class _BodyPageState extends State<Body> {
               child: RefreshIndicator(
                 onRefresh: () async {
                   setState(() {
-                    isLoading = false;
+                    _isLoading = false;
                     _listOfSystemReports = _getlistOfSystemReports();
                   });
                 },
@@ -318,7 +316,7 @@ class _BodyPageState extends State<Body> {
                   future: _listOfSystemReports,
                   builder: (BuildContext context, AsyncSnapshot<SystemReportsModels> snapshot) {
                     if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
-                    if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !isLoading) return LoadingWidget();
+                    if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !_isLoading) return LoadingWidget();
                     if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty))
                       return NoDataWidget(
                         subtitle: "Vui lòng kiểm tra lại điều kiện lọc hoặc liên hệ trực tiếp đến quản trị viên...",
@@ -326,7 +324,7 @@ class _BodyPageState extends State<Body> {
                           text: "Tải lại",
                           press: () {
                             setState(() {
-                              isLoading = false;
+                              _isLoading = false;
                               _listOfSystemReports = _getlistOfSystemReports();
                             });
                           },
@@ -374,6 +372,63 @@ class _BodyPageState extends State<Body> {
               ),
             )
           : NoConnectionWidget(),
+    );
+  }
+
+  Widget _selectSystemForCreate(BuildContext context) {
+    Future<SystemModels> _listOfSystems = MaintenanceSystemTepository.getListSystemsByIDProject(_projectCurrent, null);
+    return Scrollbar(
+      child: Column(
+        children: [
+          Container(
+            alignment: Alignment.center,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text("Vui lòng chọn hệ thống cần thực hiện bảo trì...", style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w700)),
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<SystemModels>(
+              future: _listOfSystems,
+              builder: (BuildContext context, AsyncSnapshot<SystemModels> snapshot) {
+                if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
+                if (snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) return LoadingWidget();
+                if (!snapshot.hasData && !snapshot.data!.data.isNotEmpty) return NoDataWidget();
+
+                return AnimationLimiter(
+                  child: ListView.separated(
+                    itemCount: snapshot.data!.data.length,
+                    itemBuilder: (context, index) {
+                      SystemModel element = snapshot.data!.data.elementAt(index);
+                      return ListTile(
+                        title: Text(
+                          element.name.toString() + (element.otherName != null ? (' (' + element.otherName.toString() + ')') : ''),
+                          style: const TextStyle(fontSize: 15.0, color: kPrimaryColor, fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Text(
+                          "Mã ${element.code.toString()} - Ngày bàn giao ${DateFormat("dd/MM/yyyy").format(element.dateAcceptance!)}",
+                          style: const TextStyle(fontSize: 13.0),
+                        ),
+                        trailing: Icon(Ionicons.arrow_forward, color: kSecondaryColor, size: 18.0),
+                        onTap: () {
+                          Navigator.pop(context);
+                          showCupertinoModalBottomSheet(
+                            isDismissible: true,
+                            enableDrag: false,
+                            context: context,
+                            builder: (context) => MaintenanceCreateScreen(systemModel: element),
+                          );
+                        },
+                      );
+                    }, // optional
+                    separatorBuilder: (BuildContext context, int index) => const Divider(),
+                  ),
+                );
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 }
