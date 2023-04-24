@@ -5,6 +5,8 @@ import 'package:ntesco_smart_monitoring/core/core.dart' as Core;
 const API_SYSTEMS_GETLIST = "v2/mt/systems";
 const API_SYSTEMS_GETLIST_BYPROJECT = "v2/mt/systems/byproject";
 
+const API_SYSTEMCONFIGS_GETLIST = "v2/mt/systemconfigs";
+
 const API_PLANS_GETLIST = "v2/mt/plans";
 
 const API_DEFECTANALYSIS_GETLIST = "v2/mt/defectanalysis";
@@ -24,6 +26,9 @@ Future<http.Response> Systems_GetList_ByProject(int id, dynamic options) async {
   queryParameters.addAll({"idProject": id.toString()});
   return Core.get(queryParameters, API_SYSTEMS_GETLIST_BYPROJECT);
 }
+
+//--------------------------SYSTEMCONFIGS--------------------------//
+Future<http.Response> SystemConfigs_GetList(dynamic options) async => Core.get(options, API_SYSTEMCONFIGS_GETLIST);
 
 //--------------------------PLANS--------------------------//
 Future<http.Response> Plans_GetList(dynamic options) async => Core.get(options, API_PLANS_GETLIST);

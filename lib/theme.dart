@@ -37,35 +37,24 @@ InputDecorationTheme inputDecorationTheme() {
     hintStyle: TextStyle(color: Color(0xFF95A1AC), fontSize: 18),
     labelStyle: TextStyle(color: kPrimaryColor, fontSize: 18, fontWeight: FontWeight.w600),
     enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Color(0xFFDBE2E7),
-        width: 2,
-      ),
+      borderSide: BorderSide(color: Color(0xFFDBE2E7), width: 2),
       borderRadius: BorderRadius.circular(8),
     ),
     focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Color(0xFFDBE2E7),
-        width: 2,
-      ),
+      borderSide: BorderSide(color: Color(0xFFDBE2E7), width: 2),
       borderRadius: BorderRadius.circular(8),
     ),
     errorBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Color(0x00000000),
-        width: 2,
-      ),
+      borderSide: BorderSide(color: Color(0x00000000), width: 2),
       borderRadius: BorderRadius.circular(8),
     ),
     focusedErrorBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Colors.red,
-        width: 2,
-      ),
+      borderSide: BorderSide(color: Colors.red, width: 2),
       borderRadius: BorderRadius.circular(8),
     ),
     filled: true,
     //fillColor: Color(0xFFDBE2E7),
     contentPadding: EdgeInsetsDirectional.fromSTEB(15, 20, 0, 20),
+    floatingLabelBehavior: FloatingLabelBehavior.always,
   );
 }

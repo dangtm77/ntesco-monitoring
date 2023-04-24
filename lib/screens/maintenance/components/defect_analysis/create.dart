@@ -55,9 +55,9 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _projectCurrent = prefs.getInt('MAINTENANCE-IDPROJECT') ?? 0;
-      _listOfProjects = CommonTepository.getListProjects(null);
-      _listOfSystems = MaintenanceSystemTepository.getListSystemsByIDProject(_projectCurrent, null);
-      _listOfUsers = UsersTepository.getListUsers(null);
+      _listOfProjects = CommonProjectsRepository.getListProjects(null);
+      _listOfSystems = MaintenanceSystemsRepository.getListSystemsByIDProject(_projectCurrent, null);
+      _listOfUsers = CommonUsersRepository.getListUsers(null);
     });
   }
 
@@ -207,7 +207,7 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
                   if (val != null) {
                     _formKey.currentState!.fields['idSystem']?.didChange(null);
                     setState(() {
-                      _listOfSystems = MaintenanceSystemTepository.getListSystemsByIDProject(val, null);
+                      _listOfSystems = MaintenanceSystemsRepository.getListSystemsByIDProject(val, null);
                     });
                   }
                 },

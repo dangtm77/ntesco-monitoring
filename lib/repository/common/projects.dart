@@ -6,7 +6,7 @@ import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
 import '../../models/LoadOptions.dart';
 import '../../models/common/ProjectModel.dart';
 
-class CommonTepository {
+class CommonProjectsRepository {
   static Future<ProjectModels> getListProjects(dynamic option) async {
     try {
       List<dynamic> sortOptions = [], filterOptions = [];

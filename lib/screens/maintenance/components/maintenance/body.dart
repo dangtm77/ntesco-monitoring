@@ -10,7 +10,6 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:http/http.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:ntesco_smart_monitoring/components/default_button.dart';
@@ -376,7 +375,7 @@ class _BodyPageState extends State<Body> {
   }
 
   Widget _selectSystemForCreate(BuildContext context) {
-    Future<SystemModels> _listOfSystems = MaintenanceSystemTepository.getListSystemsByIDProject(_projectCurrent, null);
+    Future<SystemModels> _listOfSystems = MaintenanceSystemsRepository.getListSystemsByIDProject(_projectCurrent, null);
     return Scrollbar(
       child: Column(
         children: [
@@ -412,12 +411,7 @@ class _BodyPageState extends State<Body> {
                         trailing: Icon(Ionicons.arrow_forward, color: kSecondaryColor, size: 18.0),
                         onTap: () {
                           Navigator.pop(context);
-                          showCupertinoModalBottomSheet(
-                            isDismissible: true,
-                            enableDrag: false,
-                            context: context,
-                            builder: (context) => MaintenanceCreateScreen(systemModel: element),
-                          );
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => MaintenanceCreateScreen(systemModel: element)));
                         },
                       );
                     }, // optional

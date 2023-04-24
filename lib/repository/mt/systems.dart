@@ -6,7 +6,7 @@ import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 import '../../models/LoadOptions.dart';
 import '../../models/mt/SystemModel.dart';
 
-class MaintenanceSystemTepository {
+class MaintenanceSystemsRepository {
   static Future<SystemModels> getListSystemsByIDProject(int id, dynamic option) async {
     try {
       List<dynamic> sortOptions = [], filterOptions = [];
