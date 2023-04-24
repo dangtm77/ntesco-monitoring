@@ -34,27 +34,29 @@ InputDecorationTheme inputDecorationTheme() {
   //   border: OutlineInputBorder(),
   // );
   return InputDecorationTheme(
-    hintStyle: TextStyle(color: Color(0xFF95A1AC), fontSize: 18),
+    helperStyle: TextStyle(color: Color(0xFF95A1AC), fontSize: 15, fontStyle: FontStyle.italic),
+    hintStyle: TextStyle(color: Color(0xFF95A1AC), fontSize: 15),
     labelStyle: TextStyle(color: kPrimaryColor, fontSize: 18, fontWeight: FontWeight.w600),
     enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Color(0xFFDBE2E7), width: 2),
-      borderRadius: BorderRadius.circular(8),
+      borderSide: BorderSide(color: Color(0xFFDBE2E7), width: 2.0),
+      borderRadius: BorderRadius.circular(8.0),
     ),
     focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Color(0xFFDBE2E7), width: 2),
-      borderRadius: BorderRadius.circular(8),
+      borderSide: BorderSide(color: Color(0xFFDBE2E7), width: 2.0),
+      borderRadius: BorderRadius.circular(8.0),
     ),
     errorBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Color(0x00000000), width: 2),
-      borderRadius: BorderRadius.circular(8),
+      borderSide: BorderSide(color: Color(0x00000000), width: 2.0),
+      borderRadius: BorderRadius.circular(8.0),
     ),
     focusedErrorBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.red, width: 2),
-      borderRadius: BorderRadius.circular(8),
+      borderSide: BorderSide(color: Colors.red, width: 2.0),
+      borderRadius: BorderRadius.circular(8.0),
     ),
     filled: true,
     //fillColor: Color(0xFFDBE2E7),
-    contentPadding: EdgeInsetsDirectional.fromSTEB(15, 20, 0, 20),
+    contentPadding: EdgeInsets.all(10.0),
     floatingLabelBehavior: FloatingLabelBehavior.always,
+    helperMaxLines: 5,
   );
 }

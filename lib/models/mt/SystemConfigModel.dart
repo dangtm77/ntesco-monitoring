@@ -18,7 +18,10 @@ class SystemConfigModel {
   final int id;
   final int idSystem;
   final int idSystemSpecification;
+  final int groupSortIndex;
+  final String groupTitle;
   final String? standardValues;
+  final bool isRequired;
   final bool isActive;
   final bool isDelete;
   final String? userCreate;
@@ -31,7 +34,10 @@ class SystemConfigModel {
     required this.id,
     required this.idSystem,
     required this.idSystemSpecification,
+    required this.groupSortIndex,
+    required this.groupTitle,
     this.standardValues,
+    required this.isRequired,
     required this.isActive,
     required this.isDelete,
     this.userCreate,
@@ -46,8 +52,11 @@ class SystemConfigModel {
     return SystemConfigModel(
       id: map['id'] as int,
       idSystem: map['idSystem'] as int,
+      groupSortIndex: map['groupSortIndex'] as int,
+      groupTitle: map['groupTitle'] as String,
       idSystemSpecification: map['idSystemSpecification'] as int,
       standardValues: map['standardValues'] != null ? map['standardValues'] as String : null,
+      isRequired: map['isRequired'] as bool,
       isActive: map['isActive'] as bool,
       isDelete: map['isDelete'] as bool,
       userCreate: map['userCreate'] != null ? map['userCreate'] as String : null,
@@ -61,6 +70,6 @@ class SystemConfigModel {
 
   @override
   String toString() {
-    return 'SystemConfigModel(id: $id, idSystem: $idSystem, idSystemSpecification: $idSystemSpecification, standardValues: $standardValues, isActive: $isActive, isDelete: $isDelete, userCreate: $userCreate, userUpdate: $userUpdate, dateCreate: $dateCreate, dateUpdate: $dateUpdate, sortIndex: $sortIndex, specification: $specification)';
+    return 'SystemConfigModel(id: $id, idSystem: $idSystem, idSystemSpecification: $idSystemSpecification, groupSortIndex: $groupSortIndex, groupTitle: $groupTitle, standardValues: $standardValues, isActive: $isActive, isDelete: $isDelete, userCreate: $userCreate, userUpdate: $userUpdate, dateCreate: $dateCreate, dateUpdate: $dateUpdate, sortIndex: $sortIndex, specification: $specification)';
   }
 }

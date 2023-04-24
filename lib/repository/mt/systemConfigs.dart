@@ -10,8 +10,8 @@ class MaintenanceSystemConfigsRepository {
   static Future<SystemConfigModels> getListSystemConfigs(int idSystem) async {
     try {
       List<dynamic> sortOptions = [
-        {"selector": "specification.groupSortIndex", "desc": "false"},
-        {"selector": "specification.sortIndex", "desc": "false"},
+        {"selector": "groupSortIndex", "desc": "false"},
+        {"selector": "sortIndex", "desc": "false"},
       ];
       List<dynamic> filterOptions = [
         ['idSystem', '=', idSystem]

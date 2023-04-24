@@ -23,7 +23,7 @@ import '../../../../constants.dart';
 import '../../../../models/LoadOptions.dart';
 import '../../../../models/common/ProjectModel.dart';
 import '../../../../models/mt/SystemModel.dart';
-import '../../../../models/mt/SystemReportsModel.dart';
+import '../../../../models/mt/SystemReportModel.dart';
 import '../../../../repository/mt/systems.dart';
 import '../../../../size_config.dart';
 import '../../../home/home_screen.dart';
@@ -44,7 +44,7 @@ class _BodyPageState extends State<Body> {
   late bool _isLoading = false;
   late TextEditingController _keywordForSearchEditingController = TextEditingController();
   late int _projectCurrent = 0;
-  late Future<SystemReportsModels> _listOfSystemReports;
+  late Future<SystemReportModels> _listOfSystemReports;
 
   @override
   void initState() {
@@ -65,7 +65,7 @@ class _BodyPageState extends State<Body> {
     });
   }
 
-  Future<SystemReportsModels> _getlistOfSystemReports() async {
+  Future<SystemReportModels> _getlistOfSystemReports() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _projectCurrent = prefs.getInt('MAINTENANCE-IDPROJECT') ?? 0;
 
@@ -82,7 +82,7 @@ class _BodyPageState extends State<Body> {
     LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
     Response response = await Maintenance.SystemReports_GetList(options.toMap());
     if (response.statusCode >= 200 && response.statusCode <= 299) {
-      SystemReportsModels result = SystemReportsModels.fromJson(jsonDecode(response.body));
+      SystemReportModels result = SystemReportModels.fromJson(jsonDecode(response.body));
       setState(() {
         _isLoading = false;
       });
@@ -311,9 +311,9 @@ class _BodyPageState extends State<Body> {
                     _listOfSystemReports = _getlistOfSystemReports();
                   });
                 },
-                child: FutureBuilder<SystemReportsModels>(
+                child: FutureBuilder<SystemReportModels>(
                   future: _listOfSystemReports,
-                  builder: (BuildContext context, AsyncSnapshot<SystemReportsModels> snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot<SystemReportModels> snapshot) {
                     if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
                     if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !_isLoading) return LoadingWidget();
                     if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty))
