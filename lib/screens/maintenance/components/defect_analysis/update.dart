@@ -730,17 +730,14 @@ class _DetailsPageViewState extends State<DetailsPageView> {
   final DefectAnalysisModel model;
   _DetailsPageViewState(this.id, this.model);
 
-  late int pageIndex = 1;
-  late int itemPerPage = 15;
   late bool isLoading = false;
-
   late Future<DefectAnalysisDetailsModels> _listOfDefectAnalysisDetails;
 
   Future<DefectAnalysisDetailsModels> _getListDefectAnalysisDetails() async {
     try {
       List<dynamic> sortOptions = [];
       List<dynamic> filterOptions = [];
-      LoadOptionsModel options = new LoadOptionsModel(take: itemPerPage * pageIndex, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+      LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
       Response response = await Maintenance.DefectAnalysisDetails_GetList(model.id, options.toMap());
       if (response.statusCode >= 200 && response.statusCode <= 299) {
         DefectAnalysisDetailsModels result = DefectAnalysisDetailsModels.fromJson(jsonDecode(response.body));
@@ -767,53 +764,41 @@ class _DetailsPageViewState extends State<DetailsPageView> {
       child: Column(
         children: [
           Expanded(
-            child: NotificationListener<ScrollNotification>(
-              onNotification: (ScrollNotification scrollInfo) {
-                if (!isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-                  setState(() {
-                    pageIndex = pageIndex + 1;
-                    _listOfDefectAnalysisDetails = _getListDefectAnalysisDetails();
-                    isLoading = true;
-                  });
-                }
-                return true;
+            child: RefreshIndicator(
+              onRefresh: () async {
+                setState(() {
+                  isLoading = false;
+                  _listOfDefectAnalysisDetails = _getListDefectAnalysisDetails();
+                });
               },
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  setState(() {
-                    isLoading = false;
-                    _listOfDefectAnalysisDetails = _getListDefectAnalysisDetails();
-                  });
-                },
-                child: FutureBuilder<DefectAnalysisDetailsModels>(
-                  future: _listOfDefectAnalysisDetails,
-                  builder: (BuildContext context, AsyncSnapshot<DefectAnalysisDetailsModels> snapshot) {
-                    if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
-                    if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !isLoading) return LoadingWidget();
-                    if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty)) return NoDataWidget();
+              child: FutureBuilder<DefectAnalysisDetailsModels>(
+                future: _listOfDefectAnalysisDetails,
+                builder: (BuildContext context, AsyncSnapshot<DefectAnalysisDetailsModels> snapshot) {
+                  if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
+                  if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !isLoading) return LoadingWidget();
+                  if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty)) return NoDataWidget();
 
-                    return Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: getProportionateScreenHeight(10.0),
-                        horizontal: getProportionateScreenWidth(0.0),
+                  return Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: getProportionateScreenHeight(10.0),
+                      horizontal: getProportionateScreenWidth(0.0),
+                    ),
+                    child: AnimationLimiter(
+                      child: ListView.separated(
+                        itemCount: snapshot.data!.data.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          var item = snapshot.data!.data.elementAt(index);
+                          return AnimationConfiguration.staggeredList(
+                            position: index,
+                            duration: const Duration(milliseconds: 400),
+                            child: SlideAnimation(child: FadeInAnimation(child: _item(item))),
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) => const Divider(color: kPrimaryColor),
                       ),
-                      child: AnimationLimiter(
-                        child: ListView.separated(
-                          itemCount: snapshot.data!.data.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            var item = snapshot.data!.data.elementAt(index);
-                            return AnimationConfiguration.staggeredList(
-                              position: index,
-                              duration: const Duration(milliseconds: 400),
-                              child: SlideAnimation(child: FadeInAnimation(child: _item(item))),
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int index) => const Divider(color: kPrimaryColor),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
             ),
           ),

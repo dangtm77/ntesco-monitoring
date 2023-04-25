@@ -12,6 +12,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/models/mt/SystemConfigModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../components/default_button.dart';
 import '../../../../components/state_widget.dart';
 import '../../../../components/top_header.dart';
 import '../../../../constants.dart';
@@ -44,17 +45,11 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
   final SystemModel systemModel;
   _MaintenanceCreateBodyState(this.systemModel);
 
-  late int _currentIndex;
-  late PageController _pageController = new PageController();
   final _formKey = GlobalKey<FormBuilderState>();
   late Future<SystemConfigModels> _listOfSystemConfigs;
-  late List<SystemReportReplacementModel> _listOfSystemReportReplacement;
-  late int _projectCurrent = 0;
 
   @override
   void initState() {
-    _currentIndex = 0;
-    _pageController = PageController(initialPage: _currentIndex);
     _listOfSystemConfigs = MaintenanceSystemConfigsRepository.getListSystemConfigs(systemModel.id);
     super.initState();
   }
@@ -71,7 +66,7 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[_headers(context), _main(context)],
+          children: <Widget>[_headers(context), _form(context)],
         ),
       ),
     );
@@ -102,105 +97,52 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
     );
   }
 
-  Widget _main(BuildContext context) {
-    return Expanded(
-      child: Scaffold(
-        body: SizedBox.expand(
-          child: PageView(
-            controller: _pageController,
-            onPageChanged: ((value) => setState(() => _currentIndex = value)),
-            children: <Widget>[_form(context), _list(context)],
-          ),
-        ),
-        bottomNavigationBar: BottomNavyBar(
-          iconSize: 30,
-          showElevation: true,
-          itemCornerRadius: 20.0,
-          containerHeight: 70.0,
-          selectedIndex: _currentIndex,
-          onItemSelected: (value) {
-            setState(() => _currentIndex = value);
-            _pageController.animateToPage(_currentIndex, duration: Duration(milliseconds: 300), curve: Curves.ease);
-          },
-          items: <BottomNavyBarItem>[
-            BottomNavyBarItem(
-              icon: Icon(Ionicons.reader_outline),
-              textAlign: TextAlign.center,
-              title: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Thông tin', style: TextStyle(fontSize: 15)),
-                    Text('CHUNG', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  ],
-                ),
-              ),
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Ionicons.git_branch_outline),
-              textAlign: TextAlign.center,
-              title: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Vật liệu cần', style: TextStyle(fontSize: 15)),
-                    Text('THAY THẾ', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _form(BuildContext context) {
-    return FutureBuilder<SystemConfigModels>(
-      future: _listOfSystemConfigs,
-      builder: (BuildContext context, AsyncSnapshot<SystemConfigModels> snapshot) {
-        if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
-        if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active)) return LoadingWidget();
-        if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty)) return NoDataWidget();
-        return FormBuilder(
-          key: _formKey,
-          child: AnimationLimiter(
-            child: GroupedListView<dynamic, String>(
-              elements: snapshot.data!.data,
-              groupBy: (element) => "${element.groupSortIndex}. ${element.groupTitle}",
-              groupSeparatorBuilder: (String value) => Padding(
-                padding: const EdgeInsets.only(top: 20, bottom: 10),
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  color: kPrimaryColor,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Text(
-                      value.toUpperCase(),
-                      textAlign: TextAlign.left,
-                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+    return Expanded(
+      child: FutureBuilder<SystemConfigModels>(
+        future: _listOfSystemConfigs,
+        builder: (BuildContext context, AsyncSnapshot<SystemConfigModels> snapshot) {
+          if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
+          if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active)) return LoadingWidget();
+          if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty)) return NoDataWidget();
+          return FormBuilder(
+            key: _formKey,
+            child: AnimationLimiter(
+              child: GroupedListView<dynamic, String>(
+                elements: snapshot.data!.data,
+                groupBy: (element) => "${element.groupSortIndex}. ${element.groupTitle}",
+                groupSeparatorBuilder: (String value) => Padding(
+                  padding: const EdgeInsets.only(top: 20, bottom: 10),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    color: kPrimaryColor,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Text(
+                        value.toUpperCase(),
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              itemBuilder: (BuildContext context, dynamic value) {
-                return AnimationConfiguration.staggeredList(
-                  position: 0,
-                  duration: const Duration(milliseconds: 400),
-                  child: SlideAnimation(
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: _formEditor(value as SystemConfigModel),
+                itemBuilder: (BuildContext context, dynamic value) {
+                  return AnimationConfiguration.staggeredList(
+                    position: 0,
+                    duration: const Duration(milliseconds: 400),
+                    child: SlideAnimation(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: _formEditor(value as SystemConfigModel),
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
@@ -221,36 +163,36 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
     switch (model.specification!.dataType) {
       case "TextBox":
         result = FormBuilderTextField(
-          name: 'fieldIndex-${model.id}',
+          name: 'fieldName-${model.id}',
           decoration: InputDecoration(
             label: _label,
             hintText: "common.hint_text_input".tr(),
             helperText: _helperText,
           ).applyDefaults(inputDecorationTheme()),
-          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+          validator: FormBuilderValidators.compose(model.isRequired ? [FormBuilderValidators.required()] : []),
         );
         break;
       case "TextArea":
         result = FormBuilderTextField(
-          name: 'fieldIndex-${model.id}',
+          name: 'fieldName-${model.id}',
           maxLines: 5,
           decoration: InputDecoration(
             label: _label,
             hintText: "common.hint_text_input".tr(),
             helperText: _helperText,
           ).applyDefaults(inputDecorationTheme()),
-          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+          validator: FormBuilderValidators.compose(model.isRequired ? [FormBuilderValidators.required()] : []),
         );
         break;
       case "CheckBox1":
         if (model.specification!.dataValues != null)
           result = FormBuilderRadioGroup<String>(
+            name: 'fieldName-${model.id}',
             decoration: InputDecoration(
               labelText: model.specification?.title.toString(),
               hintText: "common.hint_text_select".tr(),
               helperText: _helperText,
             ).applyDefaults(inputDecorationTheme()),
-            name: 'fieldIndex-${model.id}',
             options: [
               ...model.specification!.dataValues!.split(',').map((value) {
                 return FormBuilderFieldOption(value: value);
@@ -258,12 +200,13 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
             ],
             separator: const VerticalDivider(width: 10, thickness: 5),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            validator: FormBuilderValidators.compose(model.isRequired ? [FormBuilderValidators.required()] : []),
           );
         break;
       case "CheckBox2":
         if (model.specification!.dataValues != null)
           result = FormBuilderFilterChip<String>(
-            name: 'fieldIndex-${model.id}',
+            name: 'fieldName-${model.id}',
             decoration: InputDecoration(
               labelText: model.specification?.title.toString(),
               hintText: "common.hint_text_select".tr(),
@@ -280,12 +223,13 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
             checkmarkColor: kPrimaryColor,
             elevation: 6,
             spacing: 10,
+            validator: FormBuilderValidators.compose(model.isRequired ? [FormBuilderValidators.required()] : []),
           );
         break;
       case "SelectBox1":
         if (model.specification!.dataValues != null)
-          result = FormBuilderFilterChip(
-            name: 'fieldIndex-${model.id}',
+          result = FormBuilderFilterChip<String>(
+            name: 'fieldName-${model.id}',
             decoration: InputDecoration(
               labelText: model.specification?.title.toString(),
               hintText: "common.hint_text_select".tr(),
@@ -303,12 +247,13 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
             elevation: 6,
             spacing: 10,
             maxChips: 1,
+            validator: FormBuilderValidators.compose(model.isRequired ? [FormBuilderValidators.required()] : []),
           );
         break;
       case "SelectBox2":
         if (model.specification!.dataValues != null)
           result = FormBuilderFilterChip<String>(
-            name: 'fieldIndex-${model.id}',
+            name: 'fieldName-${model.id}',
             decoration: InputDecoration(
               labelText: model.specification?.title.toString(),
               hintText: "common.hint_text_select".tr(),
@@ -325,6 +270,7 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
             checkmarkColor: kPrimaryColor,
             elevation: 6,
             spacing: 10,
+            validator: FormBuilderValidators.compose(model.isRequired ? [FormBuilderValidators.required()] : []),
           );
         break;
       default:
@@ -333,19 +279,16 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
     return result;
   }
 
-  Widget _list(BuildContext context) {
-    return Center(
-      child: Text("1"),
-    );
-  }
-
   Future<void> submitFunc(BuildContext context) async {
     if (_formKey.currentState?.saveAndValidate() ?? false) {}
     final formState = _formKey.currentState;
     if (formState != null) {
       final fields = formState.fields;
       for (final field in fields.values) {
-        print(field.value);
+        print("${field.value}");
+        print("${field.widget.name}");
+        print("${field.widget.key}");
+        print("------------");
       }
     }
   }
