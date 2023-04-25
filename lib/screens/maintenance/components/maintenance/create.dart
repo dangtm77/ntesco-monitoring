@@ -12,15 +12,11 @@ import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/models/mt/SystemConfigModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:ntesco_smart_monitoring/repository/mt/systems.dart';
-
 import '../../../../components/state_widget.dart';
 import '../../../../components/top_header.dart';
 import '../../../../constants.dart';
-import '../../../../models/common/ProjectModel.dart';
 import '../../../../models/mt/SystemModel.dart';
 import '../../../../models/mt/SystemReportReplacementModel.dart';
-import '../../../../repository/common/projects.dart';
 import '../../../../repository/mt/systemConfigs.dart';
 import '../../../../size_config.dart';
 import '../../../../theme.dart';
@@ -49,7 +45,7 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
   _MaintenanceCreateBodyState(this.systemModel);
 
   late int _currentIndex;
-  late PageController _pageController;
+  late PageController _pageController = new PageController();
   final _formKey = GlobalKey<FormBuilderState>();
   late Future<SystemConfigModels> _listOfSystemConfigs;
   late List<SystemReportReplacementModel> _listOfSystemReportReplacement;
@@ -57,23 +53,15 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
 
   @override
   void initState() {
-    _getLocalStore();
+    _currentIndex = 0;
+    _pageController = PageController(initialPage: _currentIndex);
+    _listOfSystemConfigs = MaintenanceSystemConfigsRepository.getListSystemConfigs(systemModel.id);
     super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
-  }
-
-  Future<void> _getLocalStore() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _currentIndex = 0;
-      _pageController = PageController(initialPage: 0);
-      _projectCurrent = prefs.getInt('MAINTENANCE-IDPROJECT') ?? 0;
-      _listOfSystemConfigs = MaintenanceSystemConfigsRepository.getListSystemConfigs(systemModel.id);
-    });
   }
 
   @override

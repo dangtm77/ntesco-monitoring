@@ -1,8 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-import 'dart:ffi';
-import 'dart:html';
-
 class SystemReportReplacementModels {
   final int totalCount;
   final List<SystemReportReplacementModel> data;
@@ -12,10 +7,9 @@ class SystemReportReplacementModels {
   });
   factory SystemReportReplacementModels.fromJson(dynamic json) {
     return SystemReportReplacementModels(
-        totalCount: json['totalCount'],
-        data: json['data'].map<SystemReportReplacementModel>((json) {
-          return SystemReportReplacementModel.fromJson(json);
-        }).toList());
+      totalCount: json['totalCount'] as int,
+      data: json['data'].map<SystemReportReplacementModel>((json) => SystemReportReplacementModel.fromJson(json)).toList(),
+    );
   }
 }
 
@@ -26,20 +20,10 @@ class SystemReportReplacementModel {
   final String? name;
   final String? model;
   final String? unit;
-  final Float? quantity;
+  final double? quantity;
   final bool? stateOfEmergency;
   final String specifications;
-  SystemReportReplacementModel({
-    required this.id,
-    this.idSystemReport,
-    required this.code,
-    this.name,
-    this.model,
-    this.unit,
-    this.quantity,
-    this.stateOfEmergency,
-    required this.specifications,
-  });
+  SystemReportReplacementModel({required this.id, this.idSystemReport, required this.code, this.name, this.model, this.unit, this.quantity, this.stateOfEmergency, required this.specifications});
 
   factory SystemReportReplacementModel.fromJson(dynamic json) {
     return SystemReportReplacementModel(
@@ -49,7 +33,7 @@ class SystemReportReplacementModel {
       name: json['name'] as String,
       model: json['model'] as String,
       unit: json['unit'] as String,
-      quantity: json['quantity'] as Float,
+      quantity: json['quantity'] as double,
       stateOfEmergency: json['stateOfEmergency'] as bool,
       specifications: json['specifications'] as String,
     );
