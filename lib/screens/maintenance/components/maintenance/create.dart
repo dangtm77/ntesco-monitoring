@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
 import 'dart:ui';
+import 'package:http/http.dart' as http;
 
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -9,6 +11,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:ntesco_smart_monitoring/models/mt/SystemConfigModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,6 +19,7 @@ import '../../../../components/default_button.dart';
 import '../../../../components/state_widget.dart';
 import '../../../../components/top_header.dart';
 import '../../../../constants.dart';
+import '../../../../models/Login.dart';
 import '../../../../models/mt/SystemModel.dart';
 import '../../../../models/mt/SystemReportReplacementModel.dart';
 import '../../../../repository/mt/systemConfigs.dart';
@@ -45,12 +49,18 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
   final SystemModel systemModel;
   _MaintenanceCreateBodyState(this.systemModel);
 
+  late int _currentIndex;
+  late PageController _pageController = new PageController();
   final _formKey = GlobalKey<FormBuilderState>();
   late Future<SystemConfigModels> _listOfSystemConfigs;
+  late List<SystemReportReplacementModel> _listOfSystemReportReplacement;
 
   @override
   void initState() {
+    _currentIndex = 0;
+    _pageController = PageController(initialPage: _currentIndex);
     _listOfSystemConfigs = MaintenanceSystemConfigsRepository.getListSystemConfigs(systemModel.id);
+    _listOfSystemReportReplacement = [];
     super.initState();
   }
 
@@ -163,36 +173,36 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
     switch (model.specification!.dataType) {
       case "TextBox":
         result = FormBuilderTextField(
-          name: 'fieldName-${model.id}',
+          name: 'fieldIndex-${model.id}',
           decoration: InputDecoration(
             label: _label,
             hintText: "common.hint_text_input".tr(),
             helperText: _helperText,
           ).applyDefaults(inputDecorationTheme()),
-          validator: FormBuilderValidators.compose(model.isRequired ? [FormBuilderValidators.required()] : []),
+          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
         break;
       case "TextArea":
         result = FormBuilderTextField(
-          name: 'fieldName-${model.id}',
+          name: 'fieldIndex-${model.id}',
           maxLines: 5,
           decoration: InputDecoration(
             label: _label,
             hintText: "common.hint_text_input".tr(),
             helperText: _helperText,
           ).applyDefaults(inputDecorationTheme()),
-          validator: FormBuilderValidators.compose(model.isRequired ? [FormBuilderValidators.required()] : []),
+          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
         break;
       case "CheckBox1":
         if (model.specification!.dataValues != null)
           result = FormBuilderRadioGroup<String>(
-            name: 'fieldName-${model.id}',
             decoration: InputDecoration(
               labelText: model.specification?.title.toString(),
               hintText: "common.hint_text_select".tr(),
               helperText: _helperText,
             ).applyDefaults(inputDecorationTheme()),
+            name: 'fieldIndex-${model.id}',
             options: [
               ...model.specification!.dataValues!.split(',').map((value) {
                 return FormBuilderFieldOption(value: value);
@@ -200,13 +210,12 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
             ],
             separator: const VerticalDivider(width: 10, thickness: 5),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            validator: FormBuilderValidators.compose(model.isRequired ? [FormBuilderValidators.required()] : []),
           );
         break;
       case "CheckBox2":
         if (model.specification!.dataValues != null)
           result = FormBuilderFilterChip<String>(
-            name: 'fieldName-${model.id}',
+            name: 'fieldIndex-${model.id}',
             decoration: InputDecoration(
               labelText: model.specification?.title.toString(),
               hintText: "common.hint_text_select".tr(),
@@ -223,13 +232,12 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
             checkmarkColor: kPrimaryColor,
             elevation: 6,
             spacing: 10,
-            validator: FormBuilderValidators.compose(model.isRequired ? [FormBuilderValidators.required()] : []),
           );
         break;
       case "SelectBox1":
         if (model.specification!.dataValues != null)
-          result = FormBuilderFilterChip<String>(
-            name: 'fieldName-${model.id}',
+          result = FormBuilderFilterChip(
+            name: 'fieldIndex-${model.id}',
             decoration: InputDecoration(
               labelText: model.specification?.title.toString(),
               hintText: "common.hint_text_select".tr(),
@@ -247,13 +255,12 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
             elevation: 6,
             spacing: 10,
             maxChips: 1,
-            validator: FormBuilderValidators.compose(model.isRequired ? [FormBuilderValidators.required()] : []),
           );
         break;
       case "SelectBox2":
         if (model.specification!.dataValues != null)
           result = FormBuilderFilterChip<String>(
-            name: 'fieldName-${model.id}',
+            name: 'fieldIndex-${model.id}',
             decoration: InputDecoration(
               labelText: model.specification?.title.toString(),
               hintText: "common.hint_text_select".tr(),
@@ -270,7 +277,6 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
             checkmarkColor: kPrimaryColor,
             elevation: 6,
             spacing: 10,
-            validator: FormBuilderValidators.compose(model.isRequired ? [FormBuilderValidators.required()] : []),
           );
         break;
       default:
@@ -290,6 +296,28 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
         print("${field.widget.key}");
         print("------------");
       }
+
+      // SharedPreferences preferences = await SharedPreferences.getInstance();
+      // LoginResponseModel userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+      // Map<String, String> headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
+
+      // var model = {
+      //   'idSystem': '11',
+      //   'details': [],
+      // };
+
+      // var data = [
+      //   {"Key": "values", "Value": jsonEncode(model)}
+      // ];
+      // print(jsonEncode(data));
+
+      // var response = await http.post(
+      //   Uri.https(endPoint, "v2/mt/systemreports"),
+      //   headers: headerValue,
+      //   body: jsonEncode(data),
+      // );
+
+      // print(response.body);
     }
   }
 }

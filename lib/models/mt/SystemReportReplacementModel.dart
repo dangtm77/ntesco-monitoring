@@ -16,14 +16,14 @@ class SystemReportReplacementModels {
 class SystemReportReplacementModel {
   final int id;
   final int? idSystemReport;
-  final String code;
+  final String? code;
   final String? name;
   final String? model;
   final String? unit;
   final double? quantity;
   final bool? stateOfEmergency;
-  final String specifications;
-  SystemReportReplacementModel({required this.id, this.idSystemReport, required this.code, this.name, this.model, this.unit, this.quantity, this.stateOfEmergency, required this.specifications});
+  final String? specifications;
+  SystemReportReplacementModel({required this.id, this.idSystemReport, this.code, this.name, this.model, this.unit, this.quantity, this.stateOfEmergency, this.specifications});
 
   factory SystemReportReplacementModel.fromJson(dynamic json) {
     return SystemReportReplacementModel(
