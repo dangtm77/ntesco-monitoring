@@ -9,6 +9,7 @@ abstract class  LocaleKeys {
   static const login_forgot_password_button = 'login.forgot_password_button';
   static const login = 'login';
   static const validation_required = 'validation.required';
+  static const validation_required_select = 'validation.required_select';
   static const validation_string_length = 'validation.string_length';
   static const validation_pattern = 'validation.pattern';
   static const validation = 'validation';

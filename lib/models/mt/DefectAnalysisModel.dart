@@ -35,7 +35,7 @@ class DefectAnalysisModel {
   final DateTime? cncStaffConfirmDate;
   final String? cncStaffComment;
   final int status;
-  late final VariableModel statusInfo;
+  final VariableModel statusInfo;
   final bool isDelete;
   final bool isActive;
   final String? userCreate;
@@ -48,36 +48,36 @@ class DefectAnalysisModel {
   final ProjectModel project;
   DefectAnalysisModel({required this.id, required this.idSystem, required this.code, this.analysisDate, this.analysisBy, this.analysisByInfo, this.currentSuitation, this.maintenanceStaff, this.maintenanceStaffConfirmDate, this.maintenanceStaffComment, this.qcStaff, this.qcStaffConfirmDate, this.qcStaffComment, this.cncStaff, this.cncStaffConfirmDate, this.cncStaffComment, required this.status, required this.statusInfo, required this.isDelete, required this.isActive, this.userCreate, this.userUpdate, this.dateCreate, this.dateUpdate, required this.sortIndex, required this.totalDetail, required this.system, required this.project});
 
-  factory DefectAnalysisModel.fromJson(dynamic map) {
+  factory DefectAnalysisModel.fromJson(dynamic json) {
     return DefectAnalysisModel(
-      id: map['id'] as int,
-      idSystem: map['idSystem'] as int,
-      code: map['code'] as String,
-      analysisDate: map['analysisDate'] != null ? DateTime.parse(map['analysisDate']) : null,
-      analysisBy: map['analysisBy'] != null ? map['analysisBy'] as String : null,
-      analysisByInfo: map['analysisByInfo'] != null ? UserModel.fromJson(map['analysisByInfo']) : null,
-      currentSuitation: map['currentSuitation'] != null ? map['currentSuitation'] as String : null,
-      maintenanceStaff: map['maintenanceStaff'] != null ? map['maintenanceStaff'] as String : null,
-      maintenanceStaffConfirmDate: map['maintenanceStaffConfirmDate'] != null ? DateTime.parse(map['maintenanceStaffConfirmDate']) : null,
-      maintenanceStaffComment: map['maintenanceStaffComment'] != null ? map['maintenanceStaffComment'] as String : null,
-      qcStaff: map['qcStaff'] != null ? map['qcStaff'] as String : null,
-      qcStaffConfirmDate: map['qcStaffConfirmDate'] != null ? DateTime.parse(map['qcStaffConfirmDate']) : null,
-      qcStaffComment: map['qcStaffComment'] != null ? map['qcStaffComment'] as String : null,
-      cncStaff: map['cncStaff'] != null ? map['cncStaff'] as String : null,
-      cncStaffConfirmDate: map['cncStaffConfirmDate'] != null ? DateTime.parse(map['cncStaffConfirmDate']) : null,
-      cncStaffComment: map['cncStaffComment'] != null ? map['cncStaffComment'] as String : null,
-      status: map['status'] as int,
-      isDelete: map['isDelete'] as bool,
-      isActive: map['isActive'] as bool,
-      userCreate: map['userCreate'] != null ? map['userCreate'] as String : null,
-      userUpdate: map['userUpdate'] != null ? map['userUpdate'] as String : null,
-      dateCreate: map['dateCreate'] != null ? DateTime.parse(map['dateCreate']) : null,
-      dateUpdate: map['dateUpdate'] != null ? DateTime.parse(map['dateUpdate']) : null,
-      sortIndex: map['sortIndex'] as int,
-      totalDetail: map['totalDetail'] as int,
-      system: SystemModel.fromJson(map['system']),
-      project: ProjectModel.fromJson(map['project']),
-      statusInfo: VariableModel.fromJson(map['statusInfo']),
+      id: json['id'] as int,
+      idSystem: json['idSystem'] as int,
+      code: json['code'] as String,
+      analysisDate: json['analysisDate'] != null ? DateTime.parse(json['analysisDate']) : null,
+      analysisBy: json['analysisBy'] != null ? json['analysisBy'] as String : null,
+      analysisByInfo: json['analysisByInfo'] != null ? UserModel.fromJson(json['analysisByInfo']) : null,
+      currentSuitation: json['currentSuitation'] != null ? json['currentSuitation'] as String : null,
+      maintenanceStaff: json['maintenanceStaff'] != null ? json['maintenanceStaff'] as String : null,
+      maintenanceStaffConfirmDate: json['maintenanceStaffConfirmDate'] != null ? DateTime.parse(json['maintenanceStaffConfirmDate']) : null,
+      maintenanceStaffComment: json['maintenanceStaffComment'] != null ? json['maintenanceStaffComment'] as String : null,
+      qcStaff: json['qcStaff'] != null ? json['qcStaff'] as String : null,
+      qcStaffConfirmDate: json['qcStaffConfirmDate'] != null ? DateTime.parse(json['qcStaffConfirmDate']) : null,
+      qcStaffComment: json['qcStaffComment'] != null ? json['qcStaffComment'] as String : null,
+      cncStaff: json['cncStaff'] != null ? json['cncStaff'] as String : null,
+      cncStaffConfirmDate: json['cncStaffConfirmDate'] != null ? DateTime.parse(json['cncStaffConfirmDate']) : null,
+      cncStaffComment: json['cncStaffComment'] != null ? json['cncStaffComment'] as String : null,
+      status: json['status'] as int,
+      isDelete: json['isDelete'] as bool,
+      isActive: json['isActive'] as bool,
+      userCreate: json['userCreate'] != null ? json['userCreate'] as String : null,
+      userUpdate: json['userUpdate'] != null ? json['userUpdate'] as String : null,
+      dateCreate: json['dateCreate'] != null ? DateTime.parse(json['dateCreate']) : null,
+      dateUpdate: json['dateUpdate'] != null ? DateTime.parse(json['dateUpdate']) : null,
+      sortIndex: json['sortIndex'] as int,
+      totalDetail: json['totalDetail'] as int,
+      system: SystemModel.fromJson(json['system']),
+      project: ProjectModel.fromJson(json['project']),
+      statusInfo: VariableModel.fromJson(json['statusInfo']),
     );
   }
 }

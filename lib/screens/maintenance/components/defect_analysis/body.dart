@@ -122,7 +122,7 @@ class _BodyPageState extends State<Body> {
       searchGroupFilterOptions.add(['project.name', 'contains', _keyword]);
       filterOptions.add(searchGroupFilterOptions);
     }
-    print(jsonEncode(filterOptions));
+
     LoadOptionsModel options = new LoadOptionsModel(take: itemPerPage * pageIndex, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
     Response response = await Maintenance.DefectAnalysis_GetList(options.toMap());
     if (response.statusCode >= 200 && response.statusCode <= 299) {
@@ -466,34 +466,35 @@ class _BodyPageState extends State<Body> {
                         horizontal: getProportionateScreenWidth(0.0),
                       ),
                       child: AnimationLimiter(
-                          child: GroupedListView<dynamic, String>(
-                        elements: snapshot.data!.data,
-                        groupBy: (element) => "${element.project.name} (${element.project.customer})",
-                        groupSeparatorBuilder: (String value) => Container(
-                          width: MediaQuery.of(context).size.width,
-                          color: kPrimaryColor,
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
-                            child: Text(
-                              value,
-                              textAlign: TextAlign.left,
-                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+                        child: GroupedListView<dynamic, String>(
+                          elements: snapshot.data!.data,
+                          groupBy: (element) => "${element.system.name}" + (element.system.otherName != null ? " (${element.system.otherName})" : ""),
+                          groupSeparatorBuilder: (String value) => Container(
+                            width: MediaQuery.of(context).size.width,
+                            color: kPrimaryColor,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
+                              child: Text(
+                                value,
+                                textAlign: TextAlign.left,
+                                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+                              ),
                             ),
                           ),
+                          itemBuilder: (BuildContext context, dynamic item) {
+                            return AnimationConfiguration.staggeredList(
+                              position: 0,
+                              duration: const Duration(milliseconds: 400),
+                              child: SlideAnimation(
+                                child: FadeInAnimation(child: _item(item)),
+                              ),
+                            );
+                          },
+                          separator: Divider(thickness: 1),
+                          floatingHeader: false,
+                          useStickyGroupSeparators: true,
                         ),
-                        itemBuilder: (BuildContext context, dynamic item) {
-                          return AnimationConfiguration.staggeredList(
-                            position: 0,
-                            duration: const Duration(milliseconds: 400),
-                            child: SlideAnimation(
-                              child: FadeInAnimation(child: _item(item)),
-                            ),
-                          );
-                        },
-                        separator: Divider(thickness: 1),
-                        floatingHeader: false,
-                        useStickyGroupSeparators: true,
-                      )),
+                      ),
                     );
                   },
                 ),
@@ -580,15 +581,14 @@ class _BodyPageState extends State<Body> {
               //TextSpan(text: "Mã hiệu: ", style: TextStyle(color: kTextColor)),
               TextSpan(text: "${item.code}", style: TextStyle(color: kPrimaryColor)),
               WidgetSpan(child: SizedBox(width: 5.0)),
+              // TextSpan(text: " | ", style: TextStyle(color: kPrimaryColor)),
+              // WidgetSpan(child: SizedBox(width: 5.0)),
+              // TextSpan(text: "Hệ thống: ", style: TextStyle(color: kTextColor)),
+              // TextSpan(text: "${item.system.name}", style: TextStyle(color: kPrimaryColor)),
+              // WidgetSpan(child: SizedBox(width: 5.0)),
               TextSpan(text: " | ", style: TextStyle(color: kPrimaryColor)),
               WidgetSpan(child: SizedBox(width: 5.0)),
-              TextSpan(text: "Hệ thống: ", style: TextStyle(color: kTextColor)),
-              TextSpan(text: "${item.system.name}", style: TextStyle(color: kPrimaryColor)),
-              WidgetSpan(child: SizedBox(width: 5.0)),
-              TextSpan(text: " | ", style: TextStyle(color: kPrimaryColor)),
-              WidgetSpan(child: SizedBox(width: 5.0)),
-              TextSpan(text: "Có ", style: TextStyle(color: kTextColor)),
-              TextSpan(text: "${item.totalDetail} sự cố", style: TextStyle(color: kPrimaryColor)),
+              TextSpan(text: item.totalDetail > 0 ? "Đang có ${item.totalDetail} sự cố" : "Chưa có thông tin sự cố nào", style: TextStyle(color: kTextColor)),
             ],
           )),
           SizedBox(height: 5.0),

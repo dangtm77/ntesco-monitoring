@@ -24,9 +24,10 @@ class CodegenLoader extends AssetLoader{
     "forgot_password_button": "Forgot Password?"
   },
   "validation": {
-    "required": "Please enter your {}",
-    "string_length": "{} must have at least {} symbols",
-    "pattern": "{} invalid"
+    "required": "This field cannot be empty, please input information",
+    "required_select": "This field cannot be empty, please select information",
+    "string_length": "This field must have at least {length} symbols",
+    "pattern": "This field invalid"
   },
   "menu": {
     "home": "Home",
@@ -90,9 +91,10 @@ static const Map<String,dynamic> vi_VN = {
     "forgot_password_button": "Bạn quên mật khẩu?"
   },
   "validation": {
-    "required": "Vui lòng nhập {}",
-    "string_length": "{} phải có ít nhất {} ký hiệu",
-    "pattern": "{} không hợp lệ"
+    "required": "Trường này không được bỏ trống, vui lòng nhập thông tin",
+    "required_select": "Trường này không được bỏ trống, vui lòng chọn thông tin",
+    "string_length": "Trường này phải có ít nhất {length} ký tự",
+    "pattern": "Trường này không hợp lệ"
   },
   "menu": {
     "home": "Trang chủ",

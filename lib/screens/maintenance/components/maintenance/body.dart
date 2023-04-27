@@ -10,6 +10,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:http/http.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:ntesco_smart_monitoring/components/default_button.dart';
@@ -42,23 +43,24 @@ class _BodyPageState extends State<Body> {
   late int pageIndex = 1;
   late int itemPerPage = 15;
   late bool _isLoading = false;
+
   late TextEditingController _keywordForSearchEditingController = TextEditingController();
+
   late int _projectCurrent = 0;
   late Future<SystemReportModels> _listOfSystemReports;
 
   @override
   void initState() {
+    _keywordForSearchEditingController.text = "";
     super.initState();
     checkConnectivity(null);
     subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) => checkConnectivity(result));
   }
 
   Future<void> checkConnectivity(ConnectivityResult? result) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     Util.checkConnectivity(result, (status) {
       setState(() {
         isOnline = status;
-        _projectCurrent = prefs.getInt('MAINTENANCE-IDPROJECT') ?? 0;
         _isLoading = false;
         _listOfSystemReports = _getlistOfSystemReports();
       });
@@ -69,17 +71,37 @@ class _BodyPageState extends State<Body> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _projectCurrent = prefs.getInt('MAINTENANCE-IDPROJECT') ?? 0;
 
-    List<dynamic> sortOptions = [];
+    List<dynamic> sortOptions = [
+      //{"selector": "dateCreate", "desc": "true"}
+    ];
     List<dynamic> filterOptions = [];
-    // //FILTER BY PROJECT
-    // List<dynamic> projectsFilterOptions = [];
-    // projectsFilterOptions.add(['idProject', '=', _projectCurrent]);
-    // if (projectsFilterOptions.length > 0) {
-    //   if (filterOptions.length > 0) filterOptions.add('and');
-    //   if (projectsFilterOptions.length > 0) filterOptions.add(projectsFilterOptions);
-    // }
+    //FILTER BY PROJECT
+    List<dynamic> projectsFilterOptions = [];
+    projectsFilterOptions.add(['system.idProject', '=', _projectCurrent]);
+    if (projectsFilterOptions.length > 0) {
+      if (filterOptions.length > 0) filterOptions.add('and');
+      if (projectsFilterOptions.length > 0) filterOptions.add(projectsFilterOptions);
+    }
+    //FILTER BY KEYWORD
+    if (_keywordForSearchEditingController.text.isNotEmpty && _keywordForSearchEditingController.text.trim().length > 3) {
+      List<dynamic> searchGroupFilterOptions = [];
+      String _keyword = _keywordForSearchEditingController.text.trim().toString();
+      if (filterOptions.length > 0) filterOptions.add('and');
+      searchGroupFilterOptions.add(['code', 'contains', _keyword]);
+      searchGroupFilterOptions.add('or');
+      searchGroupFilterOptions.add(['system.name', 'contains', _keyword]);
+      searchGroupFilterOptions.add('or');
+      searchGroupFilterOptions.add(['system.code', 'contains', _keyword]);
+      // searchGroupFilterOptions.add('or');
+      // searchGroupFilterOptions.add(['project.code', 'contains', _keyword]);
+      // searchGroupFilterOptions.add('or');
+      // searchGroupFilterOptions.add(['project.contractNo', 'contains', _keyword]);
+      // searchGroupFilterOptions.add('or');
+      // searchGroupFilterOptions.add(['project.name', 'contains', _keyword]);
+      filterOptions.add(searchGroupFilterOptions);
+    }
 
-    LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+    LoadOptionsModel options = new LoadOptionsModel(take: itemPerPage * pageIndex, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
     Response response = await Maintenance.SystemReports_GetList(options.toMap());
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       SystemReportModels result = SystemReportModels.fromJson(jsonDecode(response.body));
@@ -124,6 +146,26 @@ class _BodyPageState extends State<Body> {
             _header(context),
             isOnline ? _searchBar(context) : SizedBox.shrink(),
             _listAll(context),
+            Container(
+              height: _isLoading ? 30.0 : 0,
+              color: Colors.transparent,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      child: CircularProgressIndicator(
+                        color: kPrimaryColor,
+                      ),
+                      height: 10.0,
+                      width: 10.0,
+                    ),
+                    SizedBox(width: 10.0),
+                    Text("Đang tải thêm $itemPerPage dòng dữ liệu...")
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -146,7 +188,7 @@ class _BodyPageState extends State<Body> {
         enableFeedback: true,
         color: (_projectCurrent != 0) ? kPrimaryColor : Colors.grey,
         icon: Icon(Icons.addchart_outlined, size: 30.0),
-        onPressed: () => (_projectCurrent != 0) ? showModalBottomSheet(context: context, builder: (context) => _selectSystemForCreate(context)) : null,
+        onPressed: () => (_projectCurrent != 0) ? showModalBottomSheet(context: context, builder: (_) => _selectSystemForCreate(_)) : null,
       ),
     );
   }
@@ -298,8 +340,9 @@ class _BodyPageState extends State<Body> {
               onNotification: (ScrollNotification scrollInfo) {
                 if (!_isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
                   setState(() {
-                    _isLoading = false;
+                    pageIndex = pageIndex + 1;
                     _listOfSystemReports = _getlistOfSystemReports();
+                    _isLoading = true;
                   });
                 }
                 return true;
@@ -307,6 +350,7 @@ class _BodyPageState extends State<Body> {
               child: RefreshIndicator(
                 onRefresh: () async {
                   setState(() {
+                    pageIndex = pageIndex + 1;
                     _isLoading = false;
                     _listOfSystemReports = _getlistOfSystemReports();
                   });
@@ -316,19 +360,7 @@ class _BodyPageState extends State<Body> {
                   builder: (BuildContext context, AsyncSnapshot<SystemReportModels> snapshot) {
                     if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
                     if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !_isLoading) return LoadingWidget();
-                    if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty))
-                      return NoDataWidget(
-                        subtitle: "Vui lòng kiểm tra lại điều kiện lọc hoặc liên hệ trực tiếp đến quản trị viên...",
-                        button: DefaultButton(
-                          text: "Tải lại",
-                          press: () {
-                            setState(() {
-                              _isLoading = false;
-                              _listOfSystemReports = _getlistOfSystemReports();
-                            });
-                          },
-                        ),
-                      );
+                    if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty)) return NoDataWidget(subtitle: "Vui lòng kiểm tra lại điều kiện lọc hoặc liên hệ trực tiếp đến quản trị viên...");
 
                     return Padding(
                       padding: EdgeInsets.symmetric(
@@ -336,41 +368,96 @@ class _BodyPageState extends State<Body> {
                         horizontal: getProportionateScreenWidth(0.0),
                       ),
                       child: AnimationLimiter(
-                          child: GroupedListView<dynamic, String>(
-                        elements: snapshot.data!.data,
-                        //groupBy: (element) => "${element.project.name} (${element.project.customer})",
-                        groupBy: (element) => "${element.idSystem}",
-                        groupSeparatorBuilder: (String value) => Container(
-                          width: MediaQuery.of(context).size.width,
-                          color: kPrimaryColor,
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
-                            child: Text(
-                              value,
-                              textAlign: TextAlign.left,
-                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+                        child: GroupedListView<dynamic, String>(
+                          elements: snapshot.data!.data,
+                          groupBy: (element) => "${element.system.name}" + (element.system.otherName != null ? " (${element.system.otherName})" : ""),
+                          groupSeparatorBuilder: (String value) => Container(
+                            width: MediaQuery.of(context).size.width,
+                            color: kPrimaryColor,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
+                              child: Text(value, textAlign: TextAlign.left, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
                             ),
                           ),
+                          itemBuilder: (BuildContext context, dynamic item) {
+                            return AnimationConfiguration.staggeredList(
+                              position: 0,
+                              duration: const Duration(milliseconds: 400),
+                              child: SlideAnimation(
+                                child: FadeInAnimation(child: _item(item)),
+                              ),
+                            );
+                          },
+                          separator: Divider(thickness: 1),
+                          floatingHeader: false,
+                          useStickyGroupSeparators: true,
                         ),
-                        itemBuilder: (BuildContext context, dynamic item) {
-                          return AnimationConfiguration.staggeredList(
-                            position: 0,
-                            duration: const Duration(milliseconds: 400),
-                            child: SlideAnimation(
-                              child: FadeInAnimation(child: Text(item.code)),
-                            ),
-                          );
-                        },
-                        separator: Divider(thickness: 1),
-                        floatingHeader: false,
-                        useStickyGroupSeparators: true,
-                      )),
+                      ),
                     );
                   },
                 ),
               ),
             )
           : NoConnectionWidget(),
+    );
+  }
+
+  Widget _item(SystemReportModel item) {
+    return ListTile(
+      onTap: () => showCupertinoModalBottomSheet(
+        context: context,
+        builder: (_) => Material(
+          child: SafeArea(
+            top: true,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[],
+            ),
+          ),
+        ),
+      ),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text.rich(TextSpan(
+            style: TextStyle(fontSize: 15, fontStyle: FontStyle.normal),
+            children: [
+              TextSpan(text: "${item.code}", style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold)),
+              // TextSpan(text: " | ", style: TextStyle(color: kPrimaryColor)),
+              // WidgetSpan(child: SizedBox(width: 5.0)),
+              // TextSpan(text: "Hệ thống: ", style: TextStyle(color: kTextColor)),
+              // TextSpan(text: "${item.system.name}", style: TextStyle(color: kPrimaryColor)),
+              // WidgetSpan(child: SizedBox(width: 5.0)),
+
+              TextSpan(text: " | Tình Trạng ${item.statusInfo.text} ", style: TextStyle(color: kTextColor)),
+              TextSpan(text: item.typeInfo != null ? " | Loại dịch vụ ${item.typeInfo?.text} " : "", style: TextStyle(color: kTextColor)),
+            ],
+          )),
+          SizedBox(height: 5.0),
+          Text.rich(TextSpan(
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal),
+            children: [
+              WidgetSpan(child: Icon(Icons.tag, size: 18, color: kTextColor)),
+              WidgetSpan(child: SizedBox(width: 3.0)),
+              TextSpan(text: "${item.id}", style: TextStyle(color: kTextColor)),
+              WidgetSpan(child: SizedBox(width: 15.0)),
+
+              // WidgetSpan(child: Icon(Icons.label_important_rounded, size: 18, color: kTextColor)),
+              // WidgetSpan(child: SizedBox(width: 5.0)),
+              // TextSpan(text: "${item.statusInfo.text}", style: TextStyle(color: kTextColor)),
+              // WidgetSpan(child: SizedBox(width: 15.0)),
+
+              WidgetSpan(child: Icon(Icons.person_add_alt_1, size: 18, color: kTextColor)),
+              WidgetSpan(child: SizedBox(width: 5.0)),
+              TextSpan(text: "${item.staffInfo.hoTen}", style: TextStyle(color: kTextColor)),
+              WidgetSpan(child: SizedBox(width: 15.0)),
+              WidgetSpan(child: Icon(Icons.calendar_month, size: 18, color: kTextColor)),
+              WidgetSpan(child: SizedBox(width: 5.0)),
+              TextSpan(text: "${DateFormat("hh:mm dd/MM/yyyy").format(item.dateCreate!)}", style: TextStyle(color: kTextColor)),
+            ],
+          )),
+        ],
+      ),
     );
   }
 
@@ -389,7 +476,7 @@ class _BodyPageState extends State<Body> {
           Expanded(
             child: FutureBuilder<SystemModels>(
               future: _listOfSystems,
-              builder: (BuildContext context, AsyncSnapshot<SystemModels> snapshot) {
+              builder: (BuildContext _, AsyncSnapshot<SystemModels> snapshot) {
                 if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
                 if (snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) return LoadingWidget();
                 if (!snapshot.hasData && !snapshot.data!.data.isNotEmpty) return NoDataWidget();
@@ -411,7 +498,19 @@ class _BodyPageState extends State<Body> {
                         trailing: Icon(Ionicons.arrow_forward, color: kSecondaryColor, size: 18.0),
                         onTap: () {
                           Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => MaintenanceCreateScreen(systemModel: element)));
+                          showCupertinoModalBottomSheet(
+                            context: context,
+                            builder: (context) => MaintenanceCreateScreen(systemModel: element),
+                            isDismissible: false,
+                            enableDrag: false,
+                          ).then((value) {
+                            setState(() {
+                              pageIndex = pageIndex + 1;
+                              _isLoading = false;
+                              _listOfSystemReports = _getlistOfSystemReports();
+                            });
+                          });
+                          //Navigator.push(context, MaterialPageRoute(builder: (context) => MaintenanceCreateScreen(systemModel: element)));
                         },
                       );
                     }, // optional

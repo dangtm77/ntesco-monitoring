@@ -8,9 +8,10 @@
     "forgot_password_button": "Forgot Password?"
   },
   "validation": {
-    "required": "Please enter your {}",
-    "string_length": "{} must have at least {} symbols",
-    "pattern": "{} invalid"
+    "required": "This field cannot be empty, please input information",
+    "required_select": "This field cannot be empty, please select information",
+    "string_length": "This field must have at least {length} symbols",
+    "pattern": "This field invalid"
   },
   "menu": {
     "home": "Home",

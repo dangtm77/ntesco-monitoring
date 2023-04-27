@@ -90,7 +90,7 @@ class _SignFormState extends State<SignForm> {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (value) {
         if (value!.isEmpty) {
-          return "validation.required".tr(args: [("login.username_label".tr())]);
+          return "validation.required".tr();
         }
         return null;
       },
@@ -116,7 +116,7 @@ class _SignFormState extends State<SignForm> {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (value) {
         if (value!.isEmpty) {
-          return "validation.required".tr(args: [("login.password_label".tr())]);
+          return "validation.required".tr();
         } else
           return null;
       },

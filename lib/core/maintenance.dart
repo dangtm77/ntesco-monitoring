@@ -62,3 +62,4 @@ Future<http.Response> DefectAnalysisDetails_WithFileDinhKem_Create(dynamic body)
 Future<http.Response> DefectAnalysisDetails_WithFileDinhKem_Delete(int key) async => Core.delete(key, API_DEFECTANALYSISDETAILS_WITH_FILEDINHKEM);
 //--------------------------SYSTEM REPORT--------------------------//
 Future<http.Response> SystemReports_GetList(dynamic options) async => Core.get(options, API_SYSTEM_REPORTS);
+Future<http.Response> SystemReports_Create(dynamic body) async => Core.post(body, API_SYSTEM_REPORTS);
