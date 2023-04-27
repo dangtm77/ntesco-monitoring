@@ -506,7 +506,7 @@ class _BodyPageState extends State<Body> {
 
   Widget _item(DefectAnalysisModel item) {
     return ListTile(
-      onTap: () => showCupertinoModalBottomSheet(
+      onTap: () => showBarModalBottomSheet(
         context: context,
         builder: (_) => Material(
           child: SafeArea(
@@ -581,14 +581,9 @@ class _BodyPageState extends State<Body> {
               //TextSpan(text: "Mã hiệu: ", style: TextStyle(color: kTextColor)),
               TextSpan(text: "${item.code}", style: TextStyle(color: kPrimaryColor)),
               WidgetSpan(child: SizedBox(width: 5.0)),
-              // TextSpan(text: " | ", style: TextStyle(color: kPrimaryColor)),
-              // WidgetSpan(child: SizedBox(width: 5.0)),
-              // TextSpan(text: "Hệ thống: ", style: TextStyle(color: kTextColor)),
-              // TextSpan(text: "${item.system.name}", style: TextStyle(color: kPrimaryColor)),
-              // WidgetSpan(child: SizedBox(width: 5.0)),
               TextSpan(text: " | ", style: TextStyle(color: kPrimaryColor)),
               WidgetSpan(child: SizedBox(width: 5.0)),
-              TextSpan(text: item.totalDetail > 0 ? "Đang có ${item.totalDetail} sự cố" : "Chưa có thông tin sự cố nào", style: TextStyle(color: kTextColor)),
+              TextSpan(text: "${item.statusInfo.text}", style: TextStyle(color: item.status != 0 ? kPrimaryColor : kWarningColor)),
             ],
           )),
           SizedBox(height: 5.0),
@@ -596,20 +591,20 @@ class _BodyPageState extends State<Body> {
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal),
             children: [
               WidgetSpan(child: Icon(Icons.tag, size: 18, color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 3.0)),
+              WidgetSpan(child: SizedBox(width: 2.0)),
               TextSpan(text: "${item.id}", style: TextStyle(color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 15.0)),
               WidgetSpan(child: Icon(Icons.label_important_rounded, size: 18, color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 5.0)),
-              TextSpan(text: "${item.statusInfo.text}", style: TextStyle(color: kTextColor)),
+              WidgetSpan(child: SizedBox(width: 2.0)),
+              TextSpan(text: "Đang có ${item.totalDetail} sự cố", style: TextStyle(color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 15.0)),
               WidgetSpan(child: Icon(Icons.person_add_alt_1, size: 18, color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 5.0)),
+              WidgetSpan(child: SizedBox(width: 2.0)),
               TextSpan(text: "${item.analysisByInfo!.hoTen}", style: TextStyle(color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 15.0)),
               WidgetSpan(child: Icon(Icons.calendar_month, size: 18, color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 5.0)),
-              TextSpan(text: "${DateFormat("hh:mm dd/MM/yyyy").format(item.analysisDate!)}", style: TextStyle(color: kTextColor)),
+              WidgetSpan(child: SizedBox(width: 2.0)),
+              TextSpan(text: "${DateFormat("hh:mm dd/MM/yy").format(item.analysisDate!)}", style: TextStyle(color: kTextColor)),
             ],
           )),
         ],

@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import '../common/ProjectModel.dart';
 import '../common/UserModel.dart';
 import '../common/VariableModel.dart';
 import 'SystemModel.dart';
@@ -23,6 +24,8 @@ class SystemReportModels {
 
 class SystemReportModel {
   final int id;
+  final int idProject;
+  final ProjectModel project;
   final int idSystem;
   final SystemModel system;
   final String? code;
@@ -41,6 +44,8 @@ class SystemReportModel {
 
   SystemReportModel({
     required this.id,
+    required this.idProject,
+    required this.project,
     required this.idSystem,
     required this.system,
     this.code,
@@ -59,6 +64,8 @@ class SystemReportModel {
   factory SystemReportModel.fromJson(dynamic json) {
     return SystemReportModel(
       id: json['id'] as int,
+      idProject: json['idProject'] as int,
+      project: ProjectModel.fromJson(json['project']),
       idSystem: json['idSystem'] as int,
       system: SystemModel.fromJson(json['system']),
       code: json['code'] as String,

@@ -2,7 +2,10 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:awesome_select/awesome_select.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:bmprogresshud/bmprogresshud.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +32,7 @@ import '../../../../repository/mt/systems.dart';
 import '../../../../size_config.dart';
 import '../../../home/home_screen.dart';
 import 'create.dart';
+import 'update.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -404,14 +408,40 @@ class _BodyPageState extends State<Body> {
 
   Widget _item(SystemReportModel item) {
     return ListTile(
-      onTap: () => showCupertinoModalBottomSheet(
+      onTap: () => showBarModalBottomSheet(
         context: context,
         builder: (_) => Material(
           child: SafeArea(
             top: true,
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: <Widget>[],
+              children: <Widget>[
+                ListTile(
+                  trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
+                  title: Row(
+                    children: [
+                      Icon(Ionicons.create_outline, color: kPrimaryColor),
+                      SizedBox(width: 10.0),
+                      Text('Xem & chỉnh sửa thông tin', style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.pushNamed(context, MaintenanceUpdateScreen.routeName, arguments: {'id': item.id, 'tabIndex': 0});
+                  },
+                ),
+                ListTile(
+                  trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
+                  title: Row(
+                    children: [
+                      Icon(Ionicons.trash_bin_outline, color: Colors.red),
+                      SizedBox(width: 10.0),
+                      Text('Hủy bỏ thông tin', style: TextStyle(color: Colors.red, fontSize: 18)),
+                    ],
+                  ),
+                  onTap: () => deleteFunc(item.id),
+                ),
+              ],
             ),
           ),
         ),
@@ -423,14 +453,11 @@ class _BodyPageState extends State<Body> {
             style: TextStyle(fontSize: 15, fontStyle: FontStyle.normal),
             children: [
               TextSpan(text: "${item.code}", style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold)),
-              // TextSpan(text: " | ", style: TextStyle(color: kPrimaryColor)),
-              // WidgetSpan(child: SizedBox(width: 5.0)),
-              // TextSpan(text: "Hệ thống: ", style: TextStyle(color: kTextColor)),
-              // TextSpan(text: "${item.system.name}", style: TextStyle(color: kPrimaryColor)),
-              // WidgetSpan(child: SizedBox(width: 5.0)),
-
-              TextSpan(text: " | Tình Trạng ${item.statusInfo.text} ", style: TextStyle(color: kTextColor)),
-              TextSpan(text: item.typeInfo != null ? " | Loại dịch vụ ${item.typeInfo?.text} " : "", style: TextStyle(color: kTextColor)),
+              WidgetSpan(child: SizedBox(width: 5.0)),
+              TextSpan(text: " | ", style: TextStyle(color: kPrimaryColor)),
+              WidgetSpan(child: SizedBox(width: 5.0)),
+              TextSpan(text: "${item.statusInfo.text}", style: TextStyle(color: item.status == 0 ? kWarningColor : kPrimaryColor)),
+              WidgetSpan(child: SizedBox(width: 5.0)),
             ],
           )),
           SizedBox(height: 5.0),
@@ -438,22 +465,20 @@ class _BodyPageState extends State<Body> {
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal),
             children: [
               WidgetSpan(child: Icon(Icons.tag, size: 18, color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 3.0)),
+              WidgetSpan(child: SizedBox(width: 2.0)),
               TextSpan(text: "${item.id}", style: TextStyle(color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 15.0)),
-
-              // WidgetSpan(child: Icon(Icons.label_important_rounded, size: 18, color: kTextColor)),
-              // WidgetSpan(child: SizedBox(width: 5.0)),
-              // TextSpan(text: "${item.statusInfo.text}", style: TextStyle(color: kTextColor)),
-              // WidgetSpan(child: SizedBox(width: 15.0)),
-
+              WidgetSpan(child: Icon(Icons.label_important_rounded, size: 18, color: kTextColor)),
+              WidgetSpan(child: SizedBox(width: 2.0)),
+              TextSpan(text: "${item.typeInfo?.text ?? "Chưa xác định"}", style: TextStyle(color: kTextColor)),
+              WidgetSpan(child: SizedBox(width: 15.0)),
               WidgetSpan(child: Icon(Icons.person_add_alt_1, size: 18, color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 5.0)),
+              WidgetSpan(child: SizedBox(width: 2.0)),
               TextSpan(text: "${item.staffInfo.hoTen}", style: TextStyle(color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 15.0)),
               WidgetSpan(child: Icon(Icons.calendar_month, size: 18, color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 5.0)),
-              TextSpan(text: "${DateFormat("hh:mm dd/MM/yyyy").format(item.dateCreate!)}", style: TextStyle(color: kTextColor)),
+              WidgetSpan(child: SizedBox(width: 2.0)),
+              TextSpan(text: "${DateFormat("hh:mm dd/MM/yy").format(item.dateCreate!)}", style: TextStyle(color: kTextColor)),
             ],
           )),
         ],
@@ -523,5 +548,35 @@ class _BodyPageState extends State<Body> {
         ],
       ),
     );
+  }
+
+  Future<void> deleteFunc(key) async {
+    Navigator.of(context).pop();
+    showOkCancelAlertDialog(
+      context: context,
+      title: "XÁC NHẬN THÔNG TIN",
+      message: "Bạn có chắc chắn là muốn xóa bỏ thông tin này không?",
+      okLabel: "Xóa bỏ",
+      cancelLabel: "Đóng lại",
+      isDestructiveAction: true,
+    ).then((result) async {
+      if (result == OkCancelResult.ok) {
+        ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
+        await Maintenance.DefectAnalysis_Delete(key).then((response) {
+          if (response.statusCode >= 200 && response.statusCode <= 299) {
+            ProgressHud.of(context)?.dismiss();
+            Util.showNotification(context, null, "Hủy bỏ thông tin thành công", ContentType.success, 3);
+            setState(() {
+              _isLoading = false;
+              _listOfSystemReports = _getlistOfSystemReports();
+            });
+          } else
+            Util.showNotification(context, null, response.body, ContentType.failure, 5);
+        }).catchError((error, stackTrace) {
+          ProgressHud.of(context)?.dismiss();
+          Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
+        });
+      }
+    });
   }
 }

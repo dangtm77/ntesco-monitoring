@@ -11,6 +11,8 @@ const kPrimaryLightColor = Color.fromARGB(255, 83, 176, 247);
 const kSecondaryColor = Colors.black87;
 const kTextColor = Color(0xFF757575);
 
+const kWarningColor = Colors.deepOrange;
+
 const kAnimationDuration = Duration(milliseconds: 200);
 
 // final headingStyle = TextStyle(

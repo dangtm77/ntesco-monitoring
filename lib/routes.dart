@@ -9,6 +9,7 @@ import 'package:ntesco_smart_monitoring/screens/maintenance/maintenance_screen.d
 import 'package:ntesco_smart_monitoring/screens/signin/signin_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/splash/splash_screen.dart';
 import 'screens/maintenance/components/defect_analysis/update.dart';
+import 'screens/maintenance/components/maintenance/update.dart';
 
 // We use name route
 // All our routes will be available here
@@ -25,4 +26,5 @@ final Map<String, WidgetBuilder> routes = {
   DefectAnalysisScreen.routeName: (context) => DefectAnalysisScreen(),
   DefectAnalysisUpdateScreen.routeName: (context) => DefectAnalysisUpdateScreen(),
   DefectAnalysisDetailsUpdateScreen.routeName: (context) => DefectAnalysisDetailsUpdateScreen(),
+  MaintenanceUpdateScreen.routeName: (context) => MaintenanceUpdateScreen(),
 };
