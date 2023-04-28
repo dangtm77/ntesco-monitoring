@@ -19,8 +19,8 @@ import '../../../../components/top_header.dart';
 import '../../../../constants.dart';
 import '../../../../helper/string.dart';
 import '../../../../models/mt/SystemModel.dart';
-import '../../../../models/mt/SystemReportReplacementModel.dart';
-import '../../../../repository/mt/systemConfigs.dart';
+import '../../../../models/mt/SystemReportReplacementsModel.dart';
+import '../../../../repository/mt/system_configs.dart';
 import '../../../../size_config.dart';
 import '../../../../theme.dart';
 
@@ -51,7 +51,7 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
   late PageController _pageController = new PageController();
   final _formKey = GlobalKey<FormBuilderState>();
   late Future<SystemConfigModels> _listOfSystemConfigs;
-  late List<SystemReportReplacementModel> _listOfSystemReportReplacement;
+  late List<SystemReportReplacementsModel> _listOfSystemReportReplacement;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -222,7 +222,7 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
             name: 'fieldSub-${model.id}',
             decoration: InputDecoration(
               label: _label,
-              hintText: "common.hint_text_input".tr(),
+              hintText: "common.text_hint_input".tr(),
               helperText: _helperText,
             ).applyDefaults(inputDecorationTheme()),
             validator: (model.isRequired) ? FormBuilderValidators.compose([FormBuilderValidators.required(errorText: "validation.required".tr())]) : null,
@@ -234,7 +234,7 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
             maxLines: 5,
             decoration: InputDecoration(
               label: _label,
-              hintText: "common.hint_text_input".tr(),
+              hintText: "common.text_input_hint".tr(),
               helperText: _helperText,
             ).applyDefaults(inputDecorationTheme()),
             validator: (model.isRequired) ? FormBuilderValidators.compose([FormBuilderValidators.required(errorText: "validation.required".tr())]) : null,

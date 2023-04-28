@@ -25,8 +25,9 @@ import 'package:ntesco_smart_monitoring/size_config.dart';
 
 import '../../../../../components/photoview_gallery.dart';
 import '../../../../../models/mt/DefectAnalysisDetailsModel.dart';
-import '../details/create.dart';
-import '../details/update.dart';
+import '../../../../../repository/mt/defect_analysis_details.dart';
+import 'details/create.dart';
+import 'details/update.dart';
 
 class DetailsPageView extends StatefulWidget {
   final int id;
@@ -46,29 +47,18 @@ class _DetailsPageViewState extends State<DetailsPageView> {
   late bool isLoading = false;
   late Future<DefectAnalysisDetailsModels> _listOfDefectAnalysisDetails;
 
-  Future<DefectAnalysisDetailsModels> _getListDefectAnalysisDetails() async {
-    try {
-      List<dynamic> sortOptions = [];
-      List<dynamic> filterOptions = [];
-      LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
-      Response response = await Maintenance.DefectAnalysisDetails_GetList(model.id, options.toMap());
-      if (response.statusCode >= 200 && response.statusCode <= 299) {
-        DefectAnalysisDetailsModels result = DefectAnalysisDetailsModels.fromJson(jsonDecode(response.body));
-        setState(() {
-          isLoading = false;
-        });
-        return result;
-      } else
-        throw Exception(response.body);
-    } catch (ex) {
-      throw ex;
-    }
-  }
-
   @override
   void initState() {
-    _listOfDefectAnalysisDetails = _getListDefectAnalysisDetails();
+    isLoading = false;
+    _listOfDefectAnalysisDetails = MaintenanceDefectAnalysisDetailsRepository.getList(model.id, null);
     super.initState();
+  }
+
+  Future<void> _refresh() async {
+    setState(() {
+      isLoading = false;
+      _listOfDefectAnalysisDetails = MaintenanceDefectAnalysisDetailsRepository.getList(model.id, null);
+    });
   }
 
   @override
@@ -78,12 +68,7 @@ class _DetailsPageViewState extends State<DetailsPageView> {
         children: [
           Expanded(
             child: RefreshIndicator(
-              onRefresh: () async {
-                setState(() {
-                  isLoading = false;
-                  _listOfDefectAnalysisDetails = _getListDefectAnalysisDetails();
-                });
-              },
+              onRefresh: _refresh,
               child: FutureBuilder<DefectAnalysisDetailsModels>(
                 future: _listOfDefectAnalysisDetails,
                 builder: (BuildContext context, AsyncSnapshot<DefectAnalysisDetailsModels> snapshot) {
@@ -123,15 +108,11 @@ class _DetailsPageViewState extends State<DetailsPageView> {
             child: Center(
               child: DefaultButton(
                 text: 'THÊM THÔNG TIN SỰ CỐ',
+                icon: Icons.post_add_sharp,
                 press: () => showCupertinoModalBottomSheet(
                   context: context,
                   builder: (context) => DefectAnalysisDetailsCreateScreen(id: id),
-                ).then((value) {
-                  setState(() {
-                    isLoading = false;
-                    _listOfDefectAnalysisDetails = _getListDefectAnalysisDetails();
-                  });
-                }),
+                ).then((value) async => _refresh),
               ),
             ),
           )
@@ -144,7 +125,7 @@ class _DetailsPageViewState extends State<DetailsPageView> {
     List<String> imagesList = (item.pictures != null && item.pictures!.length > 0) ? item.pictures!.map((e) => Common.System_DowloadFile_ByID(e.id, 'view')).toList() : [urlNoImage];
 
     return ListTile(
-      onTap: () => showCupertinoModalBottomSheet(
+      onTap: () => showBarModalBottomSheet(
         context: context,
         builder: (_) => Material(
           child: SafeArea(
@@ -282,13 +263,10 @@ class _DetailsPageViewState extends State<DetailsPageView> {
     ).then((result) async {
       if (result == OkCancelResult.ok) {
         ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
-        await Maintenance.DefectAnalysisDetails_Delete(key).then((response) {
+        await Maintenance.DefectAnalysisDetails_Delete(key).then((response) async {
           if (response.statusCode >= 200 && response.statusCode <= 299) {
             Util.showNotification(context, 'Xóa bỏ thành công', response.body, ContentType.success, 3);
-            setState(() {
-              isLoading = false;
-              _listOfDefectAnalysisDetails = _getListDefectAnalysisDetails();
-            });
+            _refresh();
           } else
             Util.showNotification(context, null, response.body, ContentType.failure, 5);
         }).catchError((error, stackTrace) {

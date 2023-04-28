@@ -194,6 +194,7 @@ class _BodyPageState extends State<Body> {
                   Expanded(
                     flex: 4,
                     child: DefaultButton(
+                      icon: Icons.restart_alt,
                       text: "Đặt lại",
                       color: kTextColor,
                       press: () {
@@ -209,6 +210,7 @@ class _BodyPageState extends State<Body> {
                   Expanded(
                     flex: 6,
                     child: DefaultButton(
+                      icon: Icons.filter_alt,
                       text: "Lọc dữ liệu",
                       press: () {
                         setState(() {

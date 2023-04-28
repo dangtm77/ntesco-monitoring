@@ -17,7 +17,7 @@ class Util {
       behavior: SnackBarBehavior.floating,
       backgroundColor: Colors.transparent,
       content: AwesomeSnackbarContent(
-        title: title ?? (type == ContentType.failure ? "HỆ THỐNG CẢNH BÁO" : "TRUNG TÂM THÔNG BÁO"),
+        title: title ?? (type == ContentType.failure ? "Hệ thống cảnh báo" : "Trung tâm thông báo"),
         message: message,
         contentType: type,
       ),

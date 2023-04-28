@@ -35,6 +35,8 @@ import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../helper/string.dart';
+
 class Body extends StatefulWidget {
   @override
   _BodyPageState createState() => new _BodyPageState();
@@ -47,7 +49,7 @@ class _BodyPageState extends State<Body> {
 
   late int pageIndex = 1;
   late int itemPerPage = 15;
-  late bool isLoading = false;
+  late bool _isLoading = false;
 
   TextEditingController _keywordForSearchEditingController = TextEditingController();
 
@@ -67,7 +69,7 @@ class _BodyPageState extends State<Body> {
     Util.checkConnectivity(result, (status) {
       setState(() {
         isOnline = status;
-        isLoading = false;
+        _isLoading = false;
         _listOfDefectAnalysis = _getlistOfDefectAnalysis();
       });
     });
@@ -127,9 +129,6 @@ class _BodyPageState extends State<Body> {
     Response response = await Maintenance.DefectAnalysis_GetList(options.toMap());
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       DefectAnalysisModels result = DefectAnalysisModels.fromJson(jsonDecode(response.body));
-      setState(() {
-        isLoading = false;
-      });
       return result;
     } else
       throw Exception(response.body);
@@ -169,6 +168,13 @@ class _BodyPageState extends State<Body> {
       throw Exception(response.body);
   }
 
+  Future<void> _refresh() async {
+    setState(() {
+      _isLoading = false;
+      _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+    });
+  }
+
   @override
   void dispose() {
     subscription.cancel();
@@ -187,19 +193,18 @@ class _BodyPageState extends State<Body> {
             isOnline ? _searchBar(context) : SizedBox.shrink(),
             _listAll(context),
             Container(
-              height: isLoading ? 30.0 : 0,
+              height: _isLoading ? 30.0 : 0,
               color: Colors.transparent,
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      child: CircularProgressIndicator(
-                        color: kPrimaryColor,
-                      ),
-                      height: 10.0,
-                      width: 10.0,
-                    ),
+                        child: CircularProgressIndicator(
+                          color: kPrimaryColor,
+                        ),
+                        height: 10.0,
+                        width: 10.0),
                     SizedBox(width: 10.0),
                     Text("Đang tải thêm $itemPerPage dòng dữ liệu...")
                   ],
@@ -214,7 +219,7 @@ class _BodyPageState extends State<Body> {
 
   Widget _header(BuildContext context) {
     return TopHeaderSub(
-      title: "maintenance.defect_analysis.title".tr(),
+      title: "maintenance.defect_analysis.title".tr().toUpperCase(),
       subtitle: "maintenance.defect_analysis.subtitle".tr(),
       buttonLeft: InkWell(
         borderRadius: BorderRadius.circular(15),
@@ -232,12 +237,7 @@ class _BodyPageState extends State<Body> {
             ? showCupertinoModalBottomSheet(
                 context: context,
                 builder: (context) => DefectAnalysisCreateScreen(),
-              ).then((value) {
-                setState(() {
-                  isLoading = false;
-                  _listOfDefectAnalysis = _getlistOfDefectAnalysis();
-                });
-              })
+              ).then((value) => _refresh())
             : null,
       ),
       // buttonRight: InkWell(
@@ -266,12 +266,7 @@ class _BodyPageState extends State<Body> {
         child: TextField(
           controller: _keywordForSearchEditingController,
           onChanged: (value) {
-            setState(() {
-              if (value.isNotEmpty && value.trim().length > 3) {
-                isLoading = false;
-                _listOfDefectAnalysis = _getlistOfDefectAnalysis();
-              }
-            });
+            if (value.isNotEmpty && value.trim().length > 3) _refresh();
           },
           decoration: InputDecoration(
               filled: true,
@@ -289,9 +284,8 @@ class _BodyPageState extends State<Body> {
                         onPressed: () {
                           setState(() {
                             _keywordForSearchEditingController.clear();
-                            isLoading = false;
-                            _listOfDefectAnalysis = _getlistOfDefectAnalysis();
                           });
+                          _refresh();
                         },
                         icon: Icon(Ionicons.close_circle, color: Colors.grey.shade500, size: 20),
                       ),
@@ -299,16 +293,8 @@ class _BodyPageState extends State<Body> {
                       onPressed: () => showModalBottomSheet(
                         builder: (BuildContext context) => _filter(context),
                         context: context,
-                      ).then((e) {
-                        setState(() {
-                          _listOfDefectAnalysis = _getlistOfDefectAnalysis();
-                        });
-                      }),
-                      icon: Icon(
-                        Ionicons.filter,
-                        color: (_statusCurrent.length > 0 || _projectCurrent != 0) ? kPrimaryColor : Colors.grey.shade500,
-                        size: 20,
-                      ),
+                      ).then((e) => _refresh()),
+                      icon: Icon(Ionicons.filter, color: (_statusCurrent.length > 0 || _projectCurrent != 0) ? kPrimaryColor : Colors.grey.shade500, size: 20),
                     ),
                   ],
                 ),
@@ -400,6 +386,7 @@ class _BodyPageState extends State<Body> {
                     flex: 4,
                     child: DefaultButton(
                       text: "Đặt lại",
+                      icon: Icons.restart_alt_rounded,
                       color: kTextColor,
                       press: () {
                         setState(() {
@@ -414,6 +401,7 @@ class _BodyPageState extends State<Body> {
                   Expanded(
                     flex: 6,
                     child: DefaultButton(
+                      icon: Icons.filter_alt_rounded,
                       text: "Lọc dữ liệu",
                       press: () {
                         setState(() {
@@ -437,65 +425,63 @@ class _BodyPageState extends State<Body> {
       child: (isOnline)
           ? NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification scrollInfo) {
-                if (!isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+                if (!_isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
                   setState(() {
                     pageIndex = pageIndex + 1;
-                    _listOfDefectAnalysis = _getlistOfDefectAnalysis();
-                    isLoading = true;
                   });
+                  _refresh();
                 }
                 return true;
               },
               child: RefreshIndicator(
-                onRefresh: () async {
-                  setState(() {
-                    isLoading = false;
-                    _listOfDefectAnalysis = _getlistOfDefectAnalysis();
-                  });
-                },
+                onRefresh: () async => _refresh(),
                 child: FutureBuilder<DefectAnalysisModels>(
                   future: _listOfDefectAnalysis,
                   builder: (BuildContext context, AsyncSnapshot<DefectAnalysisModels> snapshot) {
                     if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
-                    if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !isLoading) return LoadingWidget();
-                    if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty)) return NoDataWidget(subtitle: "Vui lòng kiểm tra lại điều kiện lọc hoặc liên hệ trực tiếp đến quản trị viên...");
-
-                    return Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: getProportionateScreenHeight(10.0),
-                        horizontal: getProportionateScreenWidth(0.0),
-                      ),
-                      child: AnimationLimiter(
-                        child: GroupedListView<dynamic, String>(
-                          elements: snapshot.data!.data,
-                          groupBy: (element) => "${element.system.name}" + (element.system.otherName != null ? " (${element.system.otherName})" : ""),
-                          groupSeparatorBuilder: (String value) => Container(
-                            width: MediaQuery.of(context).size.width,
-                            color: kPrimaryColor,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
-                              child: Text(
-                                value,
-                                textAlign: TextAlign.left,
-                                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+                    if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !_isLoading) return LoadingWidget();
+                    if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty))
+                      return NoDataWidget(
+                        subtitle: "Vui lòng kiểm tra lại điều kiện lọc hoặc liên hệ trực tiếp đến quản trị viên...",
+                        button: OutlinedButton.icon(onPressed: _refresh, icon: Icon(Ionicons.refresh, size: 24.0), label: Text('Refresh')),
+                      );
+                    else
+                      return Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: getProportionateScreenHeight(10.0),
+                          horizontal: getProportionateScreenWidth(0.0),
+                        ),
+                        child: AnimationLimiter(
+                          child: GroupedListView<dynamic, String>(
+                            elements: snapshot.data!.data,
+                            groupBy: (element) => "${element.system.name}" + (element.system.otherName != null ? " (${element.system.otherName})" : ""),
+                            groupSeparatorBuilder: (String value) => Container(
+                              width: MediaQuery.of(context).size.width,
+                              color: kPrimaryColor,
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
+                                child: Text(
+                                  value,
+                                  textAlign: TextAlign.left,
+                                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+                                ),
                               ),
                             ),
+                            itemBuilder: (BuildContext context, dynamic item) {
+                              return AnimationConfiguration.staggeredList(
+                                position: 0,
+                                duration: const Duration(milliseconds: 400),
+                                child: SlideAnimation(
+                                  child: FadeInAnimation(child: _item(item)),
+                                ),
+                              );
+                            },
+                            separator: Divider(thickness: 1),
+                            floatingHeader: false,
+                            useStickyGroupSeparators: true,
                           ),
-                          itemBuilder: (BuildContext context, dynamic item) {
-                            return AnimationConfiguration.staggeredList(
-                              position: 0,
-                              duration: const Duration(milliseconds: 400),
-                              child: SlideAnimation(
-                                child: FadeInAnimation(child: _item(item)),
-                              ),
-                            );
-                          },
-                          separator: Divider(thickness: 1),
-                          floatingHeader: false,
-                          useStickyGroupSeparators: true,
                         ),
-                      ),
-                    );
+                      );
                   },
                 ),
               ),
@@ -505,70 +491,69 @@ class _BodyPageState extends State<Body> {
   }
 
   Widget _item(DefectAnalysisModel item) {
+    List<Widget> _listMenu = [
+      ListTile(
+        trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
+        title: Row(
+          children: [
+            Icon(Ionicons.create_outline, color: kPrimaryColor),
+            SizedBox(width: 10.0),
+            Text("common.list_menu_button_update".tr(), style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+          ],
+        ),
+        onTap: () async {
+          Navigator.of(context).pop();
+          Navigator.pushNamed(context, DefectAnalysisUpdateScreen.routeName, arguments: {'id': item.id, 'tabIndex': 0});
+        },
+      ),
+      Visibility(
+        visible: (item.status > 0 && item.totalDetail > 0),
+        child: ListTile(
+          trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
+          title: Row(
+            children: [
+              Icon(Ionicons.cloud_download_outline, color: kPrimaryColor),
+              SizedBox(width: 10.0),
+              Text("common.list_menu_button_export".tr(), style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+            ],
+          ),
+          onTap: () async => exportFunc(item.id),
+        ),
+      ),
+      Visibility(
+        visible: (item.status == 0 && item.totalDetail > 0),
+        child: ListTile(
+          trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
+          title: Row(
+            children: [
+              Icon(Ionicons.send_outline, color: kPrimaryColor),
+              SizedBox(width: 10.0),
+              Text("common.list_menu_button_send_report".tr(), style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+            ],
+          ),
+          onTap: () async => sendFunc(item.id),
+        ),
+      ),
+      ListTile(
+        trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
+        title: Row(
+          children: [
+            Icon(Ionicons.trash_bin_outline, color: Colors.red),
+            SizedBox(width: 10.0),
+            Text("common.list_menu_button_delete".tr(), style: TextStyle(color: Colors.red, fontSize: 18)),
+          ],
+        ),
+        onTap: () async => deleteFunc(item.id),
+      ),
+    ];
+
     return ListTile(
       onTap: () => showBarModalBottomSheet(
         context: context,
         builder: (_) => Material(
           child: SafeArea(
             top: true,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                ListTile(
-                  trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
-                  title: Row(
-                    children: [
-                      Icon(Ionicons.create_outline, color: kPrimaryColor),
-                      SizedBox(width: 10.0),
-                      Text('Xem & chỉnh sửa thông tin', style: TextStyle(color: kPrimaryColor, fontSize: 18)),
-                    ],
-                  ),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    Navigator.pushNamed(context, DefectAnalysisUpdateScreen.routeName, arguments: {'id': item.id, 'tabIndex': 0});
-                  },
-                ),
-                Visibility(
-                  visible: (item.status > 0 && item.totalDetail > 0),
-                  child: ListTile(
-                    trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
-                    title: Row(
-                      children: [
-                        Icon(Ionicons.cloud_download_outline, color: kPrimaryColor),
-                        SizedBox(width: 10.0),
-                        Text('Xuất file báo cáo phân tích', style: TextStyle(color: kPrimaryColor, fontSize: 18)),
-                      ],
-                    ),
-                    onTap: () => exportFunc(item.id),
-                  ),
-                ),
-                Visibility(
-                  visible: (item.status == 0 && item.totalDetail > 0),
-                  child: ListTile(
-                    trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
-                    title: Row(
-                      children: [
-                        Icon(Ionicons.send_outline, color: kPrimaryColor),
-                        SizedBox(width: 10.0),
-                        Text('Gửi báo cáo phân tích', style: TextStyle(color: kPrimaryColor, fontSize: 18)),
-                      ],
-                    ),
-                    onTap: () => sendFunc(item.id),
-                  ),
-                ),
-                ListTile(
-                  trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
-                  title: Row(
-                    children: [
-                      Icon(Ionicons.trash_bin_outline, color: Colors.red),
-                      SizedBox(width: 10.0),
-                      Text('Hủy bỏ thông tin', style: TextStyle(color: Colors.red, fontSize: 18)),
-                    ],
-                  ),
-                  onTap: () => deleteFunc(item.id),
-                ),
-              ],
-            ),
+            child: Column(mainAxisSize: MainAxisSize.min, children: _listMenu),
           ),
         ),
       ),
@@ -578,7 +563,6 @@ class _BodyPageState extends State<Body> {
           Text.rich(TextSpan(
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
             children: [
-              //TextSpan(text: "Mã hiệu: ", style: TextStyle(color: kTextColor)),
               TextSpan(text: "${item.code}", style: TextStyle(color: kPrimaryColor)),
               WidgetSpan(child: SizedBox(width: 5.0)),
               TextSpan(text: " | ", style: TextStyle(color: kPrimaryColor)),
@@ -600,7 +584,7 @@ class _BodyPageState extends State<Body> {
               WidgetSpan(child: SizedBox(width: 15.0)),
               WidgetSpan(child: Icon(Icons.person_add_alt_1, size: 18, color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 2.0)),
-              TextSpan(text: "${item.analysisByInfo!.hoTen}", style: TextStyle(color: kTextColor)),
+              TextSpan(text: "${StringHelper.toShortName(item.analysisByInfo!.hoTen)}", style: TextStyle(color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 15.0)),
               WidgetSpan(child: Icon(Icons.calendar_month, size: 18, color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 2.0)),
@@ -628,10 +612,7 @@ class _BodyPageState extends State<Body> {
           if (response.statusCode >= 200 && response.statusCode <= 299) {
             ProgressHud.of(context)?.dismiss();
             Util.showNotification(context, null, "Hủy bỏ thông tin thành công", ContentType.success, 3);
-            setState(() {
-              isLoading = false;
-              _listOfDefectAnalysis = _getlistOfDefectAnalysis();
-            });
+            _refresh();
           } else
             Util.showNotification(context, null, response.body, ContentType.failure, 5);
         }).catchError((error, stackTrace) {
@@ -659,10 +640,7 @@ class _BodyPageState extends State<Body> {
           ProgressHud.of(context)?.dismiss();
           if (response.statusCode >= 200 && response.statusCode <= 299) {
             Util.showNotification(context, null, "Gửi thông tin đi thành công", ContentType.success, 3);
-            setState(() {
-              isLoading = false;
-              _listOfDefectAnalysis = _getlistOfDefectAnalysis();
-            });
+            _refresh();
           } else
             Util.showNotification(context, null, response.body, ContentType.failure, 5);
         }).catchError((error, stackTrace) {

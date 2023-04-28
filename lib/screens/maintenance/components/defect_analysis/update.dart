@@ -119,95 +119,91 @@ class _UpdateBodyState extends State<UpdateBody> {
         ),
       );
 
-  Widget _main(BuildContext context) => Expanded(
-        child: (isOnline)
-            ? FutureBuilder<DefectAnalysisModel>(
-                future: _defectAnalysis,
-                builder: (BuildContext context, AsyncSnapshot<DefectAnalysisModel> snapshot) {
-                  if (snapshot.hasError) {
-                    return DataErrorWidget(error: snapshot.error.toString());
-                  } else {
-                    if (snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active)
-                      return LoadingWidget();
-                    else {
-                      if (snapshot.hasData && snapshot.data != null) {
-                        DefectAnalysisModel item = snapshot.data!;
-                        return Scaffold(
-                          body: SizedBox.expand(
-                            child: PageView(
-                              controller: _pageController,
-                              //physics: NeverScrollableScrollPhysics(),
-                              onPageChanged: ((value) => setState(() => _currentIndex = value)),
-                              children: <Widget>[
-                                SummaryPageView(id: item.id, model: item),
-                                DetailsPageView(id: item.id, model: item),
-                                CommentsPageView(id: item.id, model: item),
+  Widget _main(BuildContext context) {
+    return Expanded(
+      child: (isOnline)
+          ? FutureBuilder<DefectAnalysisModel>(
+              future: _defectAnalysis,
+              builder: (BuildContext context, AsyncSnapshot<DefectAnalysisModel> snapshot) {
+                if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
+                if (snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) return LoadingWidget();
+
+                if (snapshot.hasData && snapshot.data != null) {
+                  DefectAnalysisModel item = snapshot.data!;
+                  return Scaffold(
+                    body: SizedBox.expand(
+                      child: PageView(
+                        controller: _pageController,
+                        //physics: NeverScrollableScrollPhysics(),
+                        onPageChanged: ((value) => setState(() => _currentIndex = value)),
+                        children: <Widget>[
+                          SummaryPageView(id: item.id, model: item),
+                          DetailsPageView(id: item.id, model: item),
+                          CommentsPageView(id: item.id, model: item),
+                        ],
+                      ),
+                    ),
+                    bottomNavigationBar: BottomNavyBar(
+                      iconSize: 30,
+                      showElevation: true,
+                      itemCornerRadius: 20.0,
+                      containerHeight: 70.0,
+                      selectedIndex: _currentIndex,
+                      onItemSelected: (value) {
+                        setState(() => _currentIndex = value);
+                        _pageController.animateToPage(_currentIndex, duration: Duration(milliseconds: 300), curve: Curves.ease);
+                      },
+                      items: <BottomNavyBarItem>[
+                        BottomNavyBarItem(
+                          icon: Icon(Ionicons.reader_outline),
+                          textAlign: TextAlign.center,
+                          title: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Thông tin', style: TextStyle(fontSize: 15)),
+                                Text('CHUNG', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                               ],
                             ),
                           ),
-                          bottomNavigationBar: BottomNavyBar(
-                            iconSize: 30,
-                            showElevation: true,
-                            itemCornerRadius: 20.0,
-                            containerHeight: 70.0,
-                            selectedIndex: _currentIndex,
-                            onItemSelected: (value) {
-                              setState(() => _currentIndex = value);
-                              _pageController.animateToPage(_currentIndex, duration: Duration(milliseconds: 300), curve: Curves.ease);
-                            },
-                            items: <BottomNavyBarItem>[
-                              BottomNavyBarItem(
-                                icon: Icon(Ionicons.reader_outline),
-                                textAlign: TextAlign.center,
-                                title: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Thông tin', style: TextStyle(fontSize: 15)),
-                                      Text('CHUNG', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              BottomNavyBarItem(
-                                icon: Icon(Ionicons.git_branch_outline),
-                                textAlign: TextAlign.center,
-                                title: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Chi tiết', style: TextStyle(fontSize: 15)),
-                                      Text('SỰ CỐ', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              BottomNavyBarItem(
-                                icon: Icon(Icons.comment_outlined),
-                                textAlign: TextAlign.center,
-                                title: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Ý kiến', style: TextStyle(fontSize: 15)),
-                                      Text('PHẢN HỒI', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                        ),
+                        BottomNavyBarItem(
+                          icon: Icon(Ionicons.git_branch_outline),
+                          textAlign: TextAlign.center,
+                          title: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Chi tiết', style: TextStyle(fontSize: 15)),
+                                Text('SỰ CỐ', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                              ],
+                            ),
                           ),
-                        );
-                      } else {
-                        return NoDataWidget(subtitle: "Không tìm thấy thông tin phiếu đề xuất liên quan đến bạn!!!");
-                      }
-                    }
-                  }
-                },
-              )
-            : NoConnectionWidget(),
-      );
+                        ),
+                        BottomNavyBarItem(
+                          icon: Icon(Icons.comment_outlined),
+                          textAlign: TextAlign.center,
+                          title: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Ý kiến', style: TextStyle(fontSize: 15)),
+                                Text('PHẢN HỒI', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                } else
+                  return NoDataWidget(subtitle: "Không tìm thấy thông tin phiếu liên quan đến bạn!!!");
+              },
+            )
+          : NoConnectionWidget(),
+    );
+  }
 }

@@ -19,7 +19,7 @@ import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:ntesco_smart_monitoring/theme.dart';
 
-import '../../../../../components/image_picker_options.dart';
+import '../../../../../../components/image_picker_options.dart';
 
 class DefectAnalysisDetailsCreateScreen extends StatelessWidget {
   final int id;

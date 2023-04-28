@@ -22,19 +22,19 @@ import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/update.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 
-import '../../../../../components/default_button.dart';
-import '../../../../../components/image_picker_options.dart';
-import '../../../../../components/photoview_gallery.dart';
-import '../../../../../components/state_widget.dart';
-import '../../../../../components/top_header.dart';
-import '../../../../../constants.dart';
-import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
-import '../../../../../core/maintenance.dart' as Maintenance;
-import '../../../../../helper/util.dart';
-import '../../../../../models/LoadOptions.dart';
-import '../../../../../models/common/FileDinhKemModel.dart';
-import '../../../../../models/mt/DefectAnalysisDetailsModel.dart';
-import '../../../../../theme.dart';
+import '../../../../../../components/default_button.dart';
+import '../../../../../../components/image_picker_options.dart';
+import '../../../../../../components/photoview_gallery.dart';
+import '../../../../../../components/state_widget.dart';
+import '../../../../../../components/top_header.dart';
+import '../../../../../../constants.dart';
+import '../../../../../../core/common.dart' as Common;
+import '../../../../../../core/maintenance.dart' as Maintenance;
+import '../../../../../../helper/util.dart';
+import '../../../../../../models/LoadOptions.dart';
+import '../../../../../../models/common/FileDinhKemModel.dart';
+import '../../../../../../models/mt/DefectAnalysisDetailsModel.dart';
+import '../../../../../../theme.dart';
 
 class DefectAnalysisDetailsUpdateScreen extends StatelessWidget {
   static String routeName = "/maintenance/defect-analysis-details/update";
@@ -289,9 +289,9 @@ class _SummaryPageViewState extends State<SummaryPageView> {
                     SizedBox(height: 20),
                     Row(
                       children: [
-                        Expanded(flex: 2, child: DefaultButton(text: 'Hủy bỏ thông tin', color: Colors.red, press: () async => deleteFunc(context, model))),
+                        Expanded(flex: 2, child: DefaultButton(text: 'Hủy bỏ thông tin', icon: Icons.delete_forever, color: Colors.red, press: () async => deleteFunc(context, model))),
                         SizedBox(width: 10),
-                        Expanded(flex: 3, child: DefaultButton(text: 'Cập nhật thông tin', color: kPrimaryColor, press: () async => submitFunc(context))),
+                        Expanded(flex: 3, child: DefaultButton(text: 'Cập nhật thông tin', icon: Icons.check, color: kPrimaryColor, press: () async => submitFunc(context))),
                       ],
                     ),
                   ],

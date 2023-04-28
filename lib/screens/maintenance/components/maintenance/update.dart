@@ -1,21 +1,21 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
-import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 import 'package:ionicons/ionicons.dart';
+
+import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:ntesco_smart_monitoring/models/mt/SystemReportModel.dart';
 
 import '../../../../components/state_widget.dart';
 import '../../../../components/top_header.dart';
 import '../../../../constants.dart';
-import '../../../../models/mt/DefectAnalysisModel.dart';
 import '../../../../size_config.dart';
 import '../../maintenance_screen.dart';
 import 'update/replacements_pageview.dart';
@@ -135,7 +135,7 @@ class _UpdateBodyState extends State<UpdateBody> {
                     body: SizedBox.expand(
                       child: PageView(
                         controller: _pageController,
-                        //physics: NeverScrollableScrollPhysics(),
+                        physics: NeverScrollableScrollPhysics(),
                         onPageChanged: ((value) => setState(() => _currentIndex = value)),
                         children: <Widget>[
                           SummaryPageView(id: item.id, model: item),
@@ -170,7 +170,7 @@ class _UpdateBodyState extends State<UpdateBody> {
                           ),
                         ),
                         BottomNavyBarItem(
-                          icon: Icon(Ionicons.git_branch_outline),
+                          icon: Icon(Ionicons.repeat_outline),
                           textAlign: TextAlign.center,
                           title: FittedBox(
                             fit: BoxFit.scaleDown,
@@ -184,15 +184,15 @@ class _UpdateBodyState extends State<UpdateBody> {
                           ),
                         ),
                         BottomNavyBarItem(
-                          icon: Icon(Icons.comment_outlined),
+                          icon: Icon(Icons.star_half_outlined),
                           textAlign: TextAlign.center,
                           title: FittedBox(
                             fit: BoxFit.scaleDown,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Chi tiết', style: TextStyle(fontSize: 15)),
-                                Text('XÁC NHẬN', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                Text('Thông tin', style: TextStyle(fontSize: 15)),
+                                Text('Đánh giá', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                               ],
                             ),
                           ),

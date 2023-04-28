@@ -1,6 +1,13 @@
 // DO NOT EDIT. This is code generated via package:easy_localization/generate.dart
 
 abstract class  LocaleKeys {
+  static const common_text_input_hint = 'common.text_input_hint';
+  static const common_text_select_hint = 'common.text_select_hint';
+  static const common_list_menu_button_update = 'common.list_menu_button_update';
+  static const common_list_menu_button_delete = 'common.list_menu_button_delete';
+  static const common_list_menu_button_export = 'common.list_menu_button_export';
+  static const common_list_menu_button_send_report = 'common.list_menu_button_send_report';
+  static const common = 'common';
   static const login_username_label = 'login.username_label';
   static const login_password_label = 'login.password_label';
   static const login_username_hint = 'login.username_hint';
@@ -41,10 +48,28 @@ abstract class  LocaleKeys {
   static const maintenance_defect_analysis_details_update_title = 'maintenance.defect_analysis_details.update_title';
   static const maintenance_defect_analysis_details_update_subtitle = 'maintenance.defect_analysis_details.update_subtitle';
   static const maintenance_defect_analysis_details = 'maintenance.defect_analysis_details';
+  static const maintenance_system_report_replacements_name_label = 'maintenance.system_report_replacements.name.label';
+  static const maintenance_system_report_replacements_name = 'maintenance.system_report_replacements.name';
+  static const maintenance_system_report_replacements_model_label = 'maintenance.system_report_replacements.model.label';
+  static const maintenance_system_report_replacements_model = 'maintenance.system_report_replacements.model';
+  static const maintenance_system_report_replacements_unit_label = 'maintenance.system_report_replacements.unit.label';
+  static const maintenance_system_report_replacements_unit = 'maintenance.system_report_replacements.unit';
+  static const maintenance_system_report_replacements_quantity_label = 'maintenance.system_report_replacements.quantity.label';
+  static const maintenance_system_report_replacements_quantity = 'maintenance.system_report_replacements.quantity';
+  static const maintenance_system_report_replacements_specifications_label = 'maintenance.system_report_replacements.specifications.label';
+  static const maintenance_system_report_replacements_specifications = 'maintenance.system_report_replacements.specifications';
+  static const maintenance_system_report_replacements_sort_index_label = 'maintenance.system_report_replacements.sort_index.label';
+  static const maintenance_system_report_replacements_sort_index = 'maintenance.system_report_replacements.sort_index';
+  static const maintenance_system_report_replacements_state_of_emergency_label = 'maintenance.system_report_replacements.state_of_emergency.label';
+  static const maintenance_system_report_replacements_state_of_emergency_option_01 = 'maintenance.system_report_replacements.state_of_emergency.option_01';
+  static const maintenance_system_report_replacements_state_of_emergency_option_02 = 'maintenance.system_report_replacements.state_of_emergency.option_02';
+  static const maintenance_system_report_replacements_state_of_emergency = 'maintenance.system_report_replacements.state_of_emergency';
+  static const maintenance_system_report_replacements = 'maintenance.system_report_replacements';
   static const maintenance = 'maintenance';
   static const language_display = 'language_display';
   static const hello_message = 'hello_message';
   static const welcome_message = 'welcome_message';
+  static const state_waiting = 'state.waiting';
   static const state_loading = 'state.loading';
   static const state_loading_subtitle = 'state.loading_subtitle';
   static const state_nodata = 'state.nodata';

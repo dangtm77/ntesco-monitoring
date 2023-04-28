@@ -15,6 +15,14 @@ class CodegenLoader extends AssetLoader{
   }
 
   static const Map<String,dynamic> en_US = {
+  "common": {
+    "text_input_hint": "Please input values...",
+    "text_select_hint": "Please select values...",
+    "list_menu_button_update": "View & update info",
+    "list_menu_button_delete": "Remove info",
+    "list_menu_button_export": "Export report file",
+    "list_menu_button_send_report": "Send report"
+  },
   "login": {
     "username_label": "Username",
     "password_label": "Password",
@@ -61,12 +69,38 @@ class CodegenLoader extends AssetLoader{
     "defect_analysis_details": {
       "update_title": "Update defect analysis details",
       "update_subtitle": "Update detail defect of projects"
+    },
+    "system_report_replacements": {
+      "name": {
+        "label": "Name"
+      },
+      "model": {
+        "label": "Model"
+      },
+      "unit": {
+        "label": "Unit"
+      },
+      "quantity": {
+        "label": "Quantity"
+      },
+      "specifications": {
+        "label": "Specifications"
+      },
+      "sort_index": {
+        "label": "No."
+      },
+      "state_of_emergency": {
+        "label": "State of emergency",
+        "option_01": "Emergency",
+        "option_02": "Not emergency"
+      }
     }
   },
   "language_display": "Language display:",
   "hello_message": "Hi, {}\r\n",
   "welcome_message": "How are you today!",
   "state": {
+    "waiting": "Please wait...",
     "loading": "Loading...",
     "loading_subtitle": "Loading",
     "nodata": "Not found",
@@ -79,8 +113,12 @@ class CodegenLoader extends AssetLoader{
 };
 static const Map<String,dynamic> vi_VN = {
   "common": {
-    "hint_text_input": "Vui lòng nhập thông tin...",
-    "hint_text_select": "Vui lòng chọn thông tin..."
+    "text_input_hint": "Vui lòng nhập thông tin...",
+    "text_select_hint": "Vui lòng chọn thông tin...",
+    "list_menu_button_update": "Xem & chỉnh sửa thông tin",
+    "list_menu_button_delete": "Hủy & xóa bỏ thông tin",
+    "list_menu_button_export": "Xuất file báo cáo",
+    "list_menu_button_send_report": "Gửi báo cáo"
   },
   "login": {
     "username_label": "Tên đăng nhập",
@@ -128,12 +166,38 @@ static const Map<String,dynamic> vi_VN = {
     "defect_analysis_details": {
       "update_title": "Cập nhật chi tiết sự cố",
       "update_subtitle": "Cập nhật thông tin chi tiết sự cố của hệ thống"
+    },
+    "system_report_replacements": {
+      "name": {
+        "label": "Tên thiết bị"
+      },
+      "model": {
+        "label": "Model"
+      },
+      "unit": {
+        "label": "Đơn vị"
+      },
+      "quantity": {
+        "label": "Số lượng"
+      },
+      "specifications": {
+        "label": "Thông số kỹ thuật"
+      },
+      "sort_index": {
+        "label": "STT."
+      },
+      "state_of_emergency": {
+        "label": "Tình trạng",
+        "option_01": "Khẩn cấp",
+        "option_02": "Không khẩn cấp"
+      }
     }
   },
   "language_display": "Ngôn ngữ hiển thị:",
   "hello_message": "Xin chào, {}\r\n",
   "welcome_message": "Hôm nay của bạn như thế nào!",
   "state": {
+    "waiting": "Vui lòng chờ...",
     "loading": "Đang tải...",
     "loading_subtitle": "Vui lòng chờ trong giây lát...",
     "nodata": "Không tìm thấy dữ liệu",

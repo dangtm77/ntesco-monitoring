@@ -13,13 +13,12 @@ const API_DEFECTANALYSIS_GETLIST = "v2/mt/defectanalysis";
 const API_DEFECTANALYSIS_GETDETAIL = "v2/mt/defectanalysis/detail";
 const API_DEFECTANALYSIS_SEND = "v2/mt/defectanalysis/send";
 
-const API_DEFECTANALYSISDETAILS_GETLIST = "v2/mt/defectanalysisdetails";
+const API_DEFECTANALYSISDETAILS = "v2/mt/defectanalysisdetails";
 const API_DEFECTANALYSISDETAILS_GETDETAIL = "v2/mt/defectanalysisdetails/detail";
 const API_DEFECTANALYSISDETAILS_WITH_FILEDINHKEM = "v2/mt/defectanalysisdetails/withFileDinhKem";
 
 const API_SYSTEM_REPORTS = "v2/mt/systemreports";
 const API_SYSTEM_REPORTS_GETDETAIL = "v2/mt/systemreports/detail";
-
 //--------------------------SYSTEMS--------------------------//
 Future<http.Response> Systems_GetList(dynamic options) async => Core.get(options, API_SYSTEMS_GETLIST);
 Future<http.Response> Systems_GetList_ByProject(int id, dynamic options) async {
@@ -45,13 +44,13 @@ Future<http.Response> DefectAnalysis_Send(int key, dynamic body) async => Core.p
 Future<http.Response> DefectAnalysisDetails_GetList(int id, dynamic options) async {
   var queryParameters = options;
   queryParameters.addAll({"idDefectAnalysis": id.toString()});
-  return Core.get(queryParameters, API_DEFECTANALYSISDETAILS_GETLIST);
+  return Core.get(queryParameters, API_DEFECTANALYSISDETAILS);
 }
 
 Future<http.Response> DefectAnalysisDetails_GetDetail(dynamic options) async => Core.get(options, API_DEFECTANALYSISDETAILS_GETDETAIL);
-Future<http.Response> DefectAnalysisDetails_Create(dynamic body) async => Core.post_by_model(body, API_DEFECTANALYSISDETAILS_GETLIST);
-Future<http.Response> DefectAnalysisDetails_Update(int key, dynamic body) async => Core.put(key, body, API_DEFECTANALYSISDETAILS_GETLIST);
-Future<http.Response> DefectAnalysisDetails_Delete(int key) async => Core.delete(key, API_DEFECTANALYSISDETAILS_GETLIST);
+Future<http.Response> DefectAnalysisDetails_Create(dynamic body) async => Core.post_by_model(body, API_DEFECTANALYSISDETAILS);
+Future<http.Response> DefectAnalysisDetails_Update(int key, dynamic body) async => Core.put(key, body, API_DEFECTANALYSISDETAILS);
+Future<http.Response> DefectAnalysisDetails_Delete(int key) async => Core.delete(key, API_DEFECTANALYSISDETAILS);
 
 Future<http.Response> DefectAnalysisDetails_WithFileDinhKem_GetList(int id, dynamic options) async {
   var queryParameters = options;
@@ -65,3 +64,14 @@ Future<http.Response> DefectAnalysisDetails_WithFileDinhKem_Delete(int key) asyn
 Future<http.Response> SystemReports_GetList(dynamic options) async => Core.get(options, API_SYSTEM_REPORTS);
 Future<http.Response> SystemReports_GetDetail(dynamic options) async => Core.get(options, API_SYSTEM_REPORTS_GETDETAIL);
 Future<http.Response> SystemReports_Create(dynamic body) async => Core.post(body, API_SYSTEM_REPORTS);
+//--------------------------SYSTEM REPORT REPLACEMENTS--------------------------//
+// Future<http.Response> SystemReportReplacements_GetList(int id, dynamic options) async {
+//   var queryParameters = options;
+//   queryParameters.addAll({"idSystemReport": id.toString()});
+//   return Core.get(queryParameters, API_SYSTEM_REPORTS_REPLACEMENTS);
+// }
+
+// Future<http.Response> SystemReportReplacements_GetDetail(dynamic options) async => Core.get(options, API_SYSTEM_REPORTS_REPLACEMENTS_GETDETAIL);
+// Future<http.Response> SystemReportReplacements_Create(dynamic body) async => Core.post_by_model(body, API_SYSTEM_REPORTS_REPLACEMENTS);
+// Future<http.Response> SystemReportReplacements_Update(int key, dynamic body) async => Core.put(key, body, API_SYSTEM_REPORTS_REPLACEMENTS);
+// Future<http.Response> SystemReportReplacements_Delete(int key) async => Core.delete(key, API_SYSTEM_REPORTS_REPLACEMENTS);

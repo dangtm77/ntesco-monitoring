@@ -59,8 +59,10 @@ class _SignFormState extends State<SignForm> {
           passwordTextFormField(),
           SizedBox(height: getProportionateScreenHeight(30)),
           DefaultButton(
-            text: "login.signin_button".tr(),
+            icon: Icons.send_sharp,
+            text: "login.signin_button".tr().toUpperCase(),
             press: () async => submitLogin(),
+            height: 50,
           ),
           SizedBox(height: getProportionateScreenHeight(15)),
           Row(
@@ -96,7 +98,7 @@ class _SignFormState extends State<SignForm> {
       },
       decoration: InputDecoration(
         labelText: "login.username_label".tr(),
-        labelStyle: TextStyle(color: kPrimaryColor, fontSize: 20, fontWeight: FontWeight.w700),
+        labelStyle: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w700),
         hintText: "login.username_hint".tr(),
         hintStyle: TextStyle(color: Color(0xFF989eb1), fontSize: 15, fontWeight: FontWeight.w400),
         floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -133,7 +135,7 @@ class _SignFormState extends State<SignForm> {
         ),
         isDense: true,
         suffixIcon: IconButton(
-            icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off),
+            icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off, size: 30),
             color: kPrimaryColor,
             onPressed: () {
               setState(() {
@@ -146,15 +148,9 @@ class _SignFormState extends State<SignForm> {
 
   void submitLogin() async {
     if (_formKey.currentState!.validate()) {
-      if (isOnline == false) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.red,
-            duration: Duration(seconds: 2),
-            content: Text("Vui lòng kiểm tra kết nối internet của thiết bị của bạn..."),
-          ),
-        );
-      } else {
+      if (isOnline == false)
+        Util.showNotification(context, null, "Vui lòng kiểm tra kết nối internet của thiết bị của bạn...", ContentType.warning, 2);
+      else {
         _formKey.currentState!.save();
         ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
 
@@ -173,25 +169,13 @@ class _SignFormState extends State<SignForm> {
             Navigator.pushReplacementNamed(context, HomeScreen.routeName);
           } else {
             ProgressHud.of(context)?.dismiss();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: Colors.red,
-                duration: Duration(seconds: 2),
-                content: Text(data.errorDescription.toString()),
-              ),
-            );
+            Util.showNotification(context, null, data.errorDescription.toString(), ContentType.failure, 3);
           }
         }).catchError((error, stackTrace) {
           print(error);
           print(stackTrace);
           ProgressHud.of(context)?.dismiss();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.red,
-              duration: Duration(seconds: 2),
-              content: Text("Có lỗi xảy ra trong quá trình đăng nhập. Chi tiết: $error"),
-            ),
-          );
+          Util.showNotification(context, null, "Có lỗi xảy ra trong quá trình đăng nhập. Chi tiết: $error", ContentType.failure, 3);
         });
       }
     }

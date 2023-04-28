@@ -14,6 +14,7 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:http/http.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:ntesco_smart_monitoring/helper/string.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:ntesco_smart_monitoring/components/default_button.dart';
@@ -133,6 +134,13 @@ class _BodyPageState extends State<Body> {
       throw Exception(response.body);
   }
 
+  Future<void> _refresh() async {
+    setState(() {
+      _isLoading = false;
+      _listOfSystemReports = _getlistOfSystemReports();
+    });
+  }
+
   @override
   void dispose() {
     subscription.cancel();
@@ -178,7 +186,7 @@ class _BodyPageState extends State<Body> {
 
   Widget _header(BuildContext context) {
     return TopHeaderSub(
-      title: "maintenance.title".tr(),
+      title: "maintenance.title".tr().toUpperCase(),
       subtitle: "maintenance.subtitle".tr(),
       buttonLeft: InkWell(
         borderRadius: BorderRadius.circular(15),
@@ -306,6 +314,7 @@ class _BodyPageState extends State<Body> {
                   Expanded(
                     flex: 4,
                     child: DefaultButton(
+                      icon: Icons.restart_alt,
                       text: "Đặt lại",
                       color: kTextColor,
                       press: () {
@@ -318,6 +327,7 @@ class _BodyPageState extends State<Body> {
                   Expanded(
                     flex: 6,
                     child: DefaultButton(
+                      icon: Icons.filter_alt_rounded,
                       text: "Lọc dữ liệu",
                       press: () {
                         setState(() {
@@ -354,7 +364,6 @@ class _BodyPageState extends State<Body> {
               child: RefreshIndicator(
                 onRefresh: () async {
                   setState(() {
-                    pageIndex = pageIndex + 1;
                     _isLoading = false;
                     _listOfSystemReports = _getlistOfSystemReports();
                   });
@@ -364,40 +373,41 @@ class _BodyPageState extends State<Body> {
                   builder: (BuildContext context, AsyncSnapshot<SystemReportModels> snapshot) {
                     if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
                     if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !_isLoading) return LoadingWidget();
-                    if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty)) return NoDataWidget(subtitle: "Vui lòng kiểm tra lại điều kiện lọc hoặc liên hệ trực tiếp đến quản trị viên...");
-
-                    return Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: getProportionateScreenHeight(10.0),
-                        horizontal: getProportionateScreenWidth(0.0),
-                      ),
-                      child: AnimationLimiter(
-                        child: GroupedListView<dynamic, String>(
-                          elements: snapshot.data!.data,
-                          groupBy: (element) => "${element.system.name}" + (element.system.otherName != null ? " (${element.system.otherName})" : ""),
-                          groupSeparatorBuilder: (String value) => Container(
-                            width: MediaQuery.of(context).size.width,
-                            color: kPrimaryColor,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
-                              child: Text(value, textAlign: TextAlign.left, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
-                            ),
-                          ),
-                          itemBuilder: (BuildContext context, dynamic item) {
-                            return AnimationConfiguration.staggeredList(
-                              position: 0,
-                              duration: const Duration(milliseconds: 400),
-                              child: SlideAnimation(
-                                child: FadeInAnimation(child: _item(item)),
-                              ),
-                            );
-                          },
-                          separator: Divider(thickness: 1),
-                          floatingHeader: false,
-                          useStickyGroupSeparators: true,
+                    if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty))
+                      return NoDataWidget(subtitle: "Vui lòng kiểm tra lại điều kiện lọc hoặc liên hệ trực tiếp đến quản trị viên...");
+                    else
+                      return Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: getProportionateScreenHeight(10.0),
+                          horizontal: getProportionateScreenWidth(0.0),
                         ),
-                      ),
-                    );
+                        child: AnimationLimiter(
+                          child: GroupedListView<dynamic, String>(
+                            elements: snapshot.data!.data,
+                            groupBy: (element) => "${element.system.name}" + (element.system.otherName != null ? " (${element.system.otherName})" : ""),
+                            groupSeparatorBuilder: (String value) => Container(
+                              width: MediaQuery.of(context).size.width,
+                              color: kPrimaryColor,
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
+                                child: Text(value, textAlign: TextAlign.left, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
+                              ),
+                            ),
+                            itemBuilder: (BuildContext context, dynamic item) {
+                              return AnimationConfiguration.staggeredList(
+                                position: 0,
+                                duration: const Duration(milliseconds: 400),
+                                child: SlideAnimation(
+                                  child: FadeInAnimation(child: _item(item)),
+                                ),
+                              );
+                            },
+                            separator: Divider(thickness: 1),
+                            floatingHeader: false,
+                            useStickyGroupSeparators: true,
+                          ),
+                        ),
+                      );
                   },
                 ),
               ),
@@ -415,7 +425,7 @@ class _BodyPageState extends State<Body> {
             top: true,
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
+              children: <ListTile>[
                 ListTile(
                   trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
                   title: Row(
@@ -465,19 +475,19 @@ class _BodyPageState extends State<Body> {
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal),
             children: [
               WidgetSpan(child: Icon(Icons.tag, size: 18, color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 2.0)),
+              WidgetSpan(child: SizedBox(width: 3.0)),
               TextSpan(text: "${item.id}", style: TextStyle(color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 15.0)),
               WidgetSpan(child: Icon(Icons.label_important_rounded, size: 18, color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 2.0)),
+              WidgetSpan(child: SizedBox(width: 3.0)),
               TextSpan(text: "${item.typeInfo?.text ?? "Chưa xác định"}", style: TextStyle(color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 15.0)),
               WidgetSpan(child: Icon(Icons.person_add_alt_1, size: 18, color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 2.0)),
-              TextSpan(text: "${item.staffInfo.hoTen}", style: TextStyle(color: kTextColor)),
+              WidgetSpan(child: SizedBox(width: 3.0)),
+              TextSpan(text: "${StringHelper.toShortName(item.staffInfo.hoTen)}", style: TextStyle(color: kTextColor)),
               WidgetSpan(child: SizedBox(width: 15.0)),
               WidgetSpan(child: Icon(Icons.calendar_month, size: 18, color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 2.0)),
+              WidgetSpan(child: SizedBox(width: 3.0)),
               TextSpan(text: "${DateFormat("hh:mm dd/MM/yy").format(item.dateCreate!)}", style: TextStyle(color: kTextColor)),
             ],
           )),
@@ -504,44 +514,48 @@ class _BodyPageState extends State<Body> {
               builder: (BuildContext _, AsyncSnapshot<SystemModels> snapshot) {
                 if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
                 if (snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) return LoadingWidget();
-                if (!snapshot.hasData && !snapshot.data!.data.isNotEmpty) return NoDataWidget();
-
-                return AnimationLimiter(
-                  child: ListView.separated(
-                    itemCount: snapshot.data!.data.length,
-                    itemBuilder: (context, index) {
-                      SystemModel element = snapshot.data!.data.elementAt(index);
-                      return ListTile(
-                        title: Text(
-                          element.name.toString() + (element.otherName != null ? (' (' + element.otherName.toString() + ')') : ''),
-                          style: const TextStyle(fontSize: 15.0, color: kPrimaryColor, fontWeight: FontWeight.w600),
-                        ),
-                        subtitle: Text(
-                          "Mã ${element.code.toString()} - Ngày bàn giao ${DateFormat("dd/MM/yyyy").format(element.dateAcceptance!)}",
-                          style: const TextStyle(fontSize: 13.0),
-                        ),
-                        trailing: Icon(Ionicons.arrow_forward, color: kSecondaryColor, size: 18.0),
-                        onTap: () {
-                          Navigator.pop(context);
-                          showCupertinoModalBottomSheet(
-                            context: context,
-                            builder: (context) => MaintenanceCreateScreen(systemModel: element),
-                            isDismissible: false,
-                            enableDrag: false,
-                          ).then((value) {
-                            setState(() {
-                              pageIndex = pageIndex + 1;
-                              _isLoading = false;
-                              _listOfSystemReports = _getlistOfSystemReports();
+                if (!snapshot.hasData && !snapshot.data!.data.isNotEmpty)
+                  return NoDataWidget(
+                    subtitle: "Vui lòng kiểm tra lại điều kiện lọc hoặc liên hệ trực tiếp đến quản trị viên...",
+                    button: OutlinedButton.icon(onPressed: _refresh, icon: Icon(Ionicons.refresh, size: 24.0), label: Text('Refresh')),
+                  );
+                else
+                  return AnimationLimiter(
+                    child: ListView.separated(
+                      itemCount: snapshot.data!.data.length,
+                      itemBuilder: (context, index) {
+                        SystemModel element = snapshot.data!.data.elementAt(index);
+                        return ListTile(
+                          title: Text(
+                            element.name.toString() + (element.otherName != null ? (' (' + element.otherName.toString() + ')') : ''),
+                            style: const TextStyle(fontSize: 15.0, color: kPrimaryColor, fontWeight: FontWeight.w600),
+                          ),
+                          subtitle: Text(
+                            "Mã ${element.code.toString()} - Ngày bàn giao ${DateFormat("dd/MM/yyyy").format(element.dateAcceptance!)}",
+                            style: const TextStyle(fontSize: 13.0),
+                          ),
+                          trailing: Icon(Ionicons.arrow_forward, color: kSecondaryColor, size: 18.0),
+                          onTap: () {
+                            Navigator.pop(context);
+                            showCupertinoModalBottomSheet(
+                              context: context,
+                              builder: (context) => MaintenanceCreateScreen(systemModel: element),
+                              isDismissible: false,
+                              enableDrag: false,
+                            ).then((value) {
+                              setState(() {
+                                pageIndex = pageIndex + 1;
+                                _isLoading = false;
+                                _listOfSystemReports = _getlistOfSystemReports();
+                              });
                             });
-                          });
-                          //Navigator.push(context, MaterialPageRoute(builder: (context) => MaintenanceCreateScreen(systemModel: element)));
-                        },
-                      );
-                    }, // optional
-                    separatorBuilder: (BuildContext context, int index) => const Divider(),
-                  ),
-                );
+                            //Navigator.push(context, MaterialPageRoute(builder: (context) => MaintenanceCreateScreen(systemModel: element)));
+                          },
+                        );
+                      }, // optional
+                      separatorBuilder: (BuildContext context, int index) => const Divider(),
+                    ),
+                  );
               },
             ),
           )

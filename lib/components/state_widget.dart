@@ -1,10 +1,14 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/core/auth.dart';
 import 'package:ntesco_smart_monitoring/screens/signin/signin_screen.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import '../constants.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../screens/home/home_screen.dart';
 import 'default_button.dart';
 
 class DataErrorWidget extends StatefulWidget {
@@ -121,12 +125,21 @@ class NoDataWidget extends StatelessWidget {
         Text("#404#", style: TextStyle(fontSize: 70, fontWeight: FontWeight.w800, color: Colors.redAccent)),
         Text(title ?? "state.nodata".tr().toUpperCase(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Colors.redAccent)),
         Text(subtitle ?? "state.nodata_subtitle".tr(), style: TextStyle(fontSize: 15, color: kSecondaryColor, fontStyle: FontStyle.italic)),
-        Visibility(
-          visible: button != null,
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: SizedBox(width: 100, height: 40, child: button ?? SizedBox(height: 0.0)),
-          ),
+        SizedBox(height: 10.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton.icon(
+              onPressed: () => Navigator.pushNamed(context, HomeScreen.routeName),
+              icon: Icon(Icons.home, size: 24.0),
+              label: Text('Back to home'),
+            ),
+            SizedBox(width: 10.0),
+            Visibility(
+              visible: button != null,
+              child: button ?? SizedBox.shrink(),
+            )
+          ],
         )
       ],
     );

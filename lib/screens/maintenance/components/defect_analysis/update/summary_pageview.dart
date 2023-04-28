@@ -158,9 +158,9 @@ class _SummaryPageViewState extends State<SummaryPageView> {
                     SizedBox(height: 20),
                     Row(
                       children: [
-                        Expanded(flex: 2, child: DefaultButton(text: 'Hủy bỏ thông tin', color: Colors.red, press: () async => deleteFunc(context, model))),
+                        Expanded(flex: 2, child: DefaultButton(text: 'Hủy bỏ thông tin', icon: Icons.delete_forever, color: Colors.red, press: () async => deleteFunc(context, model))),
                         SizedBox(width: 10),
-                        Expanded(flex: 3, child: DefaultButton(text: 'Cập nhật thông tin', color: kPrimaryColor, press: () async => submitFunc(context))),
+                        Expanded(flex: 3, child: DefaultButton(text: 'Cập nhật thông tin', icon: Icons.check_rounded, color: kPrimaryColor, press: () async => submitFunc(context))),
                       ],
                     ),
                   ],
