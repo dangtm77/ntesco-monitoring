@@ -158,23 +158,30 @@ class _BodyPageState extends State<Body> {
             _header(context),
             isOnline ? _searchBar(context) : SizedBox.shrink(),
             _listAll(context),
-            Container(
-              height: _isLoading ? 30.0 : 0,
-              color: Colors.transparent,
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      child: CircularProgressIndicator(
-                        color: kPrimaryColor,
-                      ),
-                      height: 10.0,
-                      width: 10.0,
-                    ),
-                    SizedBox(width: 10.0),
-                    Text("Đang tải thêm $itemPerPage dòng dữ liệu...")
-                  ],
+            AnimatedOpacity(
+              opacity: _isLoading ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 300),
+              child: Container(
+                height: 30.0,
+                color: kPrimaryColor,
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                          height: 10.0,
+                          width: 10.0),
+                      SizedBox(width: 10.0),
+                      Text(
+                        "Đang tải thêm $itemPerPage dòng dữ liệu...",
+                        style: TextStyle(color: Colors.white, fontSize: kSmallFontSize),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -193,14 +200,19 @@ class _BodyPageState extends State<Body> {
         onTap: () => Navigator.pushNamed(context, HomeScreen.routeName),
         child: Stack(
           clipBehavior: Clip.none,
-          children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
+          children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 25.0)],
         ),
       ),
       buttonRight: IconButton(
         enableFeedback: true,
         color: (_projectCurrent != 0) ? kPrimaryColor : Colors.grey,
-        icon: Icon(Icons.addchart_outlined, size: 30.0),
-        onPressed: () => (_projectCurrent != 0) ? showModalBottomSheet(context: context, builder: (_) => _selectSystemForCreate(_)) : null,
+        icon: Icon(Icons.addchart_outlined, size: 25.0),
+        onPressed: () => (_projectCurrent != 0)
+            ? showModalBottomSheet(
+                context: context,
+                builder: (_) => _selectSystemForCreate(_),
+              )
+            : null,
       ),
     );
   }
@@ -221,6 +233,7 @@ class _BodyPageState extends State<Body> {
               }
             });
           },
+          style: TextStyle(fontSize: kNormalFontSize),
           decoration: InputDecoration(
               filled: true,
               fillColor: Colors.grey.shade100,
@@ -264,7 +277,7 @@ class _BodyPageState extends State<Body> {
               ),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
               hintStyle: TextStyle(fontSize: 15, color: Colors.grey.shade500),
-              hintText: "Nhập từ khóa để tìm kiếm..."),
+              hintText: "common.text_input_forsearch_hint".tr()),
         ),
       ),
     );
@@ -315,7 +328,7 @@ class _BodyPageState extends State<Body> {
                     flex: 4,
                     child: DefaultButton(
                       icon: Icons.restart_alt,
-                      text: "Đặt lại",
+                      text: "button.reset".tr(),
                       color: kTextColor,
                       press: () {
                         setState(() {});
@@ -328,7 +341,7 @@ class _BodyPageState extends State<Body> {
                     flex: 6,
                     child: DefaultButton(
                       icon: Icons.filter_alt_rounded,
-                      text: "Lọc dữ liệu",
+                      text: "button.filter".tr(),
                       press: () {
                         setState(() {
                           _isLoading = false;
@@ -374,7 +387,7 @@ class _BodyPageState extends State<Body> {
                     if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
                     if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !_isLoading) return LoadingWidget();
                     if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty))
-                      return NoDataWidget(subtitle: "Vui lòng kiểm tra lại điều kiện lọc hoặc liên hệ trực tiếp đến quản trị viên...");
+                      return NoDataWidget(subtitle: "Vui lòng kiểm tra lại điều kiện lọc...", button: OutlinedButton.icon(onPressed: _refresh, icon: Icon(Ionicons.refresh, size: 22.0), label: Text('Refresh', style: TextStyle(fontSize: kNormalFontSize))));
                     else
                       return Padding(
                         padding: EdgeInsets.symmetric(
@@ -427,12 +440,11 @@ class _BodyPageState extends State<Body> {
               mainAxisSize: MainAxisSize.min,
               children: <ListTile>[
                 ListTile(
-                  trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
                   title: Row(
                     children: [
-                      Icon(Ionicons.create_outline, color: kPrimaryColor),
+                      Icon(Ionicons.create_outline, color: kPrimaryColor, size: 18),
                       SizedBox(width: 10.0),
-                      Text('Xem & chỉnh sửa thông tin', style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+                      Text('Xem & chỉnh sửa thông tin', style: TextStyle(color: kPrimaryColor, fontSize: kNormalFontSize)),
                     ],
                   ),
                   onTap: () {
@@ -441,12 +453,11 @@ class _BodyPageState extends State<Body> {
                   },
                 ),
                 ListTile(
-                  trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
                   title: Row(
                     children: [
-                      Icon(Ionicons.trash_bin_outline, color: Colors.red),
+                      Icon(Ionicons.trash_bin_outline, color: Colors.red, size: 18),
                       SizedBox(width: 10.0),
-                      Text('Hủy bỏ thông tin', style: TextStyle(color: Colors.red, fontSize: 18)),
+                      Text('Hủy bỏ thông tin', style: TextStyle(color: Colors.red, fontSize: kNormalFontSize)),
                     ],
                   ),
                   onTap: () => deleteFunc(item.id),
@@ -456,41 +467,53 @@ class _BodyPageState extends State<Body> {
           ),
         ),
       ),
-      title: Column(
+      title: Text(
+        "${item.code}",
+        style: TextStyle(
+          fontSize: kNormalFontSize,
+          color: kPrimaryColor,
+          fontWeight: FontWeight.bold,
+          fontStyle: FontStyle.normal,
+        ),
+      ),
+      subtitle: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text.rich(TextSpan(
-            style: TextStyle(fontSize: 15, fontStyle: FontStyle.normal),
-            children: [
-              TextSpan(text: "${item.code}", style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold)),
-              WidgetSpan(child: SizedBox(width: 5.0)),
-              TextSpan(text: " | ", style: TextStyle(color: kPrimaryColor)),
-              WidgetSpan(child: SizedBox(width: 5.0)),
-              TextSpan(text: "${item.statusInfo.text}", style: TextStyle(color: item.status == 0 ? kWarningColor : kPrimaryColor)),
-              WidgetSpan(child: SizedBox(width: 5.0)),
-            ],
-          )),
           SizedBox(height: 5.0),
-          Text.rich(TextSpan(
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal),
-            children: [
-              WidgetSpan(child: Icon(Icons.tag, size: 18, color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 3.0)),
-              TextSpan(text: "${item.id}", style: TextStyle(color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 15.0)),
-              WidgetSpan(child: Icon(Icons.label_important_rounded, size: 18, color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 3.0)),
-              TextSpan(text: "${item.typeInfo?.text ?? "Chưa xác định"}", style: TextStyle(color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 15.0)),
-              WidgetSpan(child: Icon(Icons.person_add_alt_1, size: 18, color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 3.0)),
-              TextSpan(text: "${StringHelper.toShortName(item.staffInfo.hoTen)}", style: TextStyle(color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 15.0)),
-              WidgetSpan(child: Icon(Icons.calendar_month, size: 18, color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 3.0)),
-              TextSpan(text: "${DateFormat("hh:mm dd/MM/yy").format(item.dateCreate!)}", style: TextStyle(color: kTextColor)),
-            ],
-          )),
+          RichText(
+            text: TextSpan(
+              style: TextStyle(fontSize: kSmallFontSize, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal),
+              children: [
+                WidgetSpan(child: Icon(Icons.tag, size: 15, color: kTextColor)),
+                WidgetSpan(child: SizedBox(width: 2.0)),
+                TextSpan(text: "${item.id}", style: TextStyle(color: kTextColor)),
+                WidgetSpan(child: SizedBox(width: 15.0)),
+                WidgetSpan(child: Icon(Icons.label_important_rounded, size: 15, color: kTextColor)),
+                WidgetSpan(child: SizedBox(width: 2.0)),
+                TextSpan(text: "${item.typeInfo?.text ?? "Chưa xác định"}", style: TextStyle(color: kTextColor)),
+                WidgetSpan(child: SizedBox(width: 15.0)),
+                WidgetSpan(child: Icon(Icons.label_important_rounded, size: 15, color: kTextColor)),
+                WidgetSpan(child: SizedBox(width: 2.0)),
+                TextSpan(text: "${item.statusInfo.text ?? "Chưa xác định"}", style: TextStyle(color: kTextColor)),
+              ],
+            ),
+          ),
+          SizedBox(height: 5.0),
+          RichText(
+            text: TextSpan(
+              style: TextStyle(fontSize: kSmallFontSize, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal),
+              children: [
+                WidgetSpan(child: Icon(Icons.person_add_alt_1, size: 15, color: kTextColor)),
+                WidgetSpan(child: SizedBox(width: 2.0)),
+                TextSpan(text: "${StringHelper.toShortName(item.staffInfo.hoTen)}", style: TextStyle(color: kTextColor)),
+                WidgetSpan(child: SizedBox(width: 15.0)),
+                WidgetSpan(child: Icon(Icons.calendar_month, size: 15, color: kTextColor)),
+                WidgetSpan(child: SizedBox(width: 2.0)),
+                TextSpan(text: "${DateFormat("hh:mm dd/MM/yy").format(item.dateCreate!)}", style: TextStyle(color: kTextColor)),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -505,7 +528,7 @@ class _BodyPageState extends State<Body> {
             alignment: Alignment.center,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Text("Vui lòng chọn hệ thống cần thực hiện bảo trì...", style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w700)),
+              child: Text("Vui lòng chọn hệ thống...", style: TextStyle(fontSize: kLargeFontSize, color: kPrimaryColor, fontWeight: FontWeight.w700)),
             ),
           ),
           Expanded(
@@ -516,7 +539,7 @@ class _BodyPageState extends State<Body> {
                 if (snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) return LoadingWidget();
                 if (!snapshot.hasData && !snapshot.data!.data.isNotEmpty)
                   return NoDataWidget(
-                    subtitle: "Vui lòng kiểm tra lại điều kiện lọc hoặc liên hệ trực tiếp đến quản trị viên...",
+                    subtitle: "Vui lòng kiểm tra lại điều kiện lọc",
                     button: OutlinedButton.icon(onPressed: _refresh, icon: Icon(Ionicons.refresh, size: 24.0), label: Text('Refresh')),
                   );
                 else
@@ -528,13 +551,37 @@ class _BodyPageState extends State<Body> {
                         return ListTile(
                           title: Text(
                             element.name.toString() + (element.otherName != null ? (' (' + element.otherName.toString() + ')') : ''),
-                            style: const TextStyle(fontSize: 15.0, color: kPrimaryColor, fontWeight: FontWeight.w600),
+                            style: const TextStyle(fontSize: kNormalFontSize, color: kPrimaryColor, fontWeight: FontWeight.w600),
                           ),
-                          subtitle: Text(
-                            "Mã ${element.code.toString()} - Ngày bàn giao ${DateFormat("dd/MM/yyyy").format(element.dateAcceptance!)}",
-                            style: const TextStyle(fontSize: 13.0),
+                          subtitle: Container(
+                            padding: EdgeInsets.only(left: 10.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 5.0),
+                                RichText(
+                                  text: TextSpan(
+                                    style: TextStyle(fontSize: kSmallFontSize, color: kTextColor),
+                                    children: [
+                                      WidgetSpan(child: Icon(Icons.label_important_outline_rounded, size: kLargeFontSize)),
+                                      WidgetSpan(child: SizedBox(width: 3.0)),
+                                      TextSpan(text: "Mã hiệu: ${element.code.toString()}"),
+                                    ],
+                                  ),
+                                ),
+                                RichText(
+                                  text: TextSpan(
+                                    style: TextStyle(fontSize: kSmallFontSize, color: kTextColor),
+                                    children: [
+                                      WidgetSpan(child: Icon(Icons.label_important_outline_rounded, size: kLargeFontSize)),
+                                      WidgetSpan(child: SizedBox(width: 3.0)),
+                                      TextSpan(text: "Ngày bàn giao: ${DateFormat("dd/MM/yyyy").format(element.dateAcceptance!)}"),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          trailing: Icon(Ionicons.arrow_forward, color: kSecondaryColor, size: 18.0),
                           onTap: () {
                             Navigator.pop(context);
                             showCupertinoModalBottomSheet(

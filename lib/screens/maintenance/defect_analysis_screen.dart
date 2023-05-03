@@ -8,6 +8,6 @@ class DefectAnalysisScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return Scaffold(drawerScrimColor: Colors.transparent, body: Body());
+    return Scaffold(body: Body());
   }
 }

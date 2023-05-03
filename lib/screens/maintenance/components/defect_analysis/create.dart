@@ -89,7 +89,7 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
             onTap: () => Navigator.pop(context),
             child: Stack(
               clipBehavior: Clip.none,
-              children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
+              children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 25.0)],
             ),
           ),
           buttonRight: InkWell(
@@ -97,7 +97,7 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
             onTap: () async => submitFunc(context),
             child: Stack(
               clipBehavior: Clip.none,
-              children: [Icon(Ionicons.save_outline, color: kPrimaryColor, size: 30.0)],
+              children: [Icon(Icons.save_outlined, color: kPrimaryColor, size: 25.0)],
             ),
           ),
         ),
@@ -151,7 +151,7 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
                       DefaultButton(
                         press: () => _formKey.currentState?.reset(),
                         icon: Icons.restart_alt_outlined,
-                        text: "Đặt lại mặc định",
+                        text: "button.reset".tr(),
                         color: kTextColor,
                       ),
                     ],
@@ -180,23 +180,16 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
                 decoration: InputDecoration(
                   label: Text.rich(TextSpan(children: [TextSpan(text: 'Dự án / Công trình'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
                   hintText: "Vui lòng chọn thông tin...",
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () => _formKey.currentState!.fields['idProject']?.didChange(null),
-                  ),
                 ).applyDefaults(inputDecorationTheme()),
                 items: snapshot.data!.data
                     .map(
                       (item) => DropdownMenuItem(
                         value: item.id,
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(text: "${item.name}", style: TextStyle(fontWeight: FontWeight.w600)),
-                              WidgetSpan(child: SizedBox(width: 5.0)),
-                              TextSpan(text: "(${item.location})", style: TextStyle(fontStyle: FontStyle.italic)),
-                            ],
-                          ),
+                        child: Text(
+                          "${item.name} (${item.location})",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: kNormalFontSize),
                         ),
                       ),
                     )
@@ -231,23 +224,16 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
                 decoration: InputDecoration(
                   label: Text.rich(TextSpan(children: [TextSpan(text: 'Hệ thống cần phân tích'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
                   hintText: "Vui lòng chọn thông tin...",
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () => _formKey.currentState!.fields['idSystem']?.didChange(null),
-                  ),
                 ).applyDefaults(inputDecorationTheme()),
                 items: snapshot.data!.data
                     .map(
                       (item) => DropdownMenuItem(
                         value: item.id,
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(text: "${item.name}", style: TextStyle(fontWeight: FontWeight.w600)),
-                              WidgetSpan(child: SizedBox(width: 5.0)),
-                              TextSpan(text: "(Ngày bàn giao ${DateFormat("dd/MM/yyyy").format(item.dateAcceptance!)})", style: TextStyle(fontStyle: FontStyle.italic)),
-                            ],
-                          ),
+                        child: Text(
+                          "${item.name} (Bàn giao ${DateFormat("dd/MM/yyyy").format(item.dateAcceptance!)})",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: kNormalFontSize),
                         ),
                       ),
                     )
@@ -263,6 +249,7 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
             label: Text.rich(TextSpan(children: [TextSpan(text: 'Mã hiệu'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
             hintText: "Vui lòng nhập thông tin...",
           ).applyDefaults(inputDecorationTheme()),
+          style: TextStyle(fontSize: kNormalFontSize),
           validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
       case "analysisDate":
@@ -281,6 +268,7 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
               },
             ),
           ).applyDefaults(inputDecorationTheme()),
+          style: TextStyle(fontSize: kNormalFontSize),
           validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
       case "analysisBy":
@@ -297,25 +285,19 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
                 menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
                 decoration: InputDecoration(
-                    label: Text.rich(TextSpan(children: [TextSpan(text: 'Nhân sự phân tích'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
-                    hintText: "Vui lòng chọn thông tin...",
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () => _formKey.currentState!.fields['analysisByForm']?.didChange(null),
-                    )).applyDefaults(inputDecorationTheme()),
+                  label: Text.rich(TextSpan(children: [TextSpan(text: 'Nhân sự phân tích'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
+                  hintText: "Vui lòng chọn thông tin...",
+                ).applyDefaults(inputDecorationTheme()),
                 items: snapshot.data!.data
                     .where((x) => x.idTrangThai != 3)
                     .map(
                       (item) => DropdownMenuItem(
                         value: item.username.toString(),
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(text: "${item.hoTen}", style: TextStyle(fontWeight: FontWeight.w600)),
-                              WidgetSpan(child: SizedBox(width: 5.0)),
-                              TextSpan(text: "(${item.chucDanh})", style: TextStyle(fontStyle: FontStyle.italic)),
-                            ],
-                          ),
+                        child: Text(
+                          "${item.hoTen} (${item.chucDanh})",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: kNormalFontSize),
                         ),
                       ),
                     )
@@ -331,6 +313,7 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
             labelText: 'Hiện trạng',
             hintText: "Vui lòng nhập thông tin...",
           ).applyDefaults(inputDecorationTheme()),
+          style: TextStyle(fontSize: kNormalFontSize),
         );
       case "maintenanceStaff":
         return FutureBuilder(
@@ -347,24 +330,21 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
                 decoration: InputDecoration(
                   labelText: 'Đại diện bộ phận Bảo trì',
                   hintText: "Vui lòng chọn thông tin...",
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () => _formKey.currentState!.fields['maintenanceStaff']?.didChange(null),
-                  ),
                 ).applyDefaults(inputDecorationTheme()),
                 items: snapshot.data!.data
                     .where((x) => x.idTrangThai != 3 && x.idRootPhongBan == 49)
                     .map(
                       (item) => DropdownMenuItem(
                         value: item.username.toString(),
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(text: "${item.hoTen}", style: TextStyle(fontWeight: FontWeight.w600)),
-                              WidgetSpan(child: SizedBox(width: 5.0)),
-                              TextSpan(text: "(${item.chucDanh})", style: TextStyle(fontStyle: FontStyle.italic)),
-                            ],
-                          ),
+                        child: Row(
+                          children: [
+                            Text(
+                              "${item.hoTen} (${item.chucDanh})",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: kNormalFontSize),
+                            )
+                          ],
                         ),
                       ),
                     )
@@ -386,25 +366,19 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
                 name: 'qcStaff',
                 menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 decoration: InputDecoration(
-                    labelText: 'Đại diện bộ phận QC',
-                    hintText: "Vui lòng chọn thông tin...",
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () => _formKey.currentState!.fields['qcStaff']?.didChange(null),
-                    )).applyDefaults(inputDecorationTheme()),
+                  labelText: 'Đại diện bộ phận QC',
+                  hintText: "Vui lòng chọn thông tin...",
+                ).applyDefaults(inputDecorationTheme()),
                 items: snapshot.data!.data
                     .where((x) => x.idTrangThai != 3 && x.idRootPhongBan == 28)
                     .map(
                       (item) => DropdownMenuItem(
                         value: item.username.toString(),
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(text: "${item.hoTen}", style: TextStyle(fontWeight: FontWeight.w600)),
-                              WidgetSpan(child: SizedBox(width: 5.0)),
-                              TextSpan(text: "(${item.chucDanh})", style: TextStyle(fontStyle: FontStyle.italic)),
-                            ],
-                          ),
+                        child: Text(
+                          "${item.hoTen} (${item.chucDanh})",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: kNormalFontSize),
                         ),
                       ),
                     )
@@ -426,25 +400,19 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
                 name: 'cncStaff',
                 menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 decoration: InputDecoration(
-                    labelText: 'Đại diện bộ phận C&C',
-                    hintText: "Vui lòng chọn thông tin...",
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () => _formKey.currentState!.fields['cncStaff']?.didChange(null),
-                    )).applyDefaults(inputDecorationTheme()),
+                  labelText: 'Đại diện bộ phận C&C',
+                  hintText: "Vui lòng chọn thông tin...",
+                ).applyDefaults(inputDecorationTheme()),
                 items: snapshot.data!.data
                     .where((x) => x.idTrangThai != 3 && x.idRootPhongBan == 41)
                     .map(
                       (item) => DropdownMenuItem(
                         value: item.username.toString(),
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(text: "${item.hoTen}", style: TextStyle(fontWeight: FontWeight.w600)),
-                              WidgetSpan(child: SizedBox(width: 5.0)),
-                              TextSpan(text: "(${item.chucDanh})", style: TextStyle(fontStyle: FontStyle.italic)),
-                            ],
-                          ),
+                        child: Text(
+                          "${item.hoTen} (${item.chucDanh})",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: kNormalFontSize),
                         ),
                       ),
                     )

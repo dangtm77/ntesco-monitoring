@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ntesco_smart_monitoring/models/Login.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../size_config.dart';
 import 'change_language.dart';
 
 class MainDrawer extends StatefulWidget {
@@ -36,6 +37,14 @@ class _MainDrawerState extends State<MainDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    var MenuList = [
+      {
+        "icon": Ionicons.home_outline,
+        "text": "menu.home".tr(),
+        "press": () => Navigator.pushNamed(context, HomeScreen.routeName),
+      },
+    ];
+
     return new FutureBuilder(
       future: userCurrent,
       builder: (_, AsyncSnapshot<LoginResponseModel> snapshot) {
@@ -71,17 +80,17 @@ class _MainDrawerState extends State<MainDrawer> {
                         SizedBox(height: 5.0),
                         Text(
                           "${userCurrent.hoTen}",
-                          style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w800, color: kPrimaryColor),
+                          style: TextStyle(fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.w800, color: kPrimaryColor),
                         ),
                         SizedBox(height: 1.0),
                         Text(
                           "${userCurrent.chucDanh}",
-                          style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400, color: kSecondaryColor),
+                          style: TextStyle(fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.w400, color: kSecondaryColor),
                         ),
                         SizedBox(height: 1.0),
                         Text(
                           "${userCurrent.phongBan}",
-                          style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400, color: kSecondaryColor),
+                          style: TextStyle(fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.w400, color: kSecondaryColor),
                         ),
                       ],
                     ),
@@ -92,9 +101,13 @@ class _MainDrawerState extends State<MainDrawer> {
                   onTap: () => Navigator.pushNamed(context, HomeScreen.routeName),
                   title: Row(
                     children: [
-                      Icon(Ionicons.home_outline, color: kPrimaryColor),
-                      SizedBox(width: 15),
-                      Text("menu.home".tr(), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w600)),
+                      Icon(
+                        Ionicons.home_outline,
+                        color: kPrimaryColor,
+                        size: getProportionateScreenWidth(15),
+                      ),
+                      SizedBox(width: 10),
+                      Text("menu.home".tr(), style: TextStyle(fontSize: getProportionateScreenWidth(13), color: kPrimaryColor, fontWeight: FontWeight.w600)),
                     ],
                   ),
                 ),
@@ -102,19 +115,37 @@ class _MainDrawerState extends State<MainDrawer> {
                   onTap: () => Navigator.pushNamed(context, ListOfDeXuatScreen.routeName),
                   title: Row(
                     children: [
-                      Icon(Ionicons.git_compare_outline, color: kPrimaryColor),
-                      SizedBox(width: 15),
-                      Text("menu.phieudexuat".tr(), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w600)),
+                      Icon(
+                        Ionicons.git_compare_outline,
+                        color: kPrimaryColor,
+                        size: getProportionateScreenWidth(15),
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        "menu.phieudexuat".tr(),
+                        style: TextStyle(
+                          fontSize: kNormalFontSize,
+                          color: kPrimaryColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 ExpansionTile(
-                  initiallyExpanded: true,
+                  initiallyExpanded: false,
                   title: Row(
                     children: [
-                      Icon(Ionicons.construct_outline, color: kPrimaryColor),
-                      SizedBox(width: 15),
-                      Text("menu.maintenance".tr(), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w600)),
+                      Icon(Ionicons.construct_outline, color: kPrimaryColor, size: 15.0),
+                      SizedBox(width: 10),
+                      Text(
+                        "menu.maintenance".tr(),
+                        style: TextStyle(
+                          fontSize: kNormalFontSize,
+                          color: kPrimaryColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ],
                   ),
                   children: <Widget>[
@@ -124,9 +155,9 @@ class _MainDrawerState extends State<MainDrawer> {
                         onTap: () => Navigator.pushNamed(context, PlanScreen.routeName),
                         title: Row(
                           children: [
-                            Icon(Ionicons.newspaper_outline, color: kPrimaryColor),
-                            SizedBox(width: 15),
-                            Text("Kế hoạch bảo trì", style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.normal)),
+                            Icon(Ionicons.newspaper_outline, color: kPrimaryColor, size: 15.0),
+                            SizedBox(width: 10),
+                            Text("Kế hoạch bảo trì", style: TextStyle(fontSize: kNormalFontSize, color: kPrimaryColor)),
                           ],
                         ),
                       ),
@@ -137,9 +168,9 @@ class _MainDrawerState extends State<MainDrawer> {
                         onTap: () => Navigator.pushNamed(context, MaintenanceScreen.routeName),
                         title: Row(
                           children: [
-                            Icon(Ionicons.build_outline, color: kPrimaryColor),
-                            SizedBox(width: 15),
-                            Text("Bảo trì hệ thống", style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.normal)),
+                            Icon(Ionicons.build_outline, color: kPrimaryColor, size: 15),
+                            SizedBox(width: 10),
+                            Text("Bảo trì hệ thống", style: TextStyle(fontSize: kNormalFontSize, color: kPrimaryColor)),
                           ],
                         ),
                       ),
@@ -150,9 +181,9 @@ class _MainDrawerState extends State<MainDrawer> {
                         onTap: () => Navigator.pushNamed(context, DefectAnalysisScreen.routeName),
                         title: Row(
                           children: [
-                            Icon(Ionicons.shield_checkmark_outline, color: kPrimaryColor),
-                            SizedBox(width: 15),
-                            Text("Phân tích sự cố", style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.normal)),
+                            Icon(Ionicons.shield_checkmark_outline, color: kPrimaryColor, size: 15.0),
+                            SizedBox(width: 10),
+                            Text("Phân tích sự cố", style: TextStyle(fontSize: kNormalFontSize, color: kPrimaryColor)),
                           ],
                         ),
                       ),
@@ -165,9 +196,20 @@ class _MainDrawerState extends State<MainDrawer> {
                   },
                   title: Row(
                     children: [
-                      Icon(Ionicons.log_out_outline, color: kPrimaryColor),
-                      SizedBox(width: 15),
-                      Text("menu.log_out".tr(), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w600)),
+                      Icon(
+                        Ionicons.log_out_outline,
+                        color: kPrimaryColor,
+                        size: getProportionateScreenWidth(15),
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        "menu.log_out".tr(),
+                        style: TextStyle(
+                          fontSize: getProportionateScreenWidth(13),
+                          color: kPrimaryColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ],
                   ),
                 ),

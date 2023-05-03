@@ -26,3 +26,7 @@ double getProportionateScreenWidth(double inputWidth) {
   double screenWidth = SizeConfig.screenWidth;
   return (inputWidth / 375.0) * screenWidth;
 }
+
+bool isMobile() {
+  return (SizeConfig.screenWidth <= 600);
+}

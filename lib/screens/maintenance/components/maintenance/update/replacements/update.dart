@@ -1,18 +1,11 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:bmprogresshud/bmprogresshud.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-
-import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
@@ -21,7 +14,6 @@ import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:ntesco_smart_monitoring/theme.dart';
 
 import '../../../../../../components/default_button.dart';
-import '../../../../../../components/image_picker_options.dart';
 import '../../../../../../components/state_widget.dart';
 import '../../../../../../models/mt/SystemReportReplacementsModel.dart';
 import '../../../../../../repository/mt/systyem_report_replacements.dart';
@@ -78,15 +70,15 @@ class _UpdateBodyState extends State<UpdateBody> {
 
   Widget _header(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(top: 5),
       child: TopHeaderSub(
-        title: "CẬP NHẬT THÔNG TIN",
-        subtitle: "maintenance.defect_analysis_details.create_subtitle",
+        title: "Cập nhật thông tin".toUpperCase(),
         buttonLeft: InkWell(
           borderRadius: BorderRadius.circular(15),
           onTap: () => Navigator.pop(context),
           child: Stack(
             clipBehavior: Clip.none,
-            children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
+            children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 25.0)],
           ),
         ),
         buttonRight: InkWell(
@@ -94,7 +86,7 @@ class _UpdateBodyState extends State<UpdateBody> {
           onTap: () async => submitFunc(context),
           child: Stack(
             clipBehavior: Clip.none,
-            children: [Icon(Ionicons.save_outline, color: kPrimaryColor, size: 30.0)],
+            children: [Icon(Ionicons.save_outline, color: kPrimaryColor, size: 25.0)],
           ),
         ),
       ),
@@ -108,10 +100,9 @@ class _UpdateBodyState extends State<UpdateBody> {
       builder: (BuildContext context, AsyncSnapshot<SystemReportReplacementsModel> snapshot) {
         if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
         if (snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) return LoadingWidget();
-        if (!(snapshot.hasData && snapshot.data != null))
-          return NoDataWidget();
-        else
-          return _form(context, snapshot.data!);
+        if (!(snapshot.hasData && snapshot.data != null)) return NoDataWidget();
+
+        return _form(context, snapshot.data!);
       },
     ));
   }
@@ -137,6 +128,7 @@ class _UpdateBodyState extends State<UpdateBody> {
         },
         child: Column(
           children: <Widget>[
+            SizedBox(height: 10),
             Row(
               children: [
                 Expanded(child: editorForm("sortIndex"), flex: 2),

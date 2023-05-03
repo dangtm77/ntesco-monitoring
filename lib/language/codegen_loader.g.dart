@@ -16,12 +16,17 @@ class CodegenLoader extends AssetLoader{
 
   static const Map<String,dynamic> en_US = {
   "common": {
+    "text_input_forsearch_hint": "Input keyword for search...",
     "text_input_hint": "Please input values...",
     "text_select_hint": "Please select values...",
     "list_menu_button_update": "View & update info",
     "list_menu_button_delete": "Remove info",
     "list_menu_button_export": "Export report file",
     "list_menu_button_send_report": "Send report"
+  },
+  "button": {
+    "reset": "Reset",
+    "filter": "Filter"
   },
   "login": {
     "username_label": "Username",
@@ -58,8 +63,10 @@ class CodegenLoader extends AssetLoader{
   "maintenance": {
     "title": "Maintenance",
     "subtitle": "System maintenance of Projects",
-    "plan_title": "Maintenance plan",
-    "plan_subtitle": "Detailed maintenance plans of projects",
+    "plan": {
+      "title": "Maintenance plan",
+      "subtitle": "Detailed maintenance plans of projects"
+    },
     "defect_analysis": {
       "title": "Defect analysis",
       "subtitle": "Analysis and report defect of projects",
@@ -113,12 +120,17 @@ class CodegenLoader extends AssetLoader{
 };
 static const Map<String,dynamic> vi_VN = {
   "common": {
+    "text_input_forsearch_hint": "Nhập từ khoá để tìm kiếm...",
     "text_input_hint": "Vui lòng nhập thông tin...",
     "text_select_hint": "Vui lòng chọn thông tin...",
     "list_menu_button_update": "Xem & chỉnh sửa thông tin",
     "list_menu_button_delete": "Hủy & xóa bỏ thông tin",
     "list_menu_button_export": "Xuất file báo cáo",
     "list_menu_button_send_report": "Gửi báo cáo"
+  },
+  "button": {
+    "reset": "Đặt lại",
+    "filter": "Lọc dữ liệu"
   },
   "login": {
     "username_label": "Tên đăng nhập",
@@ -155,8 +167,10 @@ static const Map<String,dynamic> vi_VN = {
   "maintenance": {
     "title": "Bảo trì dự án",
     "subtitle": "Bảo trì các hệ thống của dự án",
-    "plan_title": "Kế hoạch bảo trì",
-    "plan_subtitle": "Chi tiết kế hoạch bảo trì của các dự án",
+    "plan": {
+      "title": "Kế hoạch bảo trì",
+      "subtitle": "Chi tiết kế hoạch bảo trì của các dự án"
+    },
     "defect_analysis": {
       "title": "Phân tích sự cố",
       "subtitle": "Phân tích và báo cáo sự cố của hệ thống",

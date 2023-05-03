@@ -158,9 +158,9 @@ class _SummaryPageViewState extends State<SummaryPageView> {
                     SizedBox(height: 20),
                     Row(
                       children: [
-                        Expanded(flex: 2, child: DefaultButton(text: 'Hủy bỏ thông tin', icon: Icons.delete_forever, color: Colors.red, press: () async => deleteFunc(context, model))),
+                        Expanded(child: DefaultButton(text: 'Hủy bỏ', icon: Icons.delete_forever, color: Colors.red, press: () async => deleteFunc(context, model))),
                         SizedBox(width: 10),
-                        Expanded(flex: 3, child: DefaultButton(text: 'Cập nhật thông tin', icon: Icons.check_rounded, color: kPrimaryColor, press: () async => submitFunc(context))),
+                        Expanded(child: DefaultButton(text: 'Cập nhật', icon: Icons.check_rounded, color: kPrimaryColor, press: () async => submitFunc(context))),
                       ],
                     ),
                   ],
@@ -191,23 +191,16 @@ class _SummaryPageViewState extends State<SummaryPageView> {
                 decoration: InputDecoration(
                   label: Text.rich(TextSpan(children: [TextSpan(text: 'Dự án / Công trình'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
                   hintText: "Vui lòng chọn thông tin...",
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () => _formKey.currentState!.fields['idProject']?.didChange(null),
-                  ),
                 ).applyDefaults(inputDecorationTheme()),
                 items: snapshot.data!.data
                     .map(
                       (item) => DropdownMenuItem(
                         value: item.id,
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(text: "${item.name}", style: TextStyle(fontWeight: FontWeight.w600)),
-                              WidgetSpan(child: SizedBox(width: 5.0)),
-                              TextSpan(text: "(${item.location})", style: TextStyle(fontStyle: FontStyle.italic)),
-                            ],
-                          ),
+                        child: Text(
+                          "${item.name} (${item.location})",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: kNormalFontSize),
                         ),
                       ),
                     )
@@ -231,25 +224,20 @@ class _SummaryPageViewState extends State<SummaryPageView> {
                 name: 'idSystem',
                 menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 decoration: InputDecoration(
-                  label: Text.rich(TextSpan(children: [TextSpan(text: 'Hệ thống cần phân tích'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
-                  hintText: "Vui lòng chọn thông tin...",
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () => _formKey.currentState!.fields['idSystem']?.didChange(null),
+                  label: Text.rich(
+                    TextSpan(children: [TextSpan(text: 'Hệ thống cần phân tích'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))]),
                   ),
+                  hintText: "Vui lòng chọn thông tin...",
                 ).applyDefaults(inputDecorationTheme()),
                 items: snapshot.data!.data
                     .map(
                       (item) => DropdownMenuItem(
                         value: item.id,
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(text: "${item.name}", style: TextStyle(fontWeight: FontWeight.w600)),
-                              WidgetSpan(child: SizedBox(width: 5.0)),
-                              TextSpan(text: "(Ngày bàn giao ${DateFormat("dd/MM/yyyy").format(item.dateAcceptance!)})", style: TextStyle(fontStyle: FontStyle.italic)),
-                            ],
-                          ),
+                        child: Text(
+                          "${item.name} (Bàn giao ${DateFormat("dd/MM/yyyy").format(item.dateAcceptance!)})",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: kNormalFontSize),
                         ),
                       ),
                     )
@@ -266,6 +254,7 @@ class _SummaryPageViewState extends State<SummaryPageView> {
             labelText: 'Mã hiệu',
             hintText: "Vui lòng nhập thông tin...",
           ).applyDefaults(inputDecorationTheme()),
+          style: TextStyle(fontSize: kNormalFontSize),
           validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
       case "analysisDate":
@@ -277,13 +266,8 @@ class _SummaryPageViewState extends State<SummaryPageView> {
           decoration: InputDecoration(
             labelText: 'Ngày phân tích',
             hintText: "Vui lòng chọn thông tin...",
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () {
-                _formKey.currentState!.fields['analysisDate']?.didChange(null);
-              },
-            ),
           ).applyDefaults(inputDecorationTheme()),
+          style: TextStyle(fontSize: kNormalFontSize),
           validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
       case "analysisBy":
@@ -300,25 +284,19 @@ class _SummaryPageViewState extends State<SummaryPageView> {
                 menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
                 decoration: InputDecoration(
-                    labelText: 'Nhân sự phân tích',
-                    hintText: "Vui lòng chọn thông tin...",
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () => _formKey.currentState!.fields['analysisByForm']?.didChange(null),
-                    )).applyDefaults(inputDecorationTheme()),
+                  labelText: 'Nhân sự phân tích',
+                  hintText: "Vui lòng chọn thông tin...",
+                ).applyDefaults(inputDecorationTheme()),
                 items: snapshot.data!.data
                     .where((x) => x.idTrangThai != 3)
                     .map(
                       (item) => DropdownMenuItem(
                         value: item.username.toString(),
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(text: "${item.hoTen}", style: TextStyle(fontWeight: FontWeight.w600)),
-                              WidgetSpan(child: SizedBox(width: 5.0)),
-                              TextSpan(text: "(${item.chucDanh})", style: TextStyle(fontStyle: FontStyle.italic)),
-                            ],
-                          ),
+                        child: Text(
+                          "${item.hoTen} (${item.chucDanh})",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: kNormalFontSize),
                         ),
                       ),
                     )
@@ -334,6 +312,7 @@ class _SummaryPageViewState extends State<SummaryPageView> {
             labelText: 'Hiện trạng',
             hintText: "Vui lòng nhập thông tin...",
           ).applyDefaults(inputDecorationTheme()),
+          style: TextStyle(fontSize: kNormalFontSize),
         );
       case "maintenanceStaff":
         return FutureBuilder(
@@ -350,24 +329,17 @@ class _SummaryPageViewState extends State<SummaryPageView> {
                 decoration: InputDecoration(
                   labelText: 'Đại diện bộ phận Bảo trì',
                   hintText: "Vui lòng chọn thông tin...",
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () => _formKey.currentState!.fields['maintenanceStaff']?.didChange(null),
-                  ),
                 ).applyDefaults(inputDecorationTheme()),
                 items: snapshot.data!.data
                     .where((x) => x.idTrangThai != 3)
                     .map(
                       (item) => DropdownMenuItem(
                         value: item.username.toString(),
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(text: "${item.hoTen}", style: TextStyle(fontWeight: FontWeight.w600)),
-                              WidgetSpan(child: SizedBox(width: 5.0)),
-                              TextSpan(text: "(${item.chucDanh})", style: TextStyle(fontStyle: FontStyle.italic)),
-                            ],
-                          ),
+                        child: Text(
+                          "${item.hoTen} (${item.chucDanh})",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: kNormalFontSize),
                         ),
                       ),
                     )
@@ -389,25 +361,19 @@ class _SummaryPageViewState extends State<SummaryPageView> {
                 name: 'qcStaff',
                 menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 decoration: InputDecoration(
-                    labelText: 'Đại diện bộ phận QC',
-                    hintText: "Vui lòng chọn thông tin...",
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () => _formKey.currentState!.fields['qcStaff']?.didChange(null),
-                    )).applyDefaults(inputDecorationTheme()),
+                  labelText: 'Đại diện bộ phận QC',
+                  hintText: "Vui lòng chọn thông tin...",
+                ).applyDefaults(inputDecorationTheme()),
                 items: snapshot.data!.data
                     .where((x) => x.idTrangThai != 3)
                     .map(
                       (item) => DropdownMenuItem(
                         value: item.username.toString(),
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(text: "${item.hoTen}", style: TextStyle(fontWeight: FontWeight.w600)),
-                              WidgetSpan(child: SizedBox(width: 5.0)),
-                              TextSpan(text: "(${item.chucDanh})", style: TextStyle(fontStyle: FontStyle.italic)),
-                            ],
-                          ),
+                        child: Text(
+                          "${item.hoTen} (${item.chucDanh})",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: kNormalFontSize),
                         ),
                       ),
                     )
@@ -429,25 +395,19 @@ class _SummaryPageViewState extends State<SummaryPageView> {
                 name: 'cncStaff',
                 menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 decoration: InputDecoration(
-                    labelText: 'Đại diện bộ phận C&C',
-                    hintText: "Vui lòng chọn thông tin...",
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () => _formKey.currentState!.fields['cncStaff']?.didChange(null),
-                    )).applyDefaults(inputDecorationTheme()),
+                  labelText: 'Đại diện bộ phận C&C',
+                  hintText: "Vui lòng chọn thông tin...",
+                ).applyDefaults(inputDecorationTheme()),
                 items: snapshot.data!.data
                     .where((x) => x.idTrangThai != 3)
                     .map(
                       (item) => DropdownMenuItem(
                         value: item.username.toString(),
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(text: "${item.hoTen}", style: TextStyle(fontWeight: FontWeight.w600)),
-                              WidgetSpan(child: SizedBox(width: 5.0)),
-                              TextSpan(text: "(${item.chucDanh})", style: TextStyle(fontStyle: FontStyle.italic)),
-                            ],
-                          ),
+                        child: Text(
+                          "${item.hoTen} (${item.chucDanh})",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: kNormalFontSize),
                         ),
                       ),
                     )

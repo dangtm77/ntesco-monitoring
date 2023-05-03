@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
 import 'package:http/http.dart' as http;
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
@@ -129,6 +128,9 @@ class _BodyPageState extends State<Body> {
     Response response = await Maintenance.DefectAnalysis_GetList(options.toMap());
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       DefectAnalysisModels result = DefectAnalysisModels.fromJson(jsonDecode(response.body));
+      setState(() {
+        _isLoading = false;
+      });
       return result;
     } else
       throw Exception(response.body);
@@ -192,22 +194,31 @@ class _BodyPageState extends State<Body> {
             _header(context),
             isOnline ? _searchBar(context) : SizedBox.shrink(),
             _listAll(context),
-            Container(
-              height: _isLoading ? 30.0 : 0,
-              color: Colors.transparent,
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                        child: CircularProgressIndicator(
-                          color: kPrimaryColor,
-                        ),
-                        height: 10.0,
-                        width: 10.0),
-                    SizedBox(width: 10.0),
-                    Text("Đang tải thêm $itemPerPage dòng dữ liệu...")
-                  ],
+            AnimatedOpacity(
+              opacity: _isLoading ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 300),
+              child: Container(
+                // height: _isLoading ? 30.0 : 0,
+                height: 30.0,
+                color: kPrimaryColor,
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                          height: 10.0,
+                          width: 10.0),
+                      SizedBox(width: 10.0),
+                      Text(
+                        "Đang tải thêm $itemPerPage dòng dữ liệu...",
+                        style: TextStyle(color: Colors.white, fontSize: kSmallFontSize),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -226,13 +237,13 @@ class _BodyPageState extends State<Body> {
         onTap: () => Navigator.pushNamed(context, HomeScreen.routeName),
         child: Stack(
           clipBehavior: Clip.none,
-          children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
+          children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 25.0)],
         ),
       ),
       buttonRight: IconButton(
         enableFeedback: true,
         color: (_projectCurrent != 0) ? kPrimaryColor : Colors.grey,
-        icon: Icon(Icons.addchart_outlined, size: 30.0),
+        icon: Icon(Icons.addchart_outlined, size: 25.0),
         onPressed: () => (_projectCurrent != 0)
             ? showCupertinoModalBottomSheet(
                 context: context,
@@ -240,20 +251,6 @@ class _BodyPageState extends State<Body> {
               ).then((value) => _refresh())
             : null,
       ),
-      // buttonRight: InkWell(
-
-      //   borderRadius: BorderRadius.circular(15),
-      //   child: Icon(Icons.addchart_outlined, color: kPrimaryColor, size: 30.0),
-      //   onTap: () => showCupertinoModalBottomSheet(
-      //     context: context,
-      //     builder: (context) => DefectAnalysisCreateScreen(),
-      //   ).then((value) {
-      //     setState(() {
-      //       isLoading = false;
-      //       _listOfDefectAnalysis = _getlistOfDefectAnalysis();
-      //     });
-      //   }),
-      // ),
     );
   }
 
@@ -294,14 +291,18 @@ class _BodyPageState extends State<Body> {
                         builder: (BuildContext context) => _filter(context),
                         context: context,
                       ).then((e) => _refresh()),
-                      icon: Icon(Ionicons.filter, color: (_statusCurrent.length > 0 || _projectCurrent != 0) ? kPrimaryColor : Colors.grey.shade500, size: 20),
+                      icon: Icon(
+                        Ionicons.filter,
+                        color: (_statusCurrent.length > 0 || _projectCurrent != 0) ? kPrimaryColor : Colors.grey.shade500,
+                        size: 20,
+                      ),
                     ),
                   ],
                 ),
               ),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-              hintStyle: TextStyle(fontSize: 15, color: Colors.grey.shade500),
-              hintText: "Nhập từ khóa để tìm kiếm..."),
+              hintStyle: TextStyle(fontSize: kNormalFontSize, color: Colors.grey.shade500),
+              hintText: "common.text_input_forsearch_hint".tr()),
         ),
       ),
     );
@@ -385,7 +386,7 @@ class _BodyPageState extends State<Body> {
                   Expanded(
                     flex: 4,
                     child: DefaultButton(
-                      text: "Đặt lại",
+                      text: "button.reset".tr(),
                       icon: Icons.restart_alt_rounded,
                       color: kTextColor,
                       press: () {
@@ -402,9 +403,10 @@ class _BodyPageState extends State<Body> {
                     flex: 6,
                     child: DefaultButton(
                       icon: Icons.filter_alt_rounded,
-                      text: "Lọc dữ liệu",
+                      text: "button.filter".tr(),
                       press: () {
                         setState(() {
+                          _isLoading = false;
                           _listOfDefectAnalysis = _getlistOfDefectAnalysis();
                         });
                         Navigator.pop(context);
@@ -428,13 +430,19 @@ class _BodyPageState extends State<Body> {
                 if (!_isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
                   setState(() {
                     pageIndex = pageIndex + 1;
+                    _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+                    _isLoading = true;
                   });
-                  _refresh();
                 }
                 return true;
               },
               child: RefreshIndicator(
-                onRefresh: () async => _refresh(),
+                onRefresh: () async {
+                  setState(() {
+                    _isLoading = false;
+                    _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+                  });
+                },
                 child: FutureBuilder<DefectAnalysisModels>(
                   future: _listOfDefectAnalysis,
                   builder: (BuildContext context, AsyncSnapshot<DefectAnalysisModels> snapshot) {
@@ -442,8 +450,14 @@ class _BodyPageState extends State<Body> {
                     if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !_isLoading) return LoadingWidget();
                     if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty))
                       return NoDataWidget(
-                        subtitle: "Vui lòng kiểm tra lại điều kiện lọc hoặc liên hệ trực tiếp đến quản trị viên...",
-                        button: OutlinedButton.icon(onPressed: _refresh, icon: Icon(Ionicons.refresh, size: 24.0), label: Text('Refresh')),
+                        subtitle: "Vui lòng kiểm tra lại điều kiện lọc...",
+                        button: OutlinedButton.icon(
+                            onPressed: _refresh,
+                            icon: Icon(Ionicons.refresh, size: 22.0),
+                            label: Text(
+                              "button.refresh".tr(),
+                              style: TextStyle(fontSize: kNormalFontSize),
+                            )),
                       );
                     else
                       return Padding(
@@ -463,7 +477,7 @@ class _BodyPageState extends State<Body> {
                                 child: Text(
                                   value,
                                   textAlign: TextAlign.left,
-                                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+                                  style: const TextStyle(fontSize: kNormalFontSize, fontWeight: FontWeight.bold, color: Colors.white),
                                 ),
                               ),
                             ),
@@ -493,12 +507,11 @@ class _BodyPageState extends State<Body> {
   Widget _item(DefectAnalysisModel item) {
     List<Widget> _listMenu = [
       ListTile(
-        trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
         title: Row(
           children: [
-            Icon(Ionicons.create_outline, color: kPrimaryColor),
+            Icon(Ionicons.create_outline, color: kPrimaryColor, size: 20),
             SizedBox(width: 10.0),
-            Text("common.list_menu_button_update".tr(), style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+            Text("common.list_menu_button_update".tr(), style: TextStyle(color: kPrimaryColor, fontSize: kNormalFontSize)),
           ],
         ),
         onTap: () async {
@@ -509,12 +522,11 @@ class _BodyPageState extends State<Body> {
       Visibility(
         visible: (item.status > 0 && item.totalDetail > 0),
         child: ListTile(
-          trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
           title: Row(
             children: [
-              Icon(Ionicons.cloud_download_outline, color: kPrimaryColor),
+              Icon(Ionicons.cloud_download_outline, color: kPrimaryColor, size: 20),
               SizedBox(width: 10.0),
-              Text("common.list_menu_button_export".tr(), style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+              Text("common.list_menu_button_export".tr(), style: TextStyle(color: kPrimaryColor, fontSize: kNormalFontSize)),
             ],
           ),
           onTap: () async => exportFunc(item.id),
@@ -523,24 +535,22 @@ class _BodyPageState extends State<Body> {
       Visibility(
         visible: (item.status == 0 && item.totalDetail > 0),
         child: ListTile(
-          trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
           title: Row(
             children: [
-              Icon(Ionicons.send_outline, color: kPrimaryColor),
+              Icon(Ionicons.send_outline, color: kPrimaryColor, size: 20),
               SizedBox(width: 10.0),
-              Text("common.list_menu_button_send_report".tr(), style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+              Text("common.list_menu_button_send_report".tr(), style: TextStyle(color: kPrimaryColor, fontSize: kNormalFontSize)),
             ],
           ),
           onTap: () async => sendFunc(item.id),
         ),
       ),
       ListTile(
-        trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
         title: Row(
           children: [
-            Icon(Ionicons.trash_bin_outline, color: Colors.red),
+            Icon(Ionicons.trash_bin_outline, color: Colors.red, size: 20),
             SizedBox(width: 10.0),
-            Text("common.list_menu_button_delete".tr(), style: TextStyle(color: Colors.red, fontSize: 18)),
+            Text("common.list_menu_button_delete".tr(), style: TextStyle(color: Colors.red, fontSize: kNormalFontSize)),
           ],
         ),
         onTap: () async => deleteFunc(item.id),
@@ -557,40 +567,48 @@ class _BodyPageState extends State<Body> {
           ),
         ),
       ),
-      title: Column(
+      title: Text(
+        "${item.code}",
+        style: TextStyle(color: kPrimaryColor, fontSize: kNormalFontSize, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
+      ),
+      subtitle: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text.rich(TextSpan(
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
-            children: [
-              TextSpan(text: "${item.code}", style: TextStyle(color: kPrimaryColor)),
-              WidgetSpan(child: SizedBox(width: 5.0)),
-              TextSpan(text: " | ", style: TextStyle(color: kPrimaryColor)),
-              WidgetSpan(child: SizedBox(width: 5.0)),
-              TextSpan(text: "${item.statusInfo.text}", style: TextStyle(color: item.status != 0 ? kPrimaryColor : kWarningColor)),
-            ],
-          )),
           SizedBox(height: 5.0),
-          Text.rich(TextSpan(
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal),
-            children: [
-              WidgetSpan(child: Icon(Icons.tag, size: 18, color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 2.0)),
-              TextSpan(text: "${item.id}", style: TextStyle(color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 15.0)),
-              WidgetSpan(child: Icon(Icons.label_important_rounded, size: 18, color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 2.0)),
-              TextSpan(text: "Đang có ${item.totalDetail} sự cố", style: TextStyle(color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 15.0)),
-              WidgetSpan(child: Icon(Icons.person_add_alt_1, size: 18, color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 2.0)),
-              TextSpan(text: "${StringHelper.toShortName(item.analysisByInfo!.hoTen)}", style: TextStyle(color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 15.0)),
-              WidgetSpan(child: Icon(Icons.calendar_month, size: 18, color: kTextColor)),
-              WidgetSpan(child: SizedBox(width: 2.0)),
-              TextSpan(text: "${DateFormat("hh:mm dd/MM/yy").format(item.analysisDate!)}", style: TextStyle(color: kTextColor)),
-            ],
-          )),
+          RichText(
+            text: TextSpan(
+              style: TextStyle(fontSize: kSmallFontSize, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal),
+              children: [
+                WidgetSpan(child: Icon(Icons.tag, size: 15, color: kTextColor)),
+                WidgetSpan(child: SizedBox(width: 2.0)),
+                TextSpan(text: "${item.id}", style: TextStyle(color: kTextColor)),
+                WidgetSpan(child: SizedBox(width: 15.0)),
+                WidgetSpan(child: Icon(Icons.label_important_rounded, size: 15, color: kTextColor)),
+                WidgetSpan(child: SizedBox(width: 2.0)),
+                TextSpan(text: "${item.statusInfo.text}", style: TextStyle(color: kTextColor)),
+                WidgetSpan(child: SizedBox(width: 15.0)),
+                WidgetSpan(child: Icon(Icons.label_important_rounded, size: 15, color: kTextColor)),
+                WidgetSpan(child: SizedBox(width: 2.0)),
+                TextSpan(text: "Có ${item.totalDetail} sự cố", style: TextStyle(color: kTextColor)),
+              ],
+            ),
+          ),
+          SizedBox(height: 5.0),
+          RichText(
+            text: TextSpan(
+              style: TextStyle(fontSize: kSmallFontSize, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal),
+              children: [
+                WidgetSpan(child: Icon(Icons.person_add_alt_1, size: 15, color: kTextColor)),
+                WidgetSpan(child: SizedBox(width: 2.0)),
+                TextSpan(text: "${StringHelper.toShortName(item.analysisByInfo!.hoTen)}", style: TextStyle(color: kTextColor)),
+                WidgetSpan(child: SizedBox(width: 15.0)),
+                WidgetSpan(child: Icon(Icons.calendar_month, size: 15, color: kTextColor)),
+                WidgetSpan(child: SizedBox(width: 2.0)),
+                TextSpan(text: "${DateFormat("hh:mm dd/MM/yy").format(item.analysisDate!)}", style: TextStyle(color: kTextColor)),
+              ],
+            ),
+          ),
         ],
       ),
     );

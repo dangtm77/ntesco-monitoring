@@ -1,6 +1,5 @@
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/material.dart';
 
 import '../../../../../models/mt/SystemReportModel.dart';
 
@@ -20,6 +19,8 @@ class _ReviewsPageViewState extends State<ReviewsPageView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      child: Center(child: Text("ĐANG CẬP NHẬT ...")),
+    );
   }
 }

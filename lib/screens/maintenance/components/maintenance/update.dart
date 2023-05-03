@@ -107,8 +107,8 @@ class _UpdateBodyState extends State<UpdateBody> {
   Widget _header(BuildContext context) {
     return Container(
       child: TopHeaderSub(
-        title: "maintenance.defect_analysis.update_title".tr(),
-        subtitle: "maintenance.defect_analysis.update_subtitle".tr(),
+        title: "maintenance.update_title".tr(),
+        subtitle: "maintenance.update_subtitle".tr(),
         buttonLeft: InkWell(
           borderRadius: BorderRadius.circular(15),
           onTap: () => Navigator.pushNamed(context, MaintenanceScreen.routeName),
@@ -145,10 +145,10 @@ class _UpdateBodyState extends State<UpdateBody> {
                       ),
                     ),
                     bottomNavigationBar: BottomNavyBar(
-                      iconSize: 30,
-                      showElevation: true,
-                      itemCornerRadius: 20.0,
-                      containerHeight: 70.0,
+                      iconSize: 25,
+                      showElevation: false,
+                      itemCornerRadius: 10.0,
+                      containerHeight: 50.0,
                       selectedIndex: _currentIndex,
                       onItemSelected: (value) {
                         setState(() => _currentIndex = value);
@@ -163,8 +163,8 @@ class _UpdateBodyState extends State<UpdateBody> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Thông tin', style: TextStyle(fontSize: 15)),
-                                Text('CHUNG', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                Text('Thông tin', style: TextStyle(fontSize: kSmallerFontSize)),
+                                Text('CHUNG', style: TextStyle(fontSize: kSmallFontSize, fontWeight: FontWeight.bold)),
                               ],
                             ),
                           ),
@@ -177,8 +177,8 @@ class _UpdateBodyState extends State<UpdateBody> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Vật liệu cần', style: TextStyle(fontSize: 15)),
-                                Text('THAY THẾ', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                Text('Vật liệu cần', style: TextStyle(fontSize: kSmallerFontSize)),
+                                Text('THAY THẾ', style: TextStyle(fontSize: kSmallFontSize, fontWeight: FontWeight.bold)),
                               ],
                             ),
                           ),
@@ -191,8 +191,8 @@ class _UpdateBodyState extends State<UpdateBody> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Thông tin', style: TextStyle(fontSize: 15)),
-                                Text('Đánh giá', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                Text('Thông tin', style: TextStyle(fontSize: kSmallerFontSize)),
+                                Text('Đánh giá', style: TextStyle(fontSize: kSmallFontSize, fontWeight: FontWeight.bold)),
                               ],
                             ),
                           ),

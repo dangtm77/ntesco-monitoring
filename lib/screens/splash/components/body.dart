@@ -51,10 +51,7 @@ class _BodyState extends State<Body> {
                     Spacer(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        splashData.length,
-                        (index) => buildDot(index: index),
-                      ),
+                      children: List.generate(splashData.length, (index) => buildDot(index: index)),
                     ),
                     Spacer(flex: 3),
                     DefaultButton(

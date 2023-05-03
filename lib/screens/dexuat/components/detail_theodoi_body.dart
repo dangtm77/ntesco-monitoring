@@ -151,7 +151,7 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
               child: ListTile(
                 leading: Container(
                   padding: EdgeInsets.only(left: 0),
-                  child: Badge(
+                  /*child: Badge(
                     showBadge: item.ghiChu.isNotEmpty,
                     //padding: EdgeInsets.all(5.0),
                     badgeContent: Icon(Icons.insert_comment_sharp, color: Colors.white, size: 13),
@@ -159,7 +159,7 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
                       radius: 18.0,
                       backgroundImage: NetworkImage(item.nguoiDuyetInfo.anhDaiDien.toString()),
                     ),
-                  ),
+                  ),*/
                 ),
                 title: Text(
                   item.nguoiDuyetInfo.hoTen.toString(),
@@ -178,7 +178,7 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
           ? Container(
               alignment: Alignment.centerRight,
               child: ListTile(
-                trailing: Container(
+                /*trailing: Container(
                   padding: EdgeInsets.only(left: 0),
                   child: Badge(
                     showBadge: item.ghiChu.isNotEmpty,
@@ -189,7 +189,7 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
                       backgroundImage: NetworkImage(item.nguoiDuyetInfo.anhDaiDien.toString()),
                     ),
                   ),
-                ),
+                ),*/
                 title: Text(
                   item.nguoiDuyetInfo.hoTen.toString(),
                   textAlign: TextAlign.right,

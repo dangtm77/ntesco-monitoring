@@ -1,6 +1,7 @@
 // DO NOT EDIT. This is code generated via package:easy_localization/generate.dart
 
 abstract class  LocaleKeys {
+  static const common_text_input_forsearch_hint = 'common.text_input_forsearch_hint';
   static const common_text_input_hint = 'common.text_input_hint';
   static const common_text_select_hint = 'common.text_select_hint';
   static const common_list_menu_button_update = 'common.list_menu_button_update';
@@ -8,6 +9,9 @@ abstract class  LocaleKeys {
   static const common_list_menu_button_export = 'common.list_menu_button_export';
   static const common_list_menu_button_send_report = 'common.list_menu_button_send_report';
   static const common = 'common';
+  static const button_reset = 'button.reset';
+  static const button_filter = 'button.filter';
+  static const button = 'button';
   static const login_username_label = 'login.username_label';
   static const login_password_label = 'login.password_label';
   static const login_username_hint = 'login.username_hint';
@@ -38,8 +42,9 @@ abstract class  LocaleKeys {
   static const phieudexuat = 'phieudexuat';
   static const maintenance_title = 'maintenance.title';
   static const maintenance_subtitle = 'maintenance.subtitle';
-  static const maintenance_plan_title = 'maintenance.plan_title';
-  static const maintenance_plan_subtitle = 'maintenance.plan_subtitle';
+  static const maintenance_plan_title = 'maintenance.plan.title';
+  static const maintenance_plan_subtitle = 'maintenance.plan.subtitle';
+  static const maintenance_plan = 'maintenance.plan';
   static const maintenance_defect_analysis_title = 'maintenance.defect_analysis.title';
   static const maintenance_defect_analysis_subtitle = 'maintenance.defect_analysis.subtitle';
   static const maintenance_defect_analysis_update_title = 'maintenance.defect_analysis.update_title';

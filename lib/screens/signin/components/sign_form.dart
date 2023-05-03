@@ -125,7 +125,7 @@ class _SignFormState extends State<SignForm> {
       style: TextStyle(letterSpacing: 2, fontSize: 20),
       decoration: InputDecoration(
         labelText: "login.password_label".tr(),
-        labelStyle: TextStyle(color: kPrimaryColor, fontSize: 20, letterSpacing: 0, fontWeight: FontWeight.w700),
+        labelStyle: TextStyle(color: kPrimaryColor, fontSize: 22, letterSpacing: 0, fontWeight: FontWeight.w700),
         hintText: "login.password_hint".tr(),
         hintStyle: TextStyle(color: Color(0xFF989eb1), fontSize: 15, letterSpacing: 0, fontWeight: FontWeight.w400),
         floatingLabelBehavior: FloatingLabelBehavior.always,

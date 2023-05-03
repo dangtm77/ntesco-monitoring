@@ -122,17 +122,19 @@ class NoDataWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text("#404#", style: TextStyle(fontSize: 70, fontWeight: FontWeight.w800, color: Colors.redAccent)),
-        Text(title ?? "state.nodata".tr().toUpperCase(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Colors.redAccent)),
-        Text(subtitle ?? "state.nodata_subtitle".tr(), style: TextStyle(fontSize: 15, color: kSecondaryColor, fontStyle: FontStyle.italic)),
-        SizedBox(height: 10.0),
+        Text("#404#", style: TextStyle(fontSize: getProportionateScreenWidth(50), fontWeight: FontWeight.w800, color: Colors.redAccent)),
+        Text(title ?? "state.nodata".tr().toUpperCase(), style: TextStyle(fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.w800, color: Colors.redAccent)),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          child: Text(subtitle ?? "state.nodata_subtitle".tr(), style: TextStyle(fontSize: kNormalFontSize, color: kSecondaryColor, fontStyle: FontStyle.italic)),
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton.icon(
               onPressed: () => Navigator.pushNamed(context, HomeScreen.routeName),
-              icon: Icon(Icons.home, size: 24.0),
-              label: Text('Back to home'),
+              icon: Icon(Icons.home, size: 22.0),
+              label: Text('Back to home', style: TextStyle(fontSize: kNormalFontSize)),
             ),
             SizedBox(width: 10.0),
             Visibility(

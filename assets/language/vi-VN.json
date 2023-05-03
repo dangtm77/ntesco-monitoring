@@ -1,11 +1,17 @@
 {
   "common": {
+    "text_input_forsearch_hint": "Nhập từ khoá để tìm kiếm...",
     "text_input_hint": "Vui lòng nhập thông tin...",
     "text_select_hint": "Vui lòng chọn thông tin...",
     "list_menu_button_update": "Xem & chỉnh sửa thông tin",
     "list_menu_button_delete": "Hủy & xóa bỏ thông tin",
     "list_menu_button_export": "Xuất file báo cáo",
     "list_menu_button_send_report": "Gửi báo cáo"
+  },
+  "button": {
+    "reset": "Đặt lại",
+    "filter": "Lọc dữ liệu",
+    "refresh": "Làm mới"
   },
   "login": {
     "username_label": "Tên đăng nhập",
@@ -42,8 +48,10 @@
   "maintenance": {
     "title": "Bảo trì dự án",
     "subtitle": "Bảo trì các hệ thống của dự án",
-    "plan_title": "Kế hoạch bảo trì",
-    "plan_subtitle": "Chi tiết kế hoạch bảo trì của các dự án",
+    "plan": {
+      "title": "Kế hoạch bảo trì",
+      "subtitle": "Chi tiết kế hoạch bảo trì của các dự án"
+    },
     "defect_analysis": {
       "title": "Phân tích sự cố",
       "subtitle": "Phân tích và báo cáo sự cố của hệ thống",

@@ -15,6 +15,11 @@ const kWarningColor = Colors.deepOrange;
 
 const kAnimationDuration = Duration(milliseconds: 200);
 
+const kLargeFontSize = 17.0;
+const kNormalFontSize = 15.0;
+const kSmallFontSize = 13.0;
+const kSmallerFontSize = 11.0;
+
 // final headingStyle = TextStyle(
 //   fontSize: getProportionateScreenWidth(28),
 //   fontWeight: FontWeight.bold,

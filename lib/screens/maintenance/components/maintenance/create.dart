@@ -94,7 +94,7 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
           onTap: () => Navigator.pop(context),
           child: Stack(
             clipBehavior: Clip.none,
-            children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
+            children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 25.0)],
           ),
         ),
         buttonRight: InkWell(
@@ -102,7 +102,7 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
           onTap: () async => submitFunc(context),
           child: Stack(
             clipBehavior: Clip.none,
-            children: [Icon(Ionicons.save_outline, color: kPrimaryColor, size: 30.0)],
+            children: [Icon(Ionicons.save_outline, color: kPrimaryColor, size: 25.0)],
           ),
         ),
       ),
@@ -222,7 +222,7 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
             name: 'fieldSub-${model.id}',
             decoration: InputDecoration(
               label: _label,
-              hintText: "common.text_hint_input".tr(),
+              hintText: "common.text_input_hint".tr(),
               helperText: _helperText,
             ).applyDefaults(inputDecorationTheme()),
             validator: (model.isRequired) ? FormBuilderValidators.compose([FormBuilderValidators.required(errorText: "validation.required".tr())]) : null,

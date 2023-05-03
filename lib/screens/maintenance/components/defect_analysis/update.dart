@@ -113,7 +113,7 @@ class _UpdateBodyState extends State<UpdateBody> {
             onTap: () => Navigator.pushNamed(context, DefectAnalysisScreen.routeName),
             child: Stack(
               clipBehavior: Clip.none,
-              children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
+              children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 25.0)],
             ),
           ),
         ),
@@ -144,10 +144,10 @@ class _UpdateBodyState extends State<UpdateBody> {
                       ),
                     ),
                     bottomNavigationBar: BottomNavyBar(
-                      iconSize: 30,
-                      showElevation: true,
-                      itemCornerRadius: 20.0,
-                      containerHeight: 70.0,
+                      iconSize: 25,
+                      showElevation: false,
+                      itemCornerRadius: 10.0,
+                      containerHeight: 50.0,
                       selectedIndex: _currentIndex,
                       onItemSelected: (value) {
                         setState(() => _currentIndex = value);
@@ -162,8 +162,8 @@ class _UpdateBodyState extends State<UpdateBody> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Thông tin', style: TextStyle(fontSize: 15)),
-                                Text('CHUNG', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                Text('Thông tin', style: TextStyle(fontSize: kSmallerFontSize)),
+                                Text('CHUNG', style: TextStyle(fontSize: kSmallFontSize, fontWeight: FontWeight.bold)),
                               ],
                             ),
                           ),
@@ -176,8 +176,8 @@ class _UpdateBodyState extends State<UpdateBody> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Chi tiết', style: TextStyle(fontSize: 15)),
-                                Text('SỰ CỐ', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                Text('Chi tiết', style: TextStyle(fontSize: kSmallerFontSize)),
+                                Text('SỰ CỐ', style: TextStyle(fontSize: kSmallFontSize, fontWeight: FontWeight.bold)),
                               ],
                             ),
                           ),
@@ -190,8 +190,8 @@ class _UpdateBodyState extends State<UpdateBody> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Ý kiến', style: TextStyle(fontSize: 15)),
-                                Text('PHẢN HỒI', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                Text('Ý kiến', style: TextStyle(fontSize: kSmallerFontSize)),
+                                Text('PHẢN HỒI', style: TextStyle(fontSize: kSmallFontSize, fontWeight: FontWeight.bold)),
                               ],
                             ),
                           ),

@@ -1,0 +1,97 @@
+{
+  "common": {
+    "text_input_hint": "Please input values...",
+    "text_select_hint": "Please select values...",
+    "list_menu_button_update": "View & update info",
+    "list_menu_button_delete": "Remove info",
+    "list_menu_button_export": "Export report file",
+    "list_menu_button_send_report": "Send report"
+  },
+  "login": {
+    "username_label": "Username",
+    "password_label": "Password",
+    "username_hint": "Enter your username...",
+    "password_hint": "Enter your password...",
+    "signin_button": "Sign In",
+    "forgot_password_button": "Forgot Password?"
+  },
+  "validation": {
+    "required": "This field cannot be empty, please input information",
+    "required_select": "This field cannot be empty, please select information",
+    "string_length": "This field must have at least {length} symbols",
+    "pattern": "This field invalid"
+  },
+  "menu": {
+    "home": "Home",
+    "phieudexuat": "Requests",
+    "maintenance": "Maintenance",
+    "log_out": "Log out",
+    "settings": "Settings",
+    "alarm": "Alarm",
+    "contact_us": "Contact us",
+    "contact_us_subtitle": "Contact us - Support - Feedback"
+  },
+  "phieudexuat": {
+    "title": "Requests",
+    "subtitle": "Requests Tracking",
+    "detail_title": "Detail of request",
+    "detail_subtitle": "Information of request",
+    "create_title": "Create new request",
+    "create_subtitle": "Create and new information of request"
+  },
+  "maintenance": {
+    "title": "Maintenance",
+    "subtitle": "System maintenance of Projects",
+    "plan_title": "Maintenance plan",
+    "plan_subtitle": "Detailed maintenance plans of projects",
+    "defect_analysis": {
+      "title": "Defect analysis",
+      "subtitle": "Analysis and report defect of projects",
+      "update_title": "Update defect analysis",
+      "update_subtitle": "Update report defect of projects"
+    },
+    "defect_analysis_details": {
+      "update_title": "Update defect analysis details",
+      "update_subtitle": "Update detail defect of projects"
+    },
+    "system_report_replacements": {
+      "name": {
+        "label": "Name"
+      },
+      "model": {
+        "label": "Model"
+      },
+      "unit": {
+        "label": "Unit"
+      },
+      "quantity": {
+        "label": "Quantity"
+      },
+      "specifications": {
+        "label": "Specifications"
+      },
+      "sort_index": {
+        "label": "No."
+      },
+      "state_of_emergency": {
+        "label": "State of emergency",
+        "option_01": "Emergency",
+        "option_02": "Not emergency"
+      }
+    }
+  },
+  "language_display": "Language display:",
+  "hello_message": "Hi, {}\r\n",
+  "welcome_message": "How are you today!",
+  "state": {
+    "waiting": "Please wait...",
+    "loading": "Loading...",
+    "loading_subtitle": "Loading",
+    "nodata": "Not found",
+    "nodata_subtitle": "Try again or contact to administrator...",
+    "error": "An error is occurring",
+    "error_subtitle": "Please contact to administrator to support...",
+    "no_connection": "No connection to internet",
+    "no_connection_subtitle": "Please check your device's internet connection status..."
+  }
+}

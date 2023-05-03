@@ -1,17 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:bmprogresshud/bmprogresshud.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-
-import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
@@ -19,7 +14,6 @@ import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:ntesco_smart_monitoring/theme.dart';
 
-import '../../../../../../components/image_picker_options.dart';
 import '../../../../../../repository/mt/systyem_report_replacements.dart';
 
 class SystemReportReplacementsCreateScreen extends StatelessWidget {
@@ -69,15 +63,15 @@ class _CreatePageState extends State<CreateBody> {
 
   Widget _header(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(top: 5.0),
       child: TopHeaderSub(
-        title: "maintenance.defect_analysis_details.create_title",
-        subtitle: "maintenance.defect_analysis_details.create_subtitle",
+        title: "Thêm mới thông tin".toUpperCase(),
         buttonLeft: InkWell(
           borderRadius: BorderRadius.circular(15),
           onTap: () => Navigator.pop(context),
           child: Stack(
             clipBehavior: Clip.none,
-            children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
+            children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 25.0)],
           ),
         ),
         buttonRight: InkWell(
@@ -85,7 +79,7 @@ class _CreatePageState extends State<CreateBody> {
           onTap: () async => submitFunc(context),
           child: Stack(
             clipBehavior: Clip.none,
-            children: [Icon(Ionicons.save_outline, color: kPrimaryColor, size: 30.0)],
+            children: [Icon(Ionicons.save_outline, color: kPrimaryColor, size: 25.0)],
           ),
         ),
       ),

@@ -4,7 +4,6 @@ import 'dart:convert';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-import 'package:badges/badges.dart';
 import 'package:bmprogresshud/bmprogresshud.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -107,8 +106,8 @@ class _DetailsPageViewState extends State<DetailsPageView> {
             ),
             child: Center(
               child: DefaultButton(
-                text: 'THÊM THÔNG TIN SỰ CỐ',
-                icon: Icons.post_add_sharp,
+                text: 'Thêm thông tin sự cố',
+                icon: Icons.add,
                 press: () => showCupertinoModalBottomSheet(
                   context: context,
                   builder: (context) => DefectAnalysisDetailsCreateScreen(id: id),
@@ -122,8 +121,6 @@ class _DetailsPageViewState extends State<DetailsPageView> {
   }
 
   Widget _item(DefectAnalysisDetailsModel item) {
-    List<String> imagesList = (item.pictures != null && item.pictures!.length > 0) ? item.pictures!.map((e) => Common.System_DowloadFile_ByID(e.id, 'view')).toList() : [urlNoImage];
-
     return ListTile(
       onTap: () => showBarModalBottomSheet(
         context: context,
@@ -163,7 +160,7 @@ class _DetailsPageViewState extends State<DetailsPageView> {
           ),
         ),
       ),
-      leading: Badge(
+      /*leading: badges.Badge(
         showBadge: imagesList.length > 1,
         badgeContent: Text('${imagesList.length}', style: TextStyle(fontSize: 15, color: Colors.white)),
         badgeAnimation: BadgeAnimation.scale(),
@@ -185,7 +182,7 @@ class _DetailsPageViewState extends State<DetailsPageView> {
           placeholder: (context, url) => SizedBox(width: 30, height: 30, child: CircularProgressIndicator()),
           errorWidget: (context, url, error) => Icon(Icons.error),
         ),
-      ),
+      ),*/
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -193,7 +190,7 @@ class _DetailsPageViewState extends State<DetailsPageView> {
           SizedBox(height: 5.0),
           Text.rich(
             TextSpan(
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal),
               children: [
                 TextSpan(
                   children: [
@@ -235,9 +232,9 @@ class _DetailsPageViewState extends State<DetailsPageView> {
                     TextSpan(
                       children: [
                         TextSpan(
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal),
                           children: [
-                            TextSpan(text: "Thông số kỹ thuật: ", style: TextStyle(color: kTextColor)),
+                            TextSpan(text: "Thông số: ", style: TextStyle(color: kTextColor)),
                             TextSpan(text: "${item.partSpecifications}", style: TextStyle(color: kPrimaryColor)),
                           ],
                         )

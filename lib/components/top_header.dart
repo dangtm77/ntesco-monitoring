@@ -33,14 +33,14 @@ class TopHeader extends StatelessWidget {
 
 class TopHeaderSub extends StatelessWidget {
   final String title;
-  final String subtitle;
+  final String? subtitle;
   final Widget? buttonLeft;
   final Widget? buttonRight;
 
   const TopHeaderSub({
     Key? key,
     required this.title,
-    required this.subtitle,
+    this.subtitle,
     this.buttonLeft,
     this.buttonRight,
   }) : super(key: key);
@@ -66,14 +66,16 @@ class TopHeaderSub extends StatelessWidget {
                     children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
                   ),
                 ),
-            Padding(
-              padding: EdgeInsets.only(left: 10.0),
-              child: Column(
-                crossAxisAlignment: buttonRight == null ? CrossAxisAlignment.start : CrossAxisAlignment.center,
-                children: [
-                  Text(title, style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w700)),
-                  Text(subtitle, style: TextStyle(fontSize: 14, color: kSecondaryColor)),
-                ],
+            Flexible(
+              child: Padding(
+                padding: EdgeInsets.only(left: 10.0),
+                child: Column(
+                  crossAxisAlignment: buttonRight == null ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+                  children: [
+                    Text(title, style: TextStyle(fontSize: 15, color: kPrimaryColor, fontWeight: FontWeight.w700)),
+                    (subtitle != null ? Text(subtitle!, maxLines: 2, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 13, color: kSecondaryColor)) : SizedBox.shrink()),
+                  ],
+                ),
               ),
             ),
             buttonRight ?? Text("")
