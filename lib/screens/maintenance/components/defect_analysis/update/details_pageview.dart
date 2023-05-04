@@ -1,24 +1,22 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:bmprogresshud/bmprogresshud.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:http/http.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
+import 'package:badges/badges.dart' as badge;
 import 'package:ntesco_smart_monitoring/components/default_button.dart';
 import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
 import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 import 'package:ntesco_smart_monitoring/helper/util.dart';
-import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/mt/DefectAnalysisModel.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 
@@ -91,7 +89,7 @@ class _DetailsPageViewState extends State<DetailsPageView> {
                             child: SlideAnimation(child: FadeInAnimation(child: _item(item))),
                           );
                         },
-                        separatorBuilder: (BuildContext context, int index) => const Divider(color: kPrimaryColor),
+                        separatorBuilder: (BuildContext context, int index) => Divider(thickness: 5.0),
                       ),
                     ),
                   );
@@ -121,6 +119,7 @@ class _DetailsPageViewState extends State<DetailsPageView> {
   }
 
   Widget _item(DefectAnalysisDetailsModel item) {
+    print(item.pictures!.length);
     return ListTile(
       onTap: () => showBarModalBottomSheet(
         context: context,
@@ -131,12 +130,11 @@ class _DetailsPageViewState extends State<DetailsPageView> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 ListTile(
-                  trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
                   title: Row(
                     children: [
-                      Icon(Ionicons.create_outline, color: kPrimaryColor),
+                      Icon(Ionicons.create_outline, color: kPrimaryColor, size: 20),
                       SizedBox(width: 10.0),
-                      Text('Xem / Cập nhật / chỉnh sửa thông tin', style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+                      Text("common.list_menu_button_update".tr(), style: TextStyle(color: kPrimaryColor, fontSize: kNormalFontSize)),
                     ],
                   ),
                   onTap: () {
@@ -145,12 +143,11 @@ class _DetailsPageViewState extends State<DetailsPageView> {
                   },
                 ),
                 ListTile(
-                  trailing: Icon(Ionicons.arrow_forward, color: kPrimaryColor),
                   title: Row(
                     children: [
-                      Icon(Ionicons.trash_bin_outline, color: kPrimaryColor),
+                      Icon(Ionicons.trash_bin_outline, color: Colors.red, size: 20),
                       SizedBox(width: 10.0),
-                      Text('Xóa / Hủy bỏ thông tin', style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+                      Text("common.list_menu_button_delete".tr(), style: TextStyle(color: Colors.red, fontSize: kNormalFontSize)),
                     ],
                   ),
                   onTap: () => deleteFunc(item.id),
@@ -160,15 +157,15 @@ class _DetailsPageViewState extends State<DetailsPageView> {
           ),
         ),
       ),
-      /*leading: badges.Badge(
-        showBadge: imagesList.length > 1,
-        badgeContent: Text('${imagesList.length}', style: TextStyle(fontSize: 15, color: Colors.white)),
-        badgeAnimation: BadgeAnimation.scale(),
-        badgeStyle: BadgeStyle(badgeColor: kPrimaryColor),
+      leading: badge.Badge(
+        showBadge: item.pictures!.length > 1,
+        badgeContent: Text('${item.pictures!.length}', style: TextStyle(fontSize: 15, color: Colors.white)),
+        badgeAnimation: badge.BadgeAnimation.scale(),
+        badgeStyle: badge.BadgeStyle(badgeColor: kPrimaryColor),
         child: CachedNetworkImage(
-          imageUrl: imagesList.first,
+          imageUrl: item.pictures!.first.pathFile,
           imageBuilder: (context, imageProvider) => GestureDetector(
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => PhotoViewGalleryScreen(imageUrls: imagesList, initialIndex: 0))),
+            //onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => PhotoViewGalleryScreen(imageUrls: imagesList, initialIndex: 0))),
             child: Container(
               width: 100,
               height: 60,
@@ -182,7 +179,7 @@ class _DetailsPageViewState extends State<DetailsPageView> {
           placeholder: (context, url) => SizedBox(width: 30, height: 30, child: CircularProgressIndicator()),
           errorWidget: (context, url, error) => Icon(Icons.error),
         ),
-      ),*/
+      ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

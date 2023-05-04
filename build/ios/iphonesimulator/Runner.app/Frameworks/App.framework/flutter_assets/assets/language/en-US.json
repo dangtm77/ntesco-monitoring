@@ -1,11 +1,17 @@
 {
   "common": {
+    "text_input_forsearch_hint": "Input keyword for search...",
     "text_input_hint": "Please input values...",
     "text_select_hint": "Please select values...",
     "list_menu_button_update": "View & update info",
     "list_menu_button_delete": "Remove info",
     "list_menu_button_export": "Export report file",
     "list_menu_button_send_report": "Send report"
+  },
+  "button": {
+    "reset": "Reset",
+    "filter": "Filter",
+    "refresh": "Refresh"
   },
   "login": {
     "username_label": "Username",
@@ -42,8 +48,10 @@
   "maintenance": {
     "title": "Maintenance",
     "subtitle": "System maintenance of Projects",
-    "plan_title": "Maintenance plan",
-    "plan_subtitle": "Detailed maintenance plans of projects",
+    "plan": {
+      "title": "Maintenance plan",
+      "subtitle": "Detailed maintenance plans of projects"
+    },
     "defect_analysis": {
       "title": "Defect analysis",
       "subtitle": "Analysis and report defect of projects",

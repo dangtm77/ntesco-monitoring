@@ -415,7 +415,7 @@ class _BodyPageState extends State<Body> {
                                 ),
                               );
                             },
-                            separator: Divider(thickness: 1),
+                            separator: Divider(thickness: 5.0),
                             floatingHeader: false,
                             useStickyGroupSeparators: true,
                           ),
@@ -444,7 +444,7 @@ class _BodyPageState extends State<Body> {
                     children: [
                       Icon(Ionicons.create_outline, color: kPrimaryColor, size: 18),
                       SizedBox(width: 10.0),
-                      Text('Xem & chỉnh sửa thông tin', style: TextStyle(color: kPrimaryColor, fontSize: kNormalFontSize)),
+                      Text("common.list_menu_button_update".tr(), style: TextStyle(color: kPrimaryColor, fontSize: kNormalFontSize)),
                     ],
                   ),
                   onTap: () {
@@ -457,7 +457,7 @@ class _BodyPageState extends State<Body> {
                     children: [
                       Icon(Ionicons.trash_bin_outline, color: Colors.red, size: 18),
                       SizedBox(width: 10.0),
-                      Text('Hủy bỏ thông tin', style: TextStyle(color: Colors.red, fontSize: kNormalFontSize)),
+                      Text("common.list_menu_button_delete".tr(), style: TextStyle(color: Colors.red, fontSize: kNormalFontSize)),
                     ],
                   ),
                   onTap: () => deleteFunc(item.id),

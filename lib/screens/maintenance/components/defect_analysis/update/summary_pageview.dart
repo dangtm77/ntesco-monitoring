@@ -134,6 +134,7 @@ class _SummaryPageViewState extends State<SummaryPageView> {
                 },
                 child: Column(
                   children: <Widget>[
+                    SizedBox(height: 10),
                     editorForm("idProject"),
                     SizedBox(height: 20),
                     editorForm("idSystem"),
@@ -225,7 +226,11 @@ class _SummaryPageViewState extends State<SummaryPageView> {
                 menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 decoration: InputDecoration(
                   label: Text.rich(
-                    TextSpan(children: [TextSpan(text: 'Hệ thống cần phân tích'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))]),
+                    TextSpan(children: [
+                      TextSpan(text: 'Hệ thống cần phân tích'),
+                      WidgetSpan(child: SizedBox(width: 5.0)),
+                      TextSpan(text: '(*)', style: TextStyle(color: Colors.red)),
+                    ]),
                   ),
                   hintText: "Vui lòng chọn thông tin...",
                 ).applyDefaults(inputDecorationTheme()),

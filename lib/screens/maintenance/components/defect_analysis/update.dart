@@ -104,20 +104,21 @@ class _UpdateBodyState extends State<UpdateBody> {
     );
   }
 
-  Widget _header() => Container(
-        child: TopHeaderSub(
-          title: "maintenance.defect_analysis.update_title".tr(),
-          subtitle: "maintenance.defect_analysis.update_subtitle".tr(),
-          buttonLeft: InkWell(
-            borderRadius: BorderRadius.circular(15),
-            onTap: () => Navigator.pushNamed(context, DefectAnalysisScreen.routeName),
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 25.0)],
-            ),
+  Widget _header() {
+    return Container(
+      child: TopHeaderSub(
+        title: "common.title_page_update_info".tr().toUpperCase(),
+        buttonLeft: InkWell(
+          borderRadius: BorderRadius.circular(15),
+          onTap: () => Navigator.pushNamed(context, DefectAnalysisScreen.routeName),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 25.0)],
           ),
         ),
-      );
+      ),
+    );
+  }
 
   Widget _main(BuildContext context) {
     return Expanded(

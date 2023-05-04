@@ -55,7 +55,7 @@ class TopHeaderSub extends StatelessWidget {
           horizontal: getProportionateScreenWidth(10.0),
         ),
         child: Row(
-          mainAxisAlignment: buttonRight == null ? MainAxisAlignment.start : MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             buttonLeft ??
                 InkWell(
@@ -78,7 +78,7 @@ class TopHeaderSub extends StatelessWidget {
                 ),
               ),
             ),
-            buttonRight ?? Text("")
+            buttonRight ?? SizedBox.shrink()
           ],
         ),
       ),

@@ -107,8 +107,7 @@ class _UpdateBodyState extends State<UpdateBody> {
   Widget _header(BuildContext context) {
     return Container(
       child: TopHeaderSub(
-        title: "maintenance.update_title".tr(),
-        subtitle: "maintenance.update_subtitle".tr(),
+        title: "common.title_page_update_info".tr().toUpperCase(),
         buttonLeft: InkWell(
           borderRadius: BorderRadius.circular(15),
           onTap: () => Navigator.pushNamed(context, MaintenanceScreen.routeName),

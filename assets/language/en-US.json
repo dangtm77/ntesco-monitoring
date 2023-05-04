@@ -6,7 +6,9 @@
     "list_menu_button_update": "View & update info",
     "list_menu_button_delete": "Remove info",
     "list_menu_button_export": "Export report file",
-    "list_menu_button_send_report": "Send report"
+    "list_menu_button_send_report": "Send report",
+    "title_page_update_info": "Update information",
+    "title_page_create_new_info": "Create new information"
   },
   "button": {
     "reset": "Reset",
@@ -31,6 +33,9 @@
     "home": "Home",
     "phieudexuat": "Requests",
     "maintenance": "Maintenance",
+    "maintenance_plan": "Maintenance Plans",
+    "maintenance_defect_analysis": "Defect analysis",
+    "maintenance_systems": "Maintenance systems",
     "log_out": "Log out",
     "settings": "Settings",
     "alarm": "Alarm",
@@ -54,13 +59,11 @@
     },
     "defect_analysis": {
       "title": "Defect analysis",
-      "subtitle": "Analysis and report defect of projects",
-      "update_title": "Update defect analysis",
-      "update_subtitle": "Update report defect of projects"
+      "subtitle": "Analysis and report defect of projects"
     },
     "defect_analysis_details": {
-      "update_title": "Update defect analysis details",
-      "update_subtitle": "Update detail defect of projects"
+      "title": "Update defect analysis details",
+      "subtitle": "Update detail defect of projects"
     },
     "system_report_replacements": {
       "name": {

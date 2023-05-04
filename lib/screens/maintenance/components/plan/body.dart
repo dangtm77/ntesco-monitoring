@@ -70,6 +70,9 @@ class _BodyPageState extends State<Body> {
   }
 
   Future<PlanModels> _getListOfPlans() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _projectCurrent = prefs.getInt('MAINTENANCE-IDPROJECT') ?? 0;
+
     List<dynamic> sortOptions = [
       {"selector": "fullPath", "desc": "false"},
       {"selector": "startDate", "desc": "true"},

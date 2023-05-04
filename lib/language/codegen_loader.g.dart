@@ -22,11 +22,14 @@ class CodegenLoader extends AssetLoader{
     "list_menu_button_update": "View & update info",
     "list_menu_button_delete": "Remove info",
     "list_menu_button_export": "Export report file",
-    "list_menu_button_send_report": "Send report"
+    "list_menu_button_send_report": "Send report",
+    "title_page_update_info": "Update information",
+    "title_page_create_new_info": "Create new information"
   },
   "button": {
     "reset": "Reset",
-    "filter": "Filter"
+    "filter": "Filter",
+    "refresh": "Refresh"
   },
   "login": {
     "username_label": "Username",
@@ -46,6 +49,9 @@ class CodegenLoader extends AssetLoader{
     "home": "Home",
     "phieudexuat": "Requests",
     "maintenance": "Maintenance",
+    "maintenance_plan": "Maintenance Plans",
+    "maintenance_defect_analysis": "Defect analysis",
+    "maintenance_systems": "Maintenance systems",
     "log_out": "Log out",
     "settings": "Settings",
     "alarm": "Alarm",
@@ -69,13 +75,11 @@ class CodegenLoader extends AssetLoader{
     },
     "defect_analysis": {
       "title": "Defect analysis",
-      "subtitle": "Analysis and report defect of projects",
-      "update_title": "Update defect analysis",
-      "update_subtitle": "Update report defect of projects"
+      "subtitle": "Analysis and report defect of projects"
     },
     "defect_analysis_details": {
-      "update_title": "Update defect analysis details",
-      "update_subtitle": "Update detail defect of projects"
+      "title": "Update defect analysis details",
+      "subtitle": "Update detail defect of projects"
     },
     "system_report_replacements": {
       "name": {
@@ -126,11 +130,14 @@ static const Map<String,dynamic> vi_VN = {
     "list_menu_button_update": "Xem & chỉnh sửa thông tin",
     "list_menu_button_delete": "Hủy & xóa bỏ thông tin",
     "list_menu_button_export": "Xuất file báo cáo",
-    "list_menu_button_send_report": "Gửi báo cáo"
+    "list_menu_button_send_report": "Gửi báo cáo",
+    "title_page_update_info": "Cập nhật thông tin",
+    "title_page_create_new_info": "Tạo mới thông tin"
   },
   "button": {
     "reset": "Đặt lại",
-    "filter": "Lọc dữ liệu"
+    "filter": "Lọc dữ liệu",
+    "refresh": "Làm mới"
   },
   "login": {
     "username_label": "Tên đăng nhập",
@@ -150,6 +157,9 @@ static const Map<String,dynamic> vi_VN = {
     "home": "Trang chủ",
     "phieudexuat": "Phiếu đề xuất",
     "maintenance": "Bảo trì dự án",
+    "maintenance_plan": "Kế hoạch bảo trì",
+    "maintenance_defect_analysis": "Phân tích sự cố",
+    "maintenance_systems": "Bảo trì hệ thống",
     "log_out": "Đăng xuất",
     "settings": "Cài đặt",
     "alarm": "Cảnh báo",
@@ -173,13 +183,11 @@ static const Map<String,dynamic> vi_VN = {
     },
     "defect_analysis": {
       "title": "Phân tích sự cố",
-      "subtitle": "Phân tích và báo cáo sự cố của hệ thống",
-      "update_title": "Cập nhật phân tích sự cố",
-      "update_subtitle": "Cập nhật thông tin báo cáo sự cố của hệ thống"
+      "subtitle": "Phân tích và báo cáo sự cố của hệ thống"
     },
     "defect_analysis_details": {
-      "update_title": "Cập nhật chi tiết sự cố",
-      "update_subtitle": "Cập nhật thông tin chi tiết sự cố của hệ thống"
+      "title": "Cập nhật chi tiết sự cố",
+      "subtitle": "Cập nhật thông tin chi tiết sự cố của hệ thống"
     },
     "system_report_replacements": {
       "name": {

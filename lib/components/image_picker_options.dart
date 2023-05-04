@@ -33,11 +33,11 @@ class _ImagePickerOptionsState extends State<ImagePickerOptions> {
               children: [
                 const Text(
                   "Chọn hình ảnh đính kèm từ ...",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: kNormalFontSize, fontWeight: FontWeight.bold, color: kTextColor),
+                  textAlign: TextAlign.left,
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 Row(
                   children: [
@@ -65,7 +65,7 @@ class _ImagePickerOptionsState extends State<ImagePickerOptions> {
                             children: [
                               Icon(Icons.camera, color: Colors.white, size: 60),
                               SizedBox(height: 10),
-                              Text('CAMERA', style: TextStyle(fontSize: 16, color: Colors.white)),
+                              Text('Từ Camera', style: TextStyle(fontSize: kNormalFontSize, color: Colors.white)),
                             ],
                           ),
                         ),
@@ -96,7 +96,7 @@ class _ImagePickerOptionsState extends State<ImagePickerOptions> {
                             children: [
                               Icon(Icons.image, color: Colors.white, size: 60),
                               SizedBox(height: 10),
-                              Text('THƯ VIỆN', style: TextStyle(fontSize: 16, color: Colors.white)),
+                              Text('Từ thư viện', style: TextStyle(fontSize: kNormalFontSize, color: Colors.white)),
                             ],
                           ),
                         ),

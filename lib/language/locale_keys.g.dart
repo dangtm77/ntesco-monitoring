@@ -8,9 +8,12 @@ abstract class  LocaleKeys {
   static const common_list_menu_button_delete = 'common.list_menu_button_delete';
   static const common_list_menu_button_export = 'common.list_menu_button_export';
   static const common_list_menu_button_send_report = 'common.list_menu_button_send_report';
+  static const common_title_page_update_info = 'common.title_page_update_info';
+  static const common_title_page_create_new_info = 'common.title_page_create_new_info';
   static const common = 'common';
   static const button_reset = 'button.reset';
   static const button_filter = 'button.filter';
+  static const button_refresh = 'button.refresh';
   static const button = 'button';
   static const login_username_label = 'login.username_label';
   static const login_password_label = 'login.password_label';
@@ -27,6 +30,9 @@ abstract class  LocaleKeys {
   static const menu_home = 'menu.home';
   static const menu_phieudexuat = 'menu.phieudexuat';
   static const menu_maintenance = 'menu.maintenance';
+  static const menu_maintenance_plan = 'menu.maintenance_plan';
+  static const menu_maintenance_defect_analysis = 'menu.maintenance_defect_analysis';
+  static const menu_maintenance_systems = 'menu.maintenance_systems';
   static const menu_log_out = 'menu.log_out';
   static const menu_settings = 'menu.settings';
   static const menu_alarm = 'menu.alarm';
@@ -47,11 +53,9 @@ abstract class  LocaleKeys {
   static const maintenance_plan = 'maintenance.plan';
   static const maintenance_defect_analysis_title = 'maintenance.defect_analysis.title';
   static const maintenance_defect_analysis_subtitle = 'maintenance.defect_analysis.subtitle';
-  static const maintenance_defect_analysis_update_title = 'maintenance.defect_analysis.update_title';
-  static const maintenance_defect_analysis_update_subtitle = 'maintenance.defect_analysis.update_subtitle';
   static const maintenance_defect_analysis = 'maintenance.defect_analysis';
-  static const maintenance_defect_analysis_details_update_title = 'maintenance.defect_analysis_details.update_title';
-  static const maintenance_defect_analysis_details_update_subtitle = 'maintenance.defect_analysis_details.update_subtitle';
+  static const maintenance_defect_analysis_details_title = 'maintenance.defect_analysis_details.title';
+  static const maintenance_defect_analysis_details_subtitle = 'maintenance.defect_analysis_details.subtitle';
   static const maintenance_defect_analysis_details = 'maintenance.defect_analysis_details';
   static const maintenance_system_report_replacements_name_label = 'maintenance.system_report_replacements.name.label';
   static const maintenance_system_report_replacements_name = 'maintenance.system_report_replacements.name';

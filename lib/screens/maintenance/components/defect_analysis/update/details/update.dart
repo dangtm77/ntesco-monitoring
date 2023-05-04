@@ -124,20 +124,21 @@ class _UpdateBodyState extends State<UpdateBody> {
     );
   }
 
-  Widget _header(BuildContext context) => Container(
-        child: TopHeaderSub(
-          title: "maintenance.defect_analysis_details.update_title".tr(),
-          subtitle: "maintenance.defect_analysis_details.update_subtitle".tr(),
-          buttonLeft: InkWell(
-            borderRadius: BorderRadius.circular(15),
-            onTap: () => Navigator.pushNamed(context, DefectAnalysisUpdateScreen.routeName, arguments: {'id': idDefectAnalysis, 'tabIndex': 1}),
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
-            ),
+  Widget _header(BuildContext context) {
+    return Container(
+      child: TopHeaderSub(
+        title: "common.title_page_update_info".tr().toUpperCase(),
+        buttonLeft: InkWell(
+          borderRadius: BorderRadius.circular(15),
+          onTap: () => Navigator.pushNamed(context, DefectAnalysisUpdateScreen.routeName, arguments: {'id': idDefectAnalysis, 'tabIndex': 1}),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
           ),
         ),
-      );
+      ),
+    );
+  }
 
   Widget _main(BuildContext context) => Expanded(
         child: (isOnline)
@@ -166,10 +167,10 @@ class _UpdateBodyState extends State<UpdateBody> {
                           ),
                           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                           bottomNavigationBar: BottomNavyBar(
-                            iconSize: 30,
-                            showElevation: true,
-                            itemCornerRadius: 20.0,
-                            containerHeight: 70.0,
+                            iconSize: 25,
+                            showElevation: false,
+                            itemCornerRadius: 10.0,
+                            containerHeight: 50.0,
                             selectedIndex: _currentIndex,
                             onItemSelected: (value) {
                               setState(() => _currentIndex = value);
@@ -181,8 +182,8 @@ class _UpdateBodyState extends State<UpdateBody> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text('Thông tin'),
-                                      Text('CHUNG', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                      Text('Thông tin', style: TextStyle(fontSize: kSmallerFontSize)),
+                                      Text('CHUNG', style: TextStyle(fontSize: kSmallFontSize, fontWeight: FontWeight.bold)),
                                     ],
                                   ),
                                 ),
@@ -194,8 +195,8 @@ class _UpdateBodyState extends State<UpdateBody> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text('Hình ảnh'),
-                                      Text('Đính kèm', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                      Text('Hình ảnh', style: TextStyle(fontSize: kSmallerFontSize)),
+                                      Text('Đính kèm', style: TextStyle(fontSize: kSmallFontSize, fontWeight: FontWeight.bold)),
                                     ],
                                   ),
                                 ),
@@ -259,6 +260,7 @@ class _SummaryPageViewState extends State<SummaryPageView> {
                 },
                 child: Column(
                   children: <Widget>[
+                    SizedBox(height: 10),
                     editorForm("partName"),
                     SizedBox(height: 20),
                     editorForm("partManufacturer"),
@@ -277,21 +279,17 @@ class _SummaryPageViewState extends State<SummaryPageView> {
                     SizedBox(height: 20),
                     editorForm("solution"),
                     SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Expanded(child: editorForm("departmentInCharge")),
-                        SizedBox(width: 20),
-                        Expanded(child: editorForm("executionTime")),
-                      ],
-                    ),
+                    editorForm("departmentInCharge"),
+                    SizedBox(height: 20),
+                    editorForm("executionTime"),
                     SizedBox(height: 20),
                     editorForm("note"),
                     SizedBox(height: 20),
                     Row(
                       children: [
-                        Expanded(flex: 2, child: DefaultButton(text: 'Hủy bỏ thông tin', icon: Icons.delete_forever, color: Colors.red, press: () async => deleteFunc(context, model))),
+                        Expanded(child: DefaultButton(text: 'Hủy bỏ', icon: Icons.delete_forever, color: Colors.red, press: () async => deleteFunc(context, model))),
                         SizedBox(width: 10),
-                        Expanded(flex: 3, child: DefaultButton(text: 'Cập nhật thông tin', icon: Icons.check, color: kPrimaryColor, press: () async => submitFunc(context))),
+                        Expanded(child: DefaultButton(text: 'Cập nhật', icon: Icons.check_rounded, color: kPrimaryColor, press: () async => submitFunc(context))),
                       ],
                     ),
                   ],
@@ -605,15 +603,16 @@ class _AttachmentsPageViewState extends State<AttachmentsPageView> {
         ),
         child: Card(
           elevation: 8,
-          margin: EdgeInsets.all(10),
+          margin: EdgeInsets.all(7),
           color: kPrimaryColor,
           child: SizedBox(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(Icons.add_a_photo_outlined, size: 30.0, color: Colors.white),
+                Icon(Icons.add_a_photo_outlined, size: 25.0, color: Colors.white),
                 SizedBox(height: 5),
-                Text("Chọn hình ảnh", style: TextStyle(color: Colors.white, fontSize: 15.0)),
+                Text("Chọn hình ảnh", style: TextStyle(color: Colors.white, fontSize: kSmallFontSize), textAlign: TextAlign.center),
               ],
             ),
           ),
@@ -624,7 +623,7 @@ class _AttachmentsPageViewState extends State<AttachmentsPageView> {
       return Stack(children: [
         Card(
           elevation: 8,
-          margin: EdgeInsets.all(10),
+          margin: EdgeInsets.all(7),
           child: CachedNetworkImage(
             imageUrl: Common.System_DowloadFile_ByID(item.id, 'view'),
             imageBuilder: (context, imageProvider) => GestureDetector(

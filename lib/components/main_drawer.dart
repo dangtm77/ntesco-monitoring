@@ -133,7 +133,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   ),
                 ),
                 ExpansionTile(
-                  initiallyExpanded: false,
+                  initiallyExpanded: true,
                   title: Row(
                     children: [
                       Icon(Ionicons.construct_outline, color: kPrimaryColor, size: 15.0),
@@ -157,7 +157,7 @@ class _MainDrawerState extends State<MainDrawer> {
                           children: [
                             Icon(Ionicons.newspaper_outline, color: kPrimaryColor, size: 15.0),
                             SizedBox(width: 10),
-                            Text("Kế hoạch bảo trì", style: TextStyle(fontSize: kNormalFontSize, color: kPrimaryColor)),
+                            Text("menu.maintenance_plan".tr(), style: TextStyle(fontSize: kNormalFontSize, color: kPrimaryColor)),
                           ],
                         ),
                       ),
@@ -170,7 +170,7 @@ class _MainDrawerState extends State<MainDrawer> {
                           children: [
                             Icon(Ionicons.build_outline, color: kPrimaryColor, size: 15),
                             SizedBox(width: 10),
-                            Text("Bảo trì hệ thống", style: TextStyle(fontSize: kNormalFontSize, color: kPrimaryColor)),
+                            Text("menu.maintenance_systems".tr(), style: TextStyle(fontSize: kNormalFontSize, color: kPrimaryColor)),
                           ],
                         ),
                       ),
@@ -183,7 +183,7 @@ class _MainDrawerState extends State<MainDrawer> {
                           children: [
                             Icon(Ionicons.shield_checkmark_outline, color: kPrimaryColor, size: 15.0),
                             SizedBox(width: 10),
-                            Text("Phân tích sự cố", style: TextStyle(fontSize: kNormalFontSize, color: kPrimaryColor)),
+                            Text("menu.maintenance_defect_analysis".tr(), style: TextStyle(fontSize: kNormalFontSize, color: kPrimaryColor)),
                           ],
                         ),
                       ),
