@@ -427,7 +427,7 @@ class _BodyPageState extends State<Body> {
       child: (isOnline)
           ? NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification scrollInfo) {
-                if (!_isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+                if (!_isLoading && scrollInfo.metrics.maxScrollExtent != 0.0 && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
                   setState(() {
                     pageIndex = pageIndex + 1;
                     _listOfDefectAnalysis = _getlistOfDefectAnalysis();

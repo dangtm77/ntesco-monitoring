@@ -6,7 +6,9 @@
     "list_menu_button_update": "Xem & chỉnh sửa thông tin",
     "list_menu_button_delete": "Hủy & xóa bỏ thông tin",
     "list_menu_button_export": "Xuất file báo cáo",
-    "list_menu_button_send_report": "Gửi báo cáo"
+    "list_menu_button_send_report": "Gửi báo cáo",
+    "title_page_update_info": "Cập nhật thông tin",
+    "title_page_create_new_info": "Tạo mới thông tin"
   },
   "button": {
     "reset": "Đặt lại",
@@ -31,6 +33,9 @@
     "home": "Trang chủ",
     "phieudexuat": "Phiếu đề xuất",
     "maintenance": "Bảo trì dự án",
+    "maintenance_plan": "Kế hoạch bảo trì",
+    "maintenance_defect_analysis": "Phân tích sự cố",
+    "maintenance_systems": "Bảo trì hệ thống",
     "log_out": "Đăng xuất",
     "settings": "Cài đặt",
     "alarm": "Cảnh báo",
@@ -54,13 +59,11 @@
     },
     "defect_analysis": {
       "title": "Phân tích sự cố",
-      "subtitle": "Phân tích và báo cáo sự cố của hệ thống",
-      "update_title": "Cập nhật phân tích sự cố",
-      "update_subtitle": "Cập nhật thông tin báo cáo sự cố của hệ thống"
+      "subtitle": "Phân tích và báo cáo sự cố của hệ thống"
     },
     "defect_analysis_details": {
-      "update_title": "Cập nhật chi tiết sự cố",
-      "update_subtitle": "Cập nhật thông tin chi tiết sự cố của hệ thống"
+      "title": "Cập nhật chi tiết sự cố",
+      "subtitle": "Cập nhật thông tin chi tiết sự cố của hệ thống"
     },
     "system_report_replacements": {
       "name": {

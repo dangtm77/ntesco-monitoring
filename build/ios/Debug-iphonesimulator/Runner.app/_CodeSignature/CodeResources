@@ -46,7 +46,7 @@
 		</data>
 		<key>Frameworks/App.framework/App</key>
 		<data>
-		TOG5SAZGkuUXX1Oosue4HfSeRvA=
+		v7CnbQ1nfvO3Xwg20hgDQ5oA+4E=
 		</data>
 		<key>Frameworks/App.framework/Info.plist</key>
 		<data>
@@ -54,7 +54,7 @@
 		</data>
 		<key>Frameworks/App.framework/_CodeSignature/CodeResources</key>
 		<data>
-		S/ZGhbHmHUlyRLh85DXTOZSNgD0=
+		cyqXgDce+BXlj1lEnyY6VJdya7U=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/AssetManifest.json</key>
 		<data>
@@ -394,11 +394,11 @@
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/assets/language/en-US.json</key>
 		<data>
-		4roDeEnL06cz69YF8V/K6o+V2nA=
+		+nnCcZeqSvDHmTfYOK4M8m7rMoI=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/assets/language/vi-VN.json</key>
 		<data>
-		XeEWBxt+SMxPe3eAkpj9V/fKA4Q=
+		PxNM0aENH+QftIUd1bM35aMGPyc=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/fonts/MaterialIcons-Regular.otf</key>
 		<data>
@@ -410,7 +410,7 @@
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/kernel_blob.bin</key>
 		<data>
-		zBJW4DspiNLR+4BpsOlVuoO0Q+s=
+		EH3Al9P3Fu/d1S5WooQLNUvKyBw=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/packages/awesome_snackbar_content/assets/back.svg</key>
 		<data>
@@ -829,7 +829,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			sNtpke1FonN+ppohJQv+KXPaHKq9r5QsvD//rszsIPQ=
+			tOx7K4/NeUrHHsLaU/Ih/vQl36ejnkk6NFLvs5o067Y=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/Info.plist</key>
@@ -843,7 +843,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			oT+KF6bysfJQWZtsTMUEzcAHsXhCcI9Emuf99aAUVuE=
+			Xl96qSP5xJevmJ/PhdsrXEAJhyeb4qoziWDxVG5NXYI=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/AssetManifest.json</key>
@@ -1438,14 +1438,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			IzQvSR1G/wDKg2aPKZ0rcJknNTwG/2yoeWCqdJIUsJA=
+			95bx2OnFqfjwWa+stntIYUKYmCdp0YmrtvwH5tmsWdk=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/assets/language/vi-VN.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			bqDy27Q9drmb7YorqvcZ1pH6oqTBmgMECz+jLguBWKU=
+			pcDNZ6oJLHlxVzpv+ijnjsVD+GhQ22GsQlVrpmSH960=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/fonts/MaterialIcons-Regular.otf</key>
@@ -1466,7 +1466,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			9D0E8xP6g6dYc39fRvaHK8JdT9Dv7WuJuwy7/p+NOuE=
+			BUyLiaEZwjkI8AbA3ht1RX4iftpamFCPhAaYkL7rhtk=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/packages/awesome_snackbar_content/assets/back.svg</key>

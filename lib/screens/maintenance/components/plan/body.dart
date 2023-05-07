@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ui';
 
 import 'package:awesome_select/awesome_select.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -13,14 +12,14 @@ import 'package:ntesco_smart_monitoring/components/default_button.dart';
 import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
-import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
 import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
-import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
 import 'package:ntesco_smart_monitoring/models/mt/PlanModel.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../../repository/common/projects.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -99,25 +98,6 @@ class _BodyPageState extends State<Body> {
       throw Exception(response.body);
   }
 
-  Future<List<S2Choice<int>>> _getListProjectsForSelect() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    _projectCurrent = prefs.getInt('MAINTENANCE-IDPROJECT') ?? 0;
-
-    List<dynamic> sortOptions = [];
-    List<dynamic> filterOptions = [];
-    LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
-    Response response = await Common.Projects_GetList(options.toMap());
-
-    if (response.statusCode >= 200 && response.statusCode <= 299)
-      return S2Choice.listFrom<int, dynamic>(
-        source: ProjectModels.fromJson(jsonDecode(response.body)).data,
-        value: (index, item) => item.id,
-        title: (index, item) => item.name,
-      );
-    else
-      throw Exception(response.body);
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -186,7 +166,7 @@ class _BodyPageState extends State<Body> {
   }
 
   Widget _filter(BuildContext context) {
-    Future<List<S2Choice<int>>> projectFilter = _getListProjectsForSelect();
+    Future<List<S2Choice<int>>> projectFilter = CommonProjectsRepository.getListProjectsForSelect();
 
     return Scrollbar(
       child: ListView(
@@ -270,7 +250,7 @@ class _BodyPageState extends State<Body> {
       child: (isOnline)
           ? NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification scrollInfo) {
-                if (!_isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+                if (!_isLoading && scrollInfo.metrics.maxScrollExtent != 0.0 && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
                   setState(() {
                     pageIndex = pageIndex + 1;
                     _listOfPlans = _getListOfPlans();
@@ -345,6 +325,7 @@ class _BodyPageState extends State<Body> {
           ),
         ),
       );
+
     // return ListTile(
     //   leading: Column(
     //     mainAxisAlignment: MainAxisAlignment.center,

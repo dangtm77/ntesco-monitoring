@@ -89,7 +89,7 @@ class _DetailsPageViewState extends State<DetailsPageView> {
                             child: SlideAnimation(child: FadeInAnimation(child: _item(item))),
                           );
                         },
-                        separatorBuilder: (BuildContext context, int index) => Divider(thickness: 5.0),
+                        separatorBuilder: (BuildContext context, int index) => Divider(thickness: 7.0),
                       ),
                     ),
                   );
@@ -119,7 +119,6 @@ class _DetailsPageViewState extends State<DetailsPageView> {
   }
 
   Widget _item(DefectAnalysisDetailsModel item) {
-    print(item.pictures!.length);
     return ListTile(
       onTap: () => showBarModalBottomSheet(
         context: context,
@@ -157,13 +156,14 @@ class _DetailsPageViewState extends State<DetailsPageView> {
           ),
         ),
       ),
+      isThreeLine: true,
       leading: badge.Badge(
         showBadge: item.pictures!.length > 1,
-        badgeContent: Text('${item.pictures!.length}', style: TextStyle(fontSize: 15, color: Colors.white)),
+        badgeContent: Text('${item.pictures!.length}', style: TextStyle(fontSize: 13, color: Colors.white)),
         badgeAnimation: badge.BadgeAnimation.scale(),
-        badgeStyle: badge.BadgeStyle(badgeColor: kPrimaryColor),
+        badgeStyle: badge.BadgeStyle(badgeColor: Colors.red),
         child: CachedNetworkImage(
-          imageUrl: item.pictures!.first.pathFile,
+          imageUrl: Common.System_DowloadFile_ByID(((item.pictures != null && item.pictures!.length > 0) ? item.pictures!.first.id : 0), "view"),
           imageBuilder: (context, imageProvider) => GestureDetector(
             //onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => PhotoViewGalleryScreen(imageUrls: imagesList, initialIndex: 0))),
             child: Container(
@@ -177,14 +177,31 @@ class _DetailsPageViewState extends State<DetailsPageView> {
             ),
           ),
           placeholder: (context, url) => SizedBox(width: 30, height: 30, child: CircularProgressIndicator()),
-          errorWidget: (context, url, error) => Icon(Icons.error),
+          errorWidget: (context, url, error) => SizedBox(
+            width: 100,
+            height: 60,
+            child: Container(
+              width: 100,
+              height: 60,
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(5.0),
+                color: Colors.grey.shade400,
+              ),
+              child: Center(child: Text('NO IMAGE', style: TextStyle(fontSize: kSmallFontSize, color: Colors.white))),
+            ),
+          ),
         ),
       ),
-      title: Column(
+      title: Text(
+        "${item.partName}",
+        overflow: TextOverflow.ellipsis,
+        maxLines: 2,
+        style: TextStyle(color: kPrimaryColor, fontSize: kNormalFontSize, fontWeight: FontWeight.bold),
+      ),
+      subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("${item.partName}", style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal)),
-          SizedBox(height: 5.0),
           Text.rich(
             TextSpan(
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal),
@@ -199,7 +216,7 @@ class _DetailsPageViewState extends State<DetailsPageView> {
                     ? TextSpan(
                         children: [
                           WidgetSpan(child: SizedBox(width: 5.0)),
-                          TextSpan(text: " | ", style: TextStyle(color: kPrimaryColor)),
+                          TextSpan(text: " | ", style: TextStyle(color: kTextColor)),
                           WidgetSpan(child: SizedBox(width: 5.0)),
                           TextSpan(text: "NSX: ", style: TextStyle(color: kTextColor)),
                           TextSpan(text: "${item.partManufacturer}", style: TextStyle(color: kPrimaryColor)),
@@ -210,7 +227,7 @@ class _DetailsPageViewState extends State<DetailsPageView> {
                     ? TextSpan(
                         children: [
                           WidgetSpan(child: SizedBox(width: 5.0)),
-                          TextSpan(text: " | ", style: TextStyle(color: kPrimaryColor)),
+                          TextSpan(text: " | ", style: TextStyle(color: kTextColor)),
                           WidgetSpan(child: SizedBox(width: 5.0)),
                           TextSpan(text: "Model: ", style: TextStyle(color: kTextColor)),
                           TextSpan(text: "${item.partModel}", style: TextStyle(color: kPrimaryColor)),
@@ -220,26 +237,6 @@ class _DetailsPageViewState extends State<DetailsPageView> {
               ],
             ),
           ),
-          Visibility(
-              visible: (item.partSpecifications != null && item.partSpecifications!.length > 0),
-              child: Column(
-                children: [
-                  SizedBox(height: 5.0),
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal),
-                          children: [
-                            TextSpan(text: "Thông số: ", style: TextStyle(color: kTextColor)),
-                            TextSpan(text: "${item.partSpecifications}", style: TextStyle(color: kPrimaryColor)),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ))
         ],
       ),
     );

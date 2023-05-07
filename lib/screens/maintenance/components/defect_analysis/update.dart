@@ -135,7 +135,7 @@ class _UpdateBodyState extends State<UpdateBody> {
                     body: SizedBox.expand(
                       child: PageView(
                         controller: _pageController,
-                        //physics: NeverScrollableScrollPhysics(),
+                        physics: NeverScrollableScrollPhysics(),
                         onPageChanged: ((value) => setState(() => _currentIndex = value)),
                         children: <Widget>[
                           SummaryPageView(id: item.id, model: item),
