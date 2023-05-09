@@ -33,6 +33,7 @@ import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_an
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../helper/string.dart';
 
@@ -128,9 +129,6 @@ class _BodyPageState extends State<Body> {
     Response response = await Maintenance.DefectAnalysis_GetList(options.toMap());
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       DefectAnalysisModels result = DefectAnalysisModels.fromJson(jsonDecode(response.body));
-      setState(() {
-        _isLoading = false;
-      });
       return result;
     } else
       throw Exception(response.body);
@@ -468,7 +466,7 @@ class _BodyPageState extends State<Body> {
                         child: AnimationLimiter(
                           child: GroupedListView<dynamic, String>(
                             elements: snapshot.data!.data,
-                            groupBy: (element) => "${element.system.name}" + (element.system.otherName != null ? " (${element.system.otherName})" : ""),
+                            groupBy: (element) => "HỆ THỐNG ${element.system.name}" + (element.system.otherName != null ? " (${element.system.otherName})" : ""),
                             groupSeparatorBuilder: (String value) => Container(
                               width: MediaQuery.of(context).size.width,
                               color: kPrimaryColor,
@@ -490,7 +488,7 @@ class _BodyPageState extends State<Body> {
                                 ),
                               );
                             },
-                            separator: Divider(thickness: 1),
+                            separator: Divider(thickness: 5),
                             floatingHeader: false,
                             useStickyGroupSeparators: true,
                           ),
@@ -670,16 +668,6 @@ class _BodyPageState extends State<Body> {
   }
 
   Future<void> exportFunc(key) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
-    var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
-    Map<String, dynamic> params = {"id": "2"};
-    await http.get(Uri.https(endPoint, 'v1/mt/DefectAnalysis/Export', params), headers: headerValue).then((rs) async {
-      print(rs.body);
-      final bytes = rs.bodyBytes;
-      final directory = await getExternalStorageDirectory();
-      final file = File(directory!.path + '/downloaded_file.pdf');
-      await file.writeAsBytes(bytes);
-    });
+    await launchUrl(Uri.parse('https://portal-api.ntesco.com/v2/MT/DefectAnalysis/Export?id=2'), mode: LaunchMode.inAppWebView);
   }
 }
