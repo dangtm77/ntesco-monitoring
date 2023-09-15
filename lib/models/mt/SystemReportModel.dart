@@ -1,6 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-
 import '../common/ProjectModel.dart';
 import '../common/UserModel.dart';
 import '../common/VariableModel.dart';
@@ -72,13 +70,21 @@ class SystemReportModel {
       staff: json['staff'] as String,
       staffInfo: UserModel.fromJson(json['staffInfo']),
       type: json['type'] != null ? json['type'] as int : null,
-      typeInfo: json['type'] != null ? VariableModel.fromJson(json['typeInfo']) : null,
+      typeInfo: json['type'] != null
+          ? VariableModel.fromJson(json['typeInfo'])
+          : null,
       status: json['status'] as int,
       statusInfo: VariableModel.fromJson(json['statusInfo']),
-      userCreate: json['userCreate'] != null ? json['userCreate'] as String : null,
-      userUpdate: json['userUpdate'] != null ? json['userUpdate'] as String : null,
-      dateCreate: json['dateCreate'] != null ? DateTime.parse(json['dateCreate']) : null,
-      dateUpdate: json['dateUpdate'] != null ? DateTime.parse(json['dateUpdate']) : null,
+      userCreate:
+          json['userCreate'] != null ? json['userCreate'] as String : null,
+      userUpdate:
+          json['userUpdate'] != null ? json['userUpdate'] as String : null,
+      dateCreate: json['dateCreate'] != null
+          ? DateTime.parse(json['dateCreate'])
+          : null,
+      dateUpdate: json['dateUpdate'] != null
+          ? DateTime.parse(json['dateUpdate'])
+          : null,
     );
   }
 }

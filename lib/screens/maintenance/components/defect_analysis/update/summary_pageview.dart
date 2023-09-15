@@ -31,7 +31,8 @@ class SummaryPageView extends StatefulWidget {
   final int id;
   final DefectAnalysisModel model;
 
-  const SummaryPageView({Key? key, required this.id, required this.model}) : super(key: key);
+  const SummaryPageView({Key? key, required this.id, required this.model})
+      : super(key: key);
 
   @override
   _SummaryPageViewState createState() => new _SummaryPageViewState(id, model);
@@ -51,7 +52,12 @@ class _SummaryPageViewState extends State<SummaryPageView> {
     try {
       List<dynamic> sortOptions = [];
       List<dynamic> filterOptions = [];
-      LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+      LoadOptionsModel options = new LoadOptionsModel(
+          take: 0,
+          skip: 0,
+          sort: jsonEncode(sortOptions),
+          filter: jsonEncode(filterOptions),
+          requireTotalCount: 'true');
       Response response = await Common.Projects_GetList(options.toMap());
       if (response.statusCode >= 200 && response.statusCode <= 299)
         return ProjectModels.fromJson(jsonDecode(response.body));
@@ -73,7 +79,8 @@ class _SummaryPageViewState extends State<SummaryPageView> {
         filter: jsonEncode(filterOptions),
         requireTotalCount: 'true',
       );
-      Response response = await Maintenance.Systems_GetList_ByProject(id, options.toMap());
+      Response response =
+          await Maintenance.Systems_GetList_ByProject(id, options.toMap());
       if (response.statusCode >= 200 && response.statusCode <= 299)
         return SystemModels.fromJson(jsonDecode(response.body));
       else
@@ -90,7 +97,12 @@ class _SummaryPageViewState extends State<SummaryPageView> {
         {"selector": "chucDanh_SapXep", "desc": "true"},
       ];
       List<dynamic> filterOptions = [];
-      LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+      LoadOptionsModel options = new LoadOptionsModel(
+          take: 0,
+          skip: 0,
+          sort: jsonEncode(sortOptions),
+          filter: jsonEncode(filterOptions),
+          requireTotalCount: 'true');
       Response response = await Common.Users_GetList(options.toMap());
       if (response.statusCode >= 200 && response.statusCode <= 299)
         return UserModels.fromJson(jsonDecode(response.body));
@@ -120,7 +132,6 @@ class _SummaryPageViewState extends State<SummaryPageView> {
               FormBuilder(
                 key: _formKey,
                 autovalidateMode: AutovalidateMode.always,
-                autoFocusOnValidationFailure: true,
                 initialValue: {
                   'idProject': model.project.id,
                   'idSystem': model.idSystem,
@@ -159,9 +170,19 @@ class _SummaryPageViewState extends State<SummaryPageView> {
                     SizedBox(height: 20),
                     Row(
                       children: [
-                        Expanded(child: DefaultButton(text: 'Hủy bỏ', icon: Icons.delete_forever, color: Colors.red, press: () async => deleteFunc(context, model))),
+                        Expanded(
+                            child: DefaultButton(
+                                text: 'Hủy bỏ',
+                                icon: Icons.delete_forever,
+                                color: Colors.red,
+                                press: () async => deleteFunc(context, model))),
                         SizedBox(width: 10),
-                        Expanded(child: DefaultButton(text: 'Cập nhật', icon: Icons.check_rounded, color: kPrimaryColor, press: () async => submitFunc(context))),
+                        Expanded(
+                            child: DefaultButton(
+                                text: 'Cập nhật',
+                                icon: Icons.check_rounded,
+                                color: kPrimaryColor,
+                                press: () async => submitFunc(context))),
                       ],
                     ),
                   ],
@@ -179,18 +200,27 @@ class _SummaryPageViewState extends State<SummaryPageView> {
       case "idProject":
         return FutureBuilder(
           future: _listOfProjects,
-          builder: (BuildContext context, AsyncSnapshot<ProjectModels> snapshot) {
+          builder:
+              (BuildContext context, AsyncSnapshot<ProjectModels> snapshot) {
             if (snapshot.hasError)
               return DataErrorWidget(error: snapshot.error.toString());
-            else if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active && !snapshot.hasData))
+            else if ((snapshot.connectionState == ConnectionState.none ||
+                snapshot.connectionState == ConnectionState.waiting ||
+                snapshot.connectionState == ConnectionState.active &&
+                    !snapshot.hasData))
               return CircularProgressIndicator();
             else {
               return FormBuilderDropdown<int>(
                 name: 'idProject',
                 enabled: false,
-                menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
+                menuMaxHeight:
+                    getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 decoration: InputDecoration(
-                  label: Text.rich(TextSpan(children: [TextSpan(text: 'Dự án / Công trình'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
+                  label: Text.rich(TextSpan(children: [
+                    TextSpan(text: 'Dự án / Công trình'),
+                    WidgetSpan(child: SizedBox(width: 5.0)),
+                    TextSpan(text: '(*)', style: TextStyle(color: Colors.red))
+                  ])),
                   hintText: "Vui lòng chọn thông tin...",
                 ).applyDefaults(inputDecorationTheme()),
                 items: snapshot.data!.data
@@ -207,7 +237,8 @@ class _SummaryPageViewState extends State<SummaryPageView> {
                     )
                     .toList(),
                 valueTransformer: (val) => val,
-                validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+                validator: FormBuilderValidators.compose(
+                    [FormBuilderValidators.required()]),
               );
             }
           },
@@ -215,21 +246,27 @@ class _SummaryPageViewState extends State<SummaryPageView> {
       case "idSystem":
         return FutureBuilder(
           future: _listOfSystems,
-          builder: (BuildContext context, AsyncSnapshot<SystemModels> snapshot) {
+          builder:
+              (BuildContext context, AsyncSnapshot<SystemModels> snapshot) {
             if (snapshot.hasError)
               return DataErrorWidget(error: snapshot.error.toString());
-            else if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active && !snapshot.hasData))
+            else if ((snapshot.connectionState == ConnectionState.none ||
+                snapshot.connectionState == ConnectionState.waiting ||
+                snapshot.connectionState == ConnectionState.active &&
+                    !snapshot.hasData))
               return CircularProgressIndicator();
             else
               return FormBuilderDropdown<int>(
                 name: 'idSystem',
-                menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
+                menuMaxHeight:
+                    getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 decoration: InputDecoration(
                   label: Text.rich(
                     TextSpan(children: [
                       TextSpan(text: 'Hệ thống cần phân tích'),
                       WidgetSpan(child: SizedBox(width: 5.0)),
-                      TextSpan(text: '(*)', style: TextStyle(color: Colors.red)),
+                      TextSpan(
+                          text: '(*)', style: TextStyle(color: Colors.red)),
                     ]),
                   ),
                   hintText: "Vui lòng chọn thông tin...",
@@ -248,7 +285,8 @@ class _SummaryPageViewState extends State<SummaryPageView> {
                     )
                     .toList(),
                 valueTransformer: (val) => val,
-                validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+                validator: FormBuilderValidators.compose(
+                    [FormBuilderValidators.required()]),
               );
           },
         );
@@ -260,7 +298,8 @@ class _SummaryPageViewState extends State<SummaryPageView> {
             hintText: "Vui lòng nhập thông tin...",
           ).applyDefaults(inputDecorationTheme()),
           style: TextStyle(fontSize: kNormalFontSize),
-          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+          validator:
+              FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
       case "analysisDate":
         return FormBuilderDateTimePicker(
@@ -273,7 +312,8 @@ class _SummaryPageViewState extends State<SummaryPageView> {
             hintText: "Vui lòng chọn thông tin...",
           ).applyDefaults(inputDecorationTheme()),
           style: TextStyle(fontSize: kNormalFontSize),
-          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+          validator:
+              FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
       case "analysisBy":
         return FutureBuilder(
@@ -281,13 +321,18 @@ class _SummaryPageViewState extends State<SummaryPageView> {
           builder: (BuildContext context, AsyncSnapshot<UserModels> snapshot) {
             if (snapshot.hasError)
               return DataErrorWidget(error: snapshot.error.toString());
-            else if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active && !snapshot.hasData))
+            else if ((snapshot.connectionState == ConnectionState.none ||
+                snapshot.connectionState == ConnectionState.waiting ||
+                snapshot.connectionState == ConnectionState.active &&
+                    !snapshot.hasData))
               return LoadingWidget();
             else
               return FormBuilderDropdown<String>(
                 name: 'analysisBy',
-                menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
-                validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+                menuMaxHeight:
+                    getProportionateScreenHeight(SizeConfig.screenHeight / 2),
+                validator: FormBuilderValidators.compose(
+                    [FormBuilderValidators.required()]),
                 decoration: InputDecoration(
                   labelText: 'Nhân sự phân tích',
                   hintText: "Vui lòng chọn thông tin...",
@@ -325,12 +370,16 @@ class _SummaryPageViewState extends State<SummaryPageView> {
           builder: (BuildContext context, AsyncSnapshot<UserModels> snapshot) {
             if (snapshot.hasError)
               return DataErrorWidget(error: snapshot.error.toString());
-            else if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active && !snapshot.hasData))
+            else if ((snapshot.connectionState == ConnectionState.none ||
+                snapshot.connectionState == ConnectionState.waiting ||
+                snapshot.connectionState == ConnectionState.active &&
+                    !snapshot.hasData))
               return CircularProgressIndicator();
             else
               return FormBuilderDropdown<String>(
                 name: 'maintenanceStaff',
-                menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
+                menuMaxHeight:
+                    getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 decoration: InputDecoration(
                   labelText: 'Đại diện bộ phận Bảo trì',
                   hintText: "Vui lòng chọn thông tin...",
@@ -359,12 +408,16 @@ class _SummaryPageViewState extends State<SummaryPageView> {
           builder: (BuildContext context, AsyncSnapshot<UserModels> snapshot) {
             if (snapshot.hasError)
               return DataErrorWidget(error: snapshot.error.toString());
-            else if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active && !snapshot.hasData))
+            else if ((snapshot.connectionState == ConnectionState.none ||
+                snapshot.connectionState == ConnectionState.waiting ||
+                snapshot.connectionState == ConnectionState.active &&
+                    !snapshot.hasData))
               return CircularProgressIndicator();
             else
               return FormBuilderDropdown<String>(
                 name: 'qcStaff',
-                menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
+                menuMaxHeight:
+                    getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 decoration: InputDecoration(
                   labelText: 'Đại diện bộ phận QC',
                   hintText: "Vui lòng chọn thông tin...",
@@ -393,12 +446,16 @@ class _SummaryPageViewState extends State<SummaryPageView> {
           builder: (BuildContext context, AsyncSnapshot<UserModels> snapshot) {
             if (snapshot.hasError)
               return DataErrorWidget(error: snapshot.error.toString());
-            else if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active && !snapshot.hasData))
+            else if ((snapshot.connectionState == ConnectionState.none ||
+                snapshot.connectionState == ConnectionState.waiting ||
+                snapshot.connectionState == ConnectionState.active &&
+                    !snapshot.hasData))
               return CircularProgressIndicator();
             else
               return FormBuilderDropdown<String>(
                 name: 'cncStaff',
-                menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
+                menuMaxHeight:
+                    getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 decoration: InputDecoration(
                   labelText: 'Đại diện bộ phận C&C',
                   hintText: "Vui lòng chọn thông tin...",
@@ -432,27 +489,39 @@ class _SummaryPageViewState extends State<SummaryPageView> {
       var defectAnalysisModel = {
         'idSystem': _formKey.currentState?.fields['idSystem']?.value,
         'code': _formKey.currentState?.fields['code']?.value,
-        'analysisDate': _formKey.currentState?.fields['analysisDate']?.value.toIso8601String(),
+        'analysisDate': _formKey.currentState?.fields['analysisDate']?.value
+            .toIso8601String(),
         'analysisBy': _formKey.currentState?.fields['analysisBy']?.value,
-        'currentSuitation': _formKey.currentState?.fields['currentSuitation']?.value,
-        'maintenanceStaff': _formKey.currentState?.fields['maintenanceStaff']?.value,
+        'currentSuitation':
+            _formKey.currentState?.fields['currentSuitation']?.value,
+        'maintenanceStaff':
+            _formKey.currentState?.fields['maintenanceStaff']?.value,
         'qcStaff': _formKey.currentState?.fields['qcStaff']?.value,
         'cncStaff': _formKey.currentState?.fields['cncStaff']?.value,
       };
-      await Maintenance.DefectAnalysis_Update(id, defectAnalysisModel).then((response) {
+      await Maintenance.DefectAnalysis_Update(id, defectAnalysisModel)
+          .then((response) {
         ProgressHud.of(context)?.dismiss();
         if (response.statusCode >= 200 && response.statusCode <= 299)
-          Util.showNotification(context, null, 'Cập nhật thông tin phân tích sự cố thành công', ContentType.success, 3);
+          Util.showNotification(
+              context,
+              null,
+              'Cập nhật thông tin phân tích sự cố thành công',
+              ContentType.success,
+              3);
         else
-          Util.showNotification(context, null, response.body, ContentType.failure, 5);
+          Util.showNotification(
+              context, null, response.body, ContentType.failure, 5);
       }).catchError((error, stackTrace) {
         ProgressHud.of(context)?.dismiss();
-        Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
+        Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error",
+            ContentType.failure, 5);
       });
     }
   }
 
-  Future<void> deleteFunc(BuildContext context, DefectAnalysisModel item) async {
+  Future<void> deleteFunc(
+      BuildContext context, DefectAnalysisModel item) async {
     showOkCancelAlertDialog(
       context: context,
       title: item.code,
@@ -462,16 +531,20 @@ class _SummaryPageViewState extends State<SummaryPageView> {
       isDestructiveAction: true,
     ).then((result) async {
       if (result == OkCancelResult.ok) {
-        ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
+        ProgressHud.of(context)
+            ?.show(ProgressHudType.loading, "Vui lòng chờ...");
         await Maintenance.DefectAnalysis_Delete(this.id).then((response) {
           ProgressHud.of(context)?.dismiss();
           if (response.statusCode >= 200 && response.statusCode <= 299)
-            Navigator.pushReplacementNamed(context, DefectAnalysisScreen.routeName);
+            Navigator.pushReplacementNamed(
+                context, DefectAnalysisScreen.routeName);
           else
-            Util.showNotification(context, null, response.body, ContentType.failure, 5);
+            Util.showNotification(
+                context, null, response.body, ContentType.failure, 5);
         }).catchError((error, stackTrace) {
           ProgressHud.of(context)?.dismiss();
-          Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
+          Util.showNotification(context, null,
+              "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
         });
       }
     });

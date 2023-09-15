@@ -35,7 +35,9 @@ class _SignFormState extends State<SignForm> {
   void initState() {
     super.initState();
     checkConnectivity(null);
-    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) => checkConnectivity(result));
+    subscription = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) => checkConnectivity(result));
   }
 
   Future<void> checkConnectivity(ConnectivityResult? result) async {
@@ -59,10 +61,10 @@ class _SignFormState extends State<SignForm> {
           passwordTextFormField(),
           SizedBox(height: getProportionateScreenHeight(30)),
           DefaultButton(
-            icon: Icons.send_sharp,
-            text: "login.signin_button".tr().toUpperCase(),
+            //icon: Icons.send_sharp,
+            text: "login.signin_button".tr(),
             press: () async => submitLogin(),
-            height: 50,
+            height: 40,
           ),
           SizedBox(height: getProportionateScreenHeight(15)),
           Row(
@@ -71,10 +73,14 @@ class _SignFormState extends State<SignForm> {
             children: [
               ChangeLanguage(),
               GestureDetector(
-                onTap: () => Util.showNotification(context, null, "Đang cập nhật tính năng...", ContentType.help, 3),
+                onTap: () => Util.showNotification(context, null,
+                    "Đang cập nhật tính năng...", ContentType.help, 3),
                 child: Text(
                   "login.forgot_password_button".tr(),
-                  style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w800, fontSize: 15),
+                  style: TextStyle(
+                      color: kPrimaryColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15),
                 ),
               )
             ],
@@ -98,13 +104,18 @@ class _SignFormState extends State<SignForm> {
       },
       decoration: InputDecoration(
         labelText: "login.username_label".tr(),
-        labelStyle: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w700),
+        labelStyle: TextStyle(
+            color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w700),
         hintText: "login.username_hint".tr(),
-        hintStyle: TextStyle(color: Color(0xFF989eb1), fontSize: 15, fontWeight: FontWeight.w400),
+        hintStyle: TextStyle(
+            color: Color(0xFF989eb1),
+            fontSize: 15,
+            fontWeight: FontWeight.w400),
         floatingLabelBehavior: FloatingLabelBehavior.always,
         prefixIcon: Padding(
           padding: EdgeInsets.all(10),
-          child: SvgPicture.asset("assets/icons/User.svg", height: getProportionateScreenWidth(18)),
+          child: SvgPicture.asset("assets/icons/User.svg",
+              height: getProportionateScreenWidth(18)),
         ),
         isDense: true,
       ),
@@ -125,17 +136,27 @@ class _SignFormState extends State<SignForm> {
       style: TextStyle(letterSpacing: 2, fontSize: 20),
       decoration: InputDecoration(
         labelText: "login.password_label".tr(),
-        labelStyle: TextStyle(color: kPrimaryColor, fontSize: 22, letterSpacing: 0, fontWeight: FontWeight.w700),
+        labelStyle: TextStyle(
+            color: kPrimaryColor,
+            fontSize: 22,
+            letterSpacing: 0,
+            fontWeight: FontWeight.w700),
         hintText: "login.password_hint".tr(),
-        hintStyle: TextStyle(color: Color(0xFF989eb1), fontSize: 15, letterSpacing: 0, fontWeight: FontWeight.w400),
+        hintStyle: TextStyle(
+            color: Color(0xFF989eb1),
+            fontSize: 15,
+            letterSpacing: 0,
+            fontWeight: FontWeight.w400),
         floatingLabelBehavior: FloatingLabelBehavior.always,
         prefixIcon: Padding(
           padding: EdgeInsets.all(10),
-          child: SvgPicture.asset("assets/icons/Lock.svg", height: getProportionateScreenWidth(18)),
+          child: SvgPicture.asset("assets/icons/Lock.svg",
+              height: getProportionateScreenWidth(18)),
         ),
         isDense: true,
         suffixIcon: IconButton(
-            icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off, size: 30),
+            icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off,
+                size: 30),
             color: kPrimaryColor,
             onPressed: () {
               setState(() {
@@ -149,10 +170,16 @@ class _SignFormState extends State<SignForm> {
   void submitLogin() async {
     if (_formKey.currentState!.validate()) {
       if (isOnline == false)
-        Util.showNotification(context, null, "Vui lòng kiểm tra kết nối internet của thiết bị của bạn...", ContentType.warning, 2);
+        Util.showNotification(
+            context,
+            null,
+            "Vui lòng kiểm tra kết nối internet của thiết bị của bạn...",
+            ContentType.warning,
+            2);
       else {
         _formKey.currentState!.save();
-        ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
+        ProgressHud.of(context)
+            ?.show(ProgressHudType.loading, "Vui lòng chờ...");
 
         model!.username = username!.trim().toLowerCase();
         model!.password = password!.trim();
@@ -169,13 +196,19 @@ class _SignFormState extends State<SignForm> {
             Navigator.pushReplacementNamed(context, HomeScreen.routeName);
           } else {
             ProgressHud.of(context)?.dismiss();
-            Util.showNotification(context, null, data.errorDescription.toString(), ContentType.failure, 3);
+            Util.showNotification(context, null,
+                data.errorDescription.toString(), ContentType.failure, 3);
           }
         }).catchError((error, stackTrace) {
           print(error);
           print(stackTrace);
           ProgressHud.of(context)?.dismiss();
-          Util.showNotification(context, null, "Có lỗi xảy ra trong quá trình đăng nhập. Chi tiết: $error", ContentType.failure, 3);
+          Util.showNotification(
+              context,
+              null,
+              "Có lỗi xảy ra trong quá trình đăng nhập. Chi tiết: $error",
+              ContentType.failure,
+              3);
         });
       }
     }

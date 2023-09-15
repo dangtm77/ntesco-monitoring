@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field
+
 import 'package:flutter/material.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:photo_view/photo_view.dart';
@@ -39,7 +41,8 @@ class _PhotoViewGalleryScreenState extends State<PhotoViewGalleryScreen> {
               builder: (_, index) => PhotoViewGalleryPageOptions(
                 imageProvider: NetworkImage(widget.imageUrls[index]),
                 initialScale: PhotoViewComputedScale.contained,
-                heroAttributes: PhotoViewHeroAttributes(tag: widget.imageUrls[index]),
+                heroAttributes:
+                    PhotoViewHeroAttributes(tag: widget.imageUrls[index]),
               ),
               onPageChanged: (index) => setState(() => _currentIndex = index),
               pageController: _pageController,

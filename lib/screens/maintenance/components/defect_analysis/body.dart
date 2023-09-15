@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
-import 'package:http/http.dart' as http;
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:awesome_select/awesome_select.dart';
@@ -14,7 +12,6 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:http/http.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:ntesco_smart_monitoring/components/default_button.dart';
 import 'package:ntesco_smart_monitoring/components/state_widget.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
@@ -23,7 +20,6 @@ import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
 import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
-import 'package:ntesco_smart_monitoring/models/Login.dart';
 import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
 import 'package:ntesco_smart_monitoring/models/common/VariableModel.dart';
 import 'package:ntesco_smart_monitoring/models/mt/DefectAnalysisModel.dart';
@@ -31,7 +27,6 @@ import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/create.dart';
 import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/update.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -243,7 +238,7 @@ class _BodyPageState extends State<Body> {
         color: (_projectCurrent != 0) ? kPrimaryColor : Colors.grey,
         icon: Icon(Icons.addchart_outlined, size: 25.0),
         onPressed: () => (_projectCurrent != 0)
-            ? showCupertinoModalBottomSheet(
+            ? showModalBottomSheet(
                 context: context,
                 builder: (context) => DefectAnalysisCreateScreen(),
               ).then((value) => _refresh())
@@ -556,13 +551,10 @@ class _BodyPageState extends State<Body> {
     ];
 
     return ListTile(
-      onTap: () => showBarModalBottomSheet(
+      onTap: () => showModalBottomSheet(
         context: context,
         builder: (_) => Material(
-          child: SafeArea(
-            top: true,
-            child: Column(mainAxisSize: MainAxisSize.min, children: _listMenu),
-          ),
+          child: SafeArea(top: true, child: Column(mainAxisSize: MainAxisSize.min, children: _listMenu)),
         ),
       ),
       title: Text(

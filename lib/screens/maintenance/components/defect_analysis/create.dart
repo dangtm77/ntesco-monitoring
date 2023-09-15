@@ -30,7 +30,9 @@ class DefectAnalysisCreateScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return Scaffold(drawerScrimColor: Colors.transparent, body: _DefectAnalysisCreateBody());
+    return Scaffold(
+        drawerScrimColor: Colors.transparent,
+        body: _DefectAnalysisCreateBody());
   }
 }
 
@@ -38,7 +40,8 @@ class _DefectAnalysisCreateBody extends StatefulWidget {
   _DefectAnalysisCreateBody({Key? key}) : super(key: key);
 
   @override
-  _DefectAnalysisCreateBodyState createState() => new _DefectAnalysisCreateBodyState();
+  _DefectAnalysisCreateBodyState createState() =>
+      new _DefectAnalysisCreateBodyState();
 }
 
 class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
@@ -53,7 +56,8 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
     setState(() {
       _projectCurrent = prefs.getInt('MAINTENANCE-IDPROJECT') ?? 0;
       _listOfProjects = CommonProjectsRepository.getListProjects(null);
-      _listOfSystems = MaintenanceSystemsRepository.getListSystemsByIDProject(_projectCurrent, null);
+      _listOfSystems = MaintenanceSystemsRepository.getListSystemsByIDProject(
+          _projectCurrent, null);
       _listOfUsers = CommonUsersRepository.getListUsers(null);
     });
   }
@@ -89,7 +93,10 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
             onTap: () => Navigator.pop(context),
             child: Stack(
               clipBehavior: Clip.none,
-              children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 25.0)],
+              children: [
+                Icon(Ionicons.chevron_back_outline,
+                    color: kPrimaryColor, size: 25.0)
+              ],
             ),
           ),
           buttonRight: InkWell(
@@ -97,7 +104,9 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
             onTap: () async => submitFunc(context),
             child: Stack(
               clipBehavior: Clip.none,
-              children: [Icon(Icons.save_outlined, color: kPrimaryColor, size: 25.0)],
+              children: [
+                Icon(Icons.save_outlined, color: kPrimaryColor, size: 25.0)
+              ],
             ),
           ),
         ),
@@ -112,7 +121,6 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
                 FormBuilder(
                   key: _formKey,
                   autovalidateMode: AutovalidateMode.always,
-                  autoFocusOnValidationFailure: true,
                   initialValue: {
                     'idProject': _projectCurrent != 0 ? _projectCurrent : null,
                     'idSystem': null,
@@ -168,17 +176,27 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
       case "idProject":
         return FutureBuilder(
           future: _listOfProjects,
-          builder: (BuildContext context, AsyncSnapshot<ProjectModels> snapshot) {
-            if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
-            if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active && !snapshot.hasData))
+          builder:
+              (BuildContext context, AsyncSnapshot<ProjectModels> snapshot) {
+            if (snapshot.hasError)
+              return DataErrorWidget(error: snapshot.error.toString());
+            if ((snapshot.connectionState == ConnectionState.none ||
+                snapshot.connectionState == ConnectionState.waiting ||
+                snapshot.connectionState == ConnectionState.active &&
+                    !snapshot.hasData))
               return CircularProgressIndicator();
             else {
               return FormBuilderDropdown<int>(
                 name: 'idProject',
                 enabled: false,
-                menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
+                menuMaxHeight:
+                    getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 decoration: InputDecoration(
-                  label: Text.rich(TextSpan(children: [TextSpan(text: 'Dự án / Công trình'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
+                  label: Text.rich(TextSpan(children: [
+                    TextSpan(text: 'Dự án / Công trình'),
+                    WidgetSpan(child: SizedBox(width: 5.0)),
+                    TextSpan(text: '(*)', style: TextStyle(color: Colors.red))
+                  ])),
                   hintText: "Vui lòng chọn thông tin...",
                 ).applyDefaults(inputDecorationTheme()),
                 items: snapshot.data!.data
@@ -198,12 +216,14 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
                   if (val != null) {
                     _formKey.currentState!.fields['idSystem']?.didChange(null);
                     setState(() {
-                      _listOfSystems = MaintenanceSystemsRepository.getListSystemsByIDProject(val, null);
+                      _listOfSystems = MaintenanceSystemsRepository
+                          .getListSystemsByIDProject(val, null);
                     });
                   }
                 },
                 valueTransformer: (val) => val,
-                validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+                validator: FormBuilderValidators.compose(
+                    [FormBuilderValidators.required()]),
               );
             }
           },
@@ -211,18 +231,28 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
       case "idSystem":
         return FutureBuilder(
           future: _listOfSystems,
-          builder: (BuildContext context, AsyncSnapshot<SystemModels> snapshot) {
+          builder:
+              (BuildContext context, AsyncSnapshot<SystemModels> snapshot) {
             if (snapshot.hasError)
               return DataErrorWidget(error: snapshot.error.toString());
-            else if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active && !snapshot.hasData))
+            else if ((snapshot.connectionState == ConnectionState.none ||
+                snapshot.connectionState == ConnectionState.waiting ||
+                snapshot.connectionState == ConnectionState.active &&
+                    !snapshot.hasData))
               return CircularProgressIndicator();
             else
               return FormBuilderDropdown<int>(
                 name: 'idSystem',
-                menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
-                validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+                menuMaxHeight:
+                    getProportionateScreenHeight(SizeConfig.screenHeight / 2),
+                validator: FormBuilderValidators.compose(
+                    [FormBuilderValidators.required()]),
                 decoration: InputDecoration(
-                  label: Text.rich(TextSpan(children: [TextSpan(text: 'Hệ thống cần phân tích'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
+                  label: Text.rich(TextSpan(children: [
+                    TextSpan(text: 'Hệ thống cần phân tích'),
+                    WidgetSpan(child: SizedBox(width: 5.0)),
+                    TextSpan(text: '(*)', style: TextStyle(color: Colors.red))
+                  ])),
                   hintText: "Vui lòng chọn thông tin...",
                 ).applyDefaults(inputDecorationTheme()),
                 items: snapshot.data!.data
@@ -246,11 +276,16 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
         return FormBuilderTextField(
           name: "code",
           decoration: const InputDecoration(
-            label: Text.rich(TextSpan(children: [TextSpan(text: 'Mã hiệu'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
+            label: Text.rich(TextSpan(children: [
+              TextSpan(text: 'Mã hiệu'),
+              WidgetSpan(child: SizedBox(width: 5.0)),
+              TextSpan(text: '(*)', style: TextStyle(color: Colors.red))
+            ])),
             hintText: "Vui lòng nhập thông tin...",
           ).applyDefaults(inputDecorationTheme()),
           style: TextStyle(fontSize: kNormalFontSize),
-          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+          validator:
+              FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
       case "analysisDate":
         return FormBuilderDateTimePicker(
@@ -259,7 +294,11 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
           inputType: InputType.date,
           format: DateFormat("dd/MM/yyyy"),
           decoration: InputDecoration(
-            label: Text.rich(TextSpan(children: [TextSpan(text: 'Ngày phân tích'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
+            label: Text.rich(TextSpan(children: [
+              TextSpan(text: 'Ngày phân tích'),
+              WidgetSpan(child: SizedBox(width: 5.0)),
+              TextSpan(text: '(*)', style: TextStyle(color: Colors.red))
+            ])),
             hintText: "Vui lòng chọn thông tin...",
             suffixIcon: IconButton(
               icon: const Icon(Icons.close),
@@ -269,7 +308,8 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
             ),
           ).applyDefaults(inputDecorationTheme()),
           style: TextStyle(fontSize: kNormalFontSize),
-          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+          validator:
+              FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
       case "analysisBy":
         return FutureBuilder(
@@ -277,15 +317,24 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
           builder: (BuildContext context, AsyncSnapshot<UserModels> snapshot) {
             if (snapshot.hasError)
               return DataErrorWidget(error: snapshot.error.toString());
-            else if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active && !snapshot.hasData))
+            else if ((snapshot.connectionState == ConnectionState.none ||
+                snapshot.connectionState == ConnectionState.waiting ||
+                snapshot.connectionState == ConnectionState.active &&
+                    !snapshot.hasData))
               return LoadingWidget();
             else
               return FormBuilderDropdown<String>(
                 name: 'analysisBy',
-                menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
-                validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+                menuMaxHeight:
+                    getProportionateScreenHeight(SizeConfig.screenHeight / 2),
+                validator: FormBuilderValidators.compose(
+                    [FormBuilderValidators.required()]),
                 decoration: InputDecoration(
-                  label: Text.rich(TextSpan(children: [TextSpan(text: 'Nhân sự phân tích'), WidgetSpan(child: SizedBox(width: 5.0)), TextSpan(text: '(*)', style: TextStyle(color: Colors.red))])),
+                  label: Text.rich(TextSpan(children: [
+                    TextSpan(text: 'Nhân sự phân tích'),
+                    WidgetSpan(child: SizedBox(width: 5.0)),
+                    TextSpan(text: '(*)', style: TextStyle(color: Colors.red))
+                  ])),
                   hintText: "Vui lòng chọn thông tin...",
                 ).applyDefaults(inputDecorationTheme()),
                 items: snapshot.data!.data
@@ -321,12 +370,16 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
           builder: (BuildContext context, AsyncSnapshot<UserModels> snapshot) {
             if (snapshot.hasError)
               return DataErrorWidget(error: snapshot.error.toString());
-            else if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active && !snapshot.hasData))
+            else if ((snapshot.connectionState == ConnectionState.none ||
+                snapshot.connectionState == ConnectionState.waiting ||
+                snapshot.connectionState == ConnectionState.active &&
+                    !snapshot.hasData))
               return CircularProgressIndicator();
             else
               return FormBuilderDropdown<String>(
                 name: 'maintenanceStaff',
-                menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
+                menuMaxHeight:
+                    getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 decoration: InputDecoration(
                   labelText: 'Đại diện bộ phận Bảo trì',
                   hintText: "Vui lòng chọn thông tin...",
@@ -359,12 +412,16 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
           builder: (BuildContext context, AsyncSnapshot<UserModels> snapshot) {
             if (snapshot.hasError)
               return DataErrorWidget(error: snapshot.error.toString());
-            else if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active && !snapshot.hasData))
+            else if ((snapshot.connectionState == ConnectionState.none ||
+                snapshot.connectionState == ConnectionState.waiting ||
+                snapshot.connectionState == ConnectionState.active &&
+                    !snapshot.hasData))
               return CircularProgressIndicator();
             else
               return FormBuilderDropdown<String>(
                 name: 'qcStaff',
-                menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
+                menuMaxHeight:
+                    getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 decoration: InputDecoration(
                   labelText: 'Đại diện bộ phận QC',
                   hintText: "Vui lòng chọn thông tin...",
@@ -393,12 +450,16 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
           builder: (BuildContext context, AsyncSnapshot<UserModels> snapshot) {
             if (snapshot.hasError)
               return DataErrorWidget(error: snapshot.error.toString());
-            else if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active && !snapshot.hasData))
+            else if ((snapshot.connectionState == ConnectionState.none ||
+                snapshot.connectionState == ConnectionState.waiting ||
+                snapshot.connectionState == ConnectionState.active &&
+                    !snapshot.hasData))
               return CircularProgressIndicator();
             else
               return FormBuilderDropdown<String>(
                 name: 'cncStaff',
-                menuMaxHeight: getProportionateScreenHeight(SizeConfig.screenHeight / 2),
+                menuMaxHeight:
+                    getProportionateScreenHeight(SizeConfig.screenHeight / 2),
                 decoration: InputDecoration(
                   labelText: 'Đại diện bộ phận C&C',
                   hintText: "Vui lòng chọn thông tin...",
@@ -431,34 +492,47 @@ class _DefectAnalysisCreateBodyState extends State<_DefectAnalysisCreateBody> {
       await showOkCancelAlertDialog(
         context: context,
         title: "XÁC NHẬN THÔNG TIN",
-        message: "Bạn có chắc chắn là muốn khởi tạo thông tin này không?\n\r\n\rLưu ý: Nếu thông tin đại diện của các bộ phận không được chọn hệ thống sẽ tự động lấy nhân sự có vai trò cao nhất trong phòng/bộ phận",
+        message:
+            "Bạn có chắc chắn là muốn khởi tạo thông tin này không?\n\r\n\rLưu ý: Nếu thông tin đại diện của các bộ phận không được chọn hệ thống sẽ tự động lấy nhân sự có vai trò cao nhất trong phòng/bộ phận",
         okLabel: "Xác nhận",
         cancelLabel: "Đóng",
         isDestructiveAction: true,
       ).then((result) async {
         if (result == OkCancelResult.ok) {
-          ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
+          ProgressHud.of(context)
+              ?.show(ProgressHudType.loading, "Vui lòng chờ...");
           var model = {
             'idProject': _formKey.currentState?.fields['idProject']?.value,
             'idSystem': _formKey.currentState?.fields['idSystem']?.value,
             'code': _formKey.currentState?.fields['code']?.value,
-            'analysisDate': _formKey.currentState?.fields['analysisDate']?.value.toIso8601String(),
+            'analysisDate': _formKey.currentState?.fields['analysisDate']?.value
+                .toIso8601String(),
             'analysisBy': _formKey.currentState?.fields['analysisBy']?.value,
-            'currentSuitation': _formKey.currentState?.fields['currentSuitation']?.value,
-            'maintenanceStaff': _formKey.currentState?.fields['maintenanceStaff']?.value,
+            'currentSuitation':
+                _formKey.currentState?.fields['currentSuitation']?.value,
+            'maintenanceStaff':
+                _formKey.currentState?.fields['maintenanceStaff']?.value,
             'qcStaff': _formKey.currentState?.fields['qcStaff']?.value,
             'cncStaff': _formKey.currentState?.fields['cncStaff']?.value,
           };
-          await Maintenance.DefectAnalysis_Create(jsonEncode(model)).then((response) {
+          await Maintenance.DefectAnalysis_Create(jsonEncode(model))
+              .then((response) {
             ProgressHud.of(context)?.dismiss();
             if (response.statusCode >= 200 && response.statusCode <= 299) {
-              Util.showNotification(context, null, 'Khởi tạo thông tin báo cáo phân tích sự cố thành công', ContentType.success, 3);
+              Util.showNotification(
+                  context,
+                  null,
+                  'Khởi tạo thông tin báo cáo phân tích sự cố thành công',
+                  ContentType.success,
+                  3);
               Navigator.of(context).pop();
             } else
-              Util.showNotification(context, null, response.body, ContentType.failure, 5);
+              Util.showNotification(
+                  context, null, response.body, ContentType.failure, 5);
           }).catchError((error, stackTrace) {
             ProgressHud.of(context)?.dismiss();
-            Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
+            Util.showNotification(context, null,
+                "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
           });
         }
       });

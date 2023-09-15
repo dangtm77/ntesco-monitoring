@@ -41,11 +41,15 @@ class DefectAnalysisDetailsUpdateScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, dynamic>{}) as Map;
+    final arguments = (ModalRoute.of(context)?.settings.arguments ??
+        <String, dynamic>{}) as Map;
     int id = int.parse(arguments['id'].toString());
     int idDefectAnalysis = int.parse(arguments['idDefectAnalysis'].toString());
     int tabIndex = int.parse(arguments['tabIndex'].toString());
-    return Scaffold(drawerScrimColor: Colors.transparent, body: UpdateBody(id: id, idDefectAnalysis: idDefectAnalysis, tabIndex: tabIndex));
+    return Scaffold(
+        drawerScrimColor: Colors.transparent,
+        body: UpdateBody(
+            id: id, idDefectAnalysis: idDefectAnalysis, tabIndex: tabIndex));
   }
 }
 
@@ -53,10 +57,16 @@ class UpdateBody extends StatefulWidget {
   final int id;
   final int idDefectAnalysis;
   final int tabIndex;
-  UpdateBody({Key? key, required this.id, required this.idDefectAnalysis, required this.tabIndex}) : super(key: key);
+  UpdateBody(
+      {Key? key,
+      required this.id,
+      required this.idDefectAnalysis,
+      required this.tabIndex})
+      : super(key: key);
 
   @override
-  _UpdateBodyState createState() => new _UpdateBodyState(id, idDefectAnalysis, tabIndex);
+  _UpdateBodyState createState() =>
+      new _UpdateBodyState(id, idDefectAnalysis, tabIndex);
 }
 
 class _UpdateBodyState extends State<UpdateBody> {
@@ -76,7 +86,9 @@ class _UpdateBodyState extends State<UpdateBody> {
   @override
   void initState() {
     checkConnectivity(null);
-    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) => checkConnectivity(result));
+    subscription = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) => checkConnectivity(result));
     super.initState();
   }
 
@@ -100,9 +112,11 @@ class _UpdateBodyState extends State<UpdateBody> {
   Future<DefectAnalysisDetailsModel> _getDetailOfDefectAnalysisDetails() async {
     var options = new Map<String, dynamic>();
     options.addAll({"id": id.toString()});
-    Response response = await Maintenance.DefectAnalysisDetails_GetDetail(options);
+    Response response =
+        await Maintenance.DefectAnalysisDetails_GetDetail(options);
     if (response.statusCode >= 200 && response.statusCode <= 299) {
-      DefectAnalysisDetailsModel result = DefectAnalysisDetailsModel.fromJson(jsonDecode(response.body));
+      DefectAnalysisDetailsModel result =
+          DefectAnalysisDetailsModel.fromJson(jsonDecode(response.body));
       return result;
     } else
       throw Exception(response.body);
@@ -130,10 +144,15 @@ class _UpdateBodyState extends State<UpdateBody> {
         title: "common.title_page_update_info".tr().toUpperCase(),
         buttonLeft: InkWell(
           borderRadius: BorderRadius.circular(15),
-          onTap: () => Navigator.pushNamed(context, DefectAnalysisUpdateScreen.routeName, arguments: {'id': idDefectAnalysis, 'tabIndex': 1}),
+          onTap: () => Navigator.pushNamed(
+              context, DefectAnalysisUpdateScreen.routeName,
+              arguments: {'id': idDefectAnalysis, 'tabIndex': 1}),
           child: Stack(
             clipBehavior: Clip.none,
-            children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
+            children: [
+              Icon(Ionicons.chevron_back_outline,
+                  color: kPrimaryColor, size: 30.0)
+            ],
           ),
         ),
       ),
@@ -144,11 +163,14 @@ class _UpdateBodyState extends State<UpdateBody> {
         child: (isOnline)
             ? FutureBuilder<DefectAnalysisDetailsModel>(
                 future: _defectAnalysisDetails,
-                builder: (BuildContext context, AsyncSnapshot<DefectAnalysisDetailsModel> snapshot) {
+                builder: (BuildContext context,
+                    AsyncSnapshot<DefectAnalysisDetailsModel> snapshot) {
                   if (snapshot.hasError) {
                     return DataErrorWidget(error: snapshot.error.toString());
                   } else {
-                    if (snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active)
+                    if (snapshot.connectionState == ConnectionState.none ||
+                        snapshot.connectionState == ConnectionState.waiting ||
+                        snapshot.connectionState == ConnectionState.active)
                       return LoadingWidget();
                     else {
                       if (snapshot.hasData && snapshot.data != null) {
@@ -158,14 +180,16 @@ class _UpdateBodyState extends State<UpdateBody> {
                             child: PageView(
                               controller: _pageController,
                               physics: NeverScrollableScrollPhysics(),
-                              onPageChanged: ((value) => setState(() => _currentIndex = value)),
+                              onPageChanged: ((value) =>
+                                  setState(() => _currentIndex = value)),
                               children: <Widget>[
                                 SummaryPageView(id: item.id, model: item),
                                 AttachmentsPageView(id: item.id, model: item),
                               ],
                             ),
                           ),
-                          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+                          floatingActionButtonLocation:
+                              FloatingActionButtonLocation.centerDocked,
                           bottomNavigationBar: BottomNavyBar(
                             iconSize: 25,
                             showElevation: false,
@@ -174,7 +198,9 @@ class _UpdateBodyState extends State<UpdateBody> {
                             selectedIndex: _currentIndex,
                             onItemSelected: (value) {
                               setState(() => _currentIndex = value);
-                              _pageController.animateToPage(_currentIndex, duration: Duration(milliseconds: 300), curve: Curves.ease);
+                              _pageController.animateToPage(_currentIndex,
+                                  duration: Duration(milliseconds: 300),
+                                  curve: Curves.ease);
                             },
                             items: <BottomNavyBarItem>[
                               BottomNavyBarItem(
@@ -182,8 +208,13 @@ class _UpdateBodyState extends State<UpdateBody> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text('Thông tin', style: TextStyle(fontSize: kSmallerFontSize)),
-                                      Text('CHUNG', style: TextStyle(fontSize: kSmallFontSize, fontWeight: FontWeight.bold)),
+                                      Text('Thông tin',
+                                          style: TextStyle(
+                                              fontSize: kSmallerFontSize)),
+                                      Text('CHUNG',
+                                          style: TextStyle(
+                                              fontSize: kSmallFontSize,
+                                              fontWeight: FontWeight.bold)),
                                     ],
                                   ),
                                 ),
@@ -195,8 +226,13 @@ class _UpdateBodyState extends State<UpdateBody> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text('Hình ảnh', style: TextStyle(fontSize: kSmallerFontSize)),
-                                      Text('Đính kèm', style: TextStyle(fontSize: kSmallFontSize, fontWeight: FontWeight.bold)),
+                                      Text('Hình ảnh',
+                                          style: TextStyle(
+                                              fontSize: kSmallerFontSize)),
+                                      Text('Đính kèm',
+                                          style: TextStyle(
+                                              fontSize: kSmallFontSize,
+                                              fontWeight: FontWeight.bold)),
                                     ],
                                   ),
                                 ),
@@ -221,7 +257,8 @@ class SummaryPageView extends StatefulWidget {
   final int id;
   final DefectAnalysisDetailsModel model;
 
-  const SummaryPageView({Key? key, required this.id, required this.model}) : super(key: key);
+  const SummaryPageView({Key? key, required this.id, required this.model})
+      : super(key: key);
 
   @override
   State<SummaryPageView> createState() => _SummaryPageViewState(id, model);
@@ -245,7 +282,6 @@ class _SummaryPageViewState extends State<SummaryPageView> {
               FormBuilder(
                 key: _formKey,
                 autovalidateMode: AutovalidateMode.always,
-                autoFocusOnValidationFailure: true,
                 initialValue: {
                   'partName': model.partName,
                   'partQuantity': model.partQuantity.toString(),
@@ -287,9 +323,19 @@ class _SummaryPageViewState extends State<SummaryPageView> {
                     SizedBox(height: 20),
                     Row(
                       children: [
-                        Expanded(child: DefaultButton(text: 'Hủy bỏ', icon: Icons.delete_forever, color: Colors.red, press: () async => deleteFunc(context, model))),
+                        Expanded(
+                            child: DefaultButton(
+                                text: 'Hủy bỏ',
+                                icon: Icons.delete_forever,
+                                color: Colors.red,
+                                press: () async => deleteFunc(context, model))),
                         SizedBox(width: 10),
-                        Expanded(child: DefaultButton(text: 'Cập nhật', icon: Icons.check_rounded, color: kPrimaryColor, press: () async => submitFunc(context))),
+                        Expanded(
+                            child: DefaultButton(
+                                text: 'Cập nhật',
+                                icon: Icons.check_rounded,
+                                color: kPrimaryColor,
+                                press: () async => submitFunc(context))),
                       ],
                     ),
                   ],
@@ -312,11 +358,15 @@ class _SummaryPageViewState extends State<SummaryPageView> {
             label: Text.rich(TextSpan(
               children: [
                 TextSpan(text: 'Thông tin thiết bị'),
-                TextSpan(text: ' (*)', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: ' (*)',
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold)),
               ],
             )),
           ).applyDefaults(inputDecorationTheme()),
-          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+          validator:
+              FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
       case "partManufacturer":
         return FormBuilderTextField(
@@ -362,11 +412,15 @@ class _SummaryPageViewState extends State<SummaryPageView> {
             label: Text.rich(TextSpan(
               children: [
                 TextSpan(text: 'Phân tích sự cố'),
-                TextSpan(text: ' (*)', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: ' (*)',
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold)),
               ],
             )),
           ).applyDefaults(inputDecorationTheme()),
-          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+          validator:
+              FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
       case "solution":
         return FormBuilderTextField(
@@ -377,11 +431,15 @@ class _SummaryPageViewState extends State<SummaryPageView> {
             label: Text.rich(TextSpan(
               children: [
                 TextSpan(text: 'Giải pháp khắc phục sự cố'),
-                TextSpan(text: ' (*)', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: ' (*)',
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold)),
               ],
             )),
           ).applyDefaults(inputDecorationTheme()),
-          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+          validator:
+              FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
       case "departmentInCharge":
         return FormBuilderTextField(
@@ -392,11 +450,15 @@ class _SummaryPageViewState extends State<SummaryPageView> {
             label: Text.rich(TextSpan(
               children: [
                 TextSpan(text: 'Nhân sự / Phòng ban phụ trách'),
-                TextSpan(text: ' (*)', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: ' (*)',
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold)),
               ],
             )),
           ).applyDefaults(inputDecorationTheme()),
-          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+          validator:
+              FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
       case "executionTime":
         return FormBuilderTextField(
@@ -407,11 +469,15 @@ class _SummaryPageViewState extends State<SummaryPageView> {
             label: Text.rich(TextSpan(
               children: [
                 TextSpan(text: 'Thời gian thực hiện / xử lý'),
-                TextSpan(text: ' (*)', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: ' (*)',
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold)),
               ],
             )),
           ).applyDefaults(inputDecorationTheme()),
-          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+          validator:
+              FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
       case "note":
         return FormBuilderTextField(
@@ -433,30 +499,44 @@ class _SummaryPageViewState extends State<SummaryPageView> {
       var defectAnalysisDetailsModel = {
         'partName': _formKey.currentState?.fields['partName']?.value,
         'partQuantity': _formKey.currentState?.fields['partQuantity']?.value,
-        'partManufacturer': _formKey.currentState?.fields['partManufacturer']?.value,
+        'partManufacturer':
+            _formKey.currentState?.fields['partManufacturer']?.value,
         'partModel': _formKey.currentState?.fields['partModel']?.value,
-        'partSpecifications': _formKey.currentState?.fields['partSpecifications']?.value,
-        'analysisProblemCause': _formKey.currentState?.fields['analysisProblemCause']?.value,
+        'partSpecifications':
+            _formKey.currentState?.fields['partSpecifications']?.value,
+        'analysisProblemCause':
+            _formKey.currentState?.fields['analysisProblemCause']?.value,
         'solution': _formKey.currentState?.fields['solution']?.value,
-        'departmentInCharge': _formKey.currentState?.fields['departmentInCharge']?.value,
+        'departmentInCharge':
+            _formKey.currentState?.fields['departmentInCharge']?.value,
         'executionTime': _formKey.currentState?.fields['executionTime']?.value,
         'note': _formKey.currentState?.fields['note']?.value,
       };
-      await Maintenance.DefectAnalysisDetails_Update(id, defectAnalysisDetailsModel).then((response) {
+      await Maintenance.DefectAnalysisDetails_Update(
+              id, defectAnalysisDetailsModel)
+          .then((response) {
         ProgressHud.of(context)?.dismiss();
         if (response.statusCode >= 200 && response.statusCode <= 299) {
-          Util.showNotification(context, null, "Đã thực hiện cập nhật thông tin thành công", ContentType.success, 3);
+          Util.showNotification(
+              context,
+              null,
+              "Đã thực hiện cập nhật thông tin thành công",
+              ContentType.success,
+              3);
         } else {
-          Util.showNotification(context, null, response.body, ContentType.failure, 5);
+          Util.showNotification(
+              context, null, response.body, ContentType.failure, 5);
         }
       }).catchError((error, stackTrace) {
         ProgressHud.of(context)?.dismiss();
-        Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
+        Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error",
+            ContentType.failure, 5);
       });
     }
   }
 
-  Future<void> deleteFunc(BuildContext context, DefectAnalysisDetailsModel item) async {
+  Future<void> deleteFunc(
+      BuildContext context, DefectAnalysisDetailsModel item) async {
     showOkCancelAlertDialog(
       context: context,
       title: "XÁC NHẬN THÔNG TIN",
@@ -466,15 +546,20 @@ class _SummaryPageViewState extends State<SummaryPageView> {
       isDestructiveAction: true,
     ).then((result) async {
       if (result == OkCancelResult.ok) {
-        ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
-        await Maintenance.DefectAnalysisDetails_Delete(model.id).then((response) {
+        ProgressHud.of(context)
+            ?.show(ProgressHudType.loading, "Vui lòng chờ...");
+        await Maintenance.DefectAnalysisDetails_Delete(model.id)
+            .then((response) {
           ProgressHud.of(context)?.dismiss();
           if (response.statusCode >= 200 && response.statusCode <= 299)
-            Navigator.pushNamed(context, DefectAnalysisUpdateScreen.routeName, arguments: {'id': item.idDefectAnalysis, 'tabIndex': 1});
+            Navigator.pushNamed(context, DefectAnalysisUpdateScreen.routeName,
+                arguments: {'id': item.idDefectAnalysis, 'tabIndex': 1});
           else
-            Util.showNotification(context, null, response.body, ContentType.failure, 5);
+            Util.showNotification(
+                context, null, response.body, ContentType.failure, 5);
         }).catchError((error, stackTrace) {
-          Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
+          Util.showNotification(context, null,
+              "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
         });
       }
     });
@@ -484,10 +569,12 @@ class _SummaryPageViewState extends State<SummaryPageView> {
 class AttachmentsPageView extends StatefulWidget {
   final int id;
   final DefectAnalysisDetailsModel model;
-  const AttachmentsPageView({Key? key, required this.id, required this.model}) : super(key: key);
+  const AttachmentsPageView({Key? key, required this.id, required this.model})
+      : super(key: key);
 
   @override
-  State<AttachmentsPageView> createState() => _AttachmentsPageViewState(id, model);
+  State<AttachmentsPageView> createState() =>
+      _AttachmentsPageViewState(id, model);
 }
 
 class _AttachmentsPageViewState extends State<AttachmentsPageView> {
@@ -505,10 +592,18 @@ class _AttachmentsPageViewState extends State<AttachmentsPageView> {
     try {
       List<dynamic> sortOptions = [];
       List<dynamic> filterOptions = [];
-      LoadOptionsModel options = new LoadOptionsModel(take: itemPerPage * pageIndex, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
-      Response response = await Maintenance.DefectAnalysisDetails_WithFileDinhKem_GetList(model.id, options.toMap());
+      LoadOptionsModel options = new LoadOptionsModel(
+          take: itemPerPage * pageIndex,
+          skip: 0,
+          sort: jsonEncode(sortOptions),
+          filter: jsonEncode(filterOptions),
+          requireTotalCount: 'true');
+      Response response =
+          await Maintenance.DefectAnalysisDetails_WithFileDinhKem_GetList(
+              model.id, options.toMap());
       if (response.statusCode >= 200 && response.statusCode <= 299) {
-        FileDinhKemModels result = FileDinhKemModels.fromJson(jsonDecode(response.body));
+        FileDinhKemModels result =
+            FileDinhKemModels.fromJson(jsonDecode(response.body));
         setState(() {
           isLoading = false;
         });
@@ -534,7 +629,9 @@ class _AttachmentsPageViewState extends State<AttachmentsPageView> {
           Expanded(
             child: NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification scrollInfo) {
-                if (!isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+                if (!isLoading &&
+                    scrollInfo.metrics.pixels ==
+                        scrollInfo.metrics.maxScrollExtent) {
                   setState(() {
                     pageIndex = pageIndex + 1;
                     _listOfFileDinhKems = _getListFileDinhKems();
@@ -552,9 +649,16 @@ class _AttachmentsPageViewState extends State<AttachmentsPageView> {
                 },
                 child: FutureBuilder<FileDinhKemModels>(
                   future: _listOfFileDinhKems,
-                  builder: (BuildContext context, AsyncSnapshot<FileDinhKemModels> snapshot) {
-                    if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
-                    if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !isLoading) return LoadingWidget();
+                  builder: (BuildContext context,
+                      AsyncSnapshot<FileDinhKemModels> snapshot) {
+                    if (snapshot.hasError)
+                      return DataErrorWidget(error: snapshot.error.toString());
+                    if ((snapshot.connectionState == ConnectionState.none ||
+                            snapshot.connectionState ==
+                                ConnectionState.waiting ||
+                            snapshot.connectionState ==
+                                ConnectionState.active) &&
+                        !isLoading) return LoadingWidget();
                     return Padding(
                       padding: EdgeInsets.symmetric(
                         vertical: getProportionateScreenHeight(10.0),
@@ -562,7 +666,11 @@ class _AttachmentsPageViewState extends State<AttachmentsPageView> {
                       ),
                       child: AnimationLimiter(
                         child: GridView.builder(
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4, crossAxisSpacing: 5.0, mainAxisSpacing: 5.0),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 4,
+                                  crossAxisSpacing: 5.0,
+                                  mainAxisSpacing: 5.0),
                           itemCount: snapshot.data!.data.length + 1,
                           itemBuilder: (BuildContext context, int index) {
                             return AnimationConfiguration.staggeredGrid(
@@ -571,7 +679,8 @@ class _AttachmentsPageViewState extends State<AttachmentsPageView> {
                               duration: const Duration(milliseconds: 500),
                               columnCount: 4,
                               child: SlideAnimation(
-                                child: FadeInAnimation(child: _item(index, snapshot.data!.data)),
+                                child: FadeInAnimation(
+                                    child: _item(index, snapshot.data!.data)),
                               ),
                             );
                           },
@@ -610,9 +719,13 @@ class _AttachmentsPageViewState extends State<AttachmentsPageView> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(Icons.add_a_photo_outlined, size: 25.0, color: Colors.white),
+                Icon(Icons.add_a_photo_outlined,
+                    size: 25.0, color: Colors.white),
                 SizedBox(height: 5),
-                Text("Chọn hình ảnh", style: TextStyle(color: Colors.white, fontSize: kSmallFontSize), textAlign: TextAlign.center),
+                Text("Chọn hình ảnh",
+                    style: TextStyle(
+                        color: Colors.white, fontSize: kSmallFontSize),
+                    textAlign: TextAlign.center),
               ],
             ),
           ),
@@ -627,16 +740,23 @@ class _AttachmentsPageViewState extends State<AttachmentsPageView> {
           child: CachedNetworkImage(
             imageUrl: Common.System_DowloadFile_ByID(item.id, 'view'),
             imageBuilder: (context, imageProvider) => GestureDetector(
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => PhotoViewGalleryScreen(imageUrls: [Common.System_DowloadFile_ByID(item.id, 'view')], initialIndex: 0))),
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => PhotoViewGalleryScreen(imageUrls: [
+                            Common.System_DowloadFile_ByID(item.id, 'view')
+                          ], initialIndex: 0))),
               child: Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(5.0),
-                  image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                  image:
+                      DecorationImage(image: imageProvider, fit: BoxFit.cover),
                 ),
               ),
             ),
-            placeholder: (context, url) => SizedBox(width: 30, height: 30, child: CircularProgressIndicator()),
+            placeholder: (context, url) => SizedBox(
+                width: 30, height: 30, child: CircularProgressIndicator()),
             errorWidget: (context, url, error) => Icon(Icons.error),
           ),
         ),
@@ -670,46 +790,56 @@ class _AttachmentsPageViewState extends State<AttachmentsPageView> {
       };
 
       ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
-      await Maintenance.DefectAnalysisDetails_WithFileDinhKem_Create(model).then((response) {
+      await Maintenance.DefectAnalysisDetails_WithFileDinhKem_Create(model)
+          .then((response) {
         ProgressHud.of(context)?.dismiss();
         if (response.statusCode >= 200 && response.statusCode <= 299) {
-          Util.showNotification(context, null, 'Tải hình ảnh đính kèm thành công', ContentType.success, 3);
+          Util.showNotification(context, null,
+              'Tải hình ảnh đính kèm thành công', ContentType.success, 3);
           setState(() {
             isLoading = false;
             _listOfFileDinhKems = _getListFileDinhKems();
           });
         } else
-          Util.showNotification(context, null, response.body, ContentType.failure, 5);
+          Util.showNotification(
+              context, null, response.body, ContentType.failure, 5);
       }).catchError((error, stackTrace) {
         ProgressHud.of(context)?.dismiss();
-        Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
+        Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error",
+            ContentType.failure, 5);
       });
     } on Exception catch (e) {
       ProgressHud.of(context)?.dismiss();
-      Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: ${e.toString()}", ContentType.failure, 5);
+      Util.showNotification(context, null,
+          "Có lỗi xảy ra. Chi tiết: ${e.toString()}", ContentType.failure, 5);
     }
   }
 
   Future<void> deleteFunc(int key) async {
     try {
       ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
-      await Maintenance.DefectAnalysisDetails_WithFileDinhKem_Delete(key).then((response) {
+      await Maintenance.DefectAnalysisDetails_WithFileDinhKem_Delete(key)
+          .then((response) {
         ProgressHud.of(context)?.dismiss();
         if (response.statusCode >= 200 && response.statusCode <= 299) {
-          Util.showNotification(context, null, 'Xóa bỏ hình ảnh đính kèm thành công', ContentType.success, 3);
+          Util.showNotification(context, null,
+              'Xóa bỏ hình ảnh đính kèm thành công', ContentType.success, 3);
           setState(() {
             isLoading = false;
             _listOfFileDinhKems = _getListFileDinhKems();
           });
         } else
-          Util.showNotification(context, null, response.statusCode.toString(), ContentType.failure, 5);
+          Util.showNotification(context, null, response.statusCode.toString(),
+              ContentType.failure, 5);
       }).catchError((error, stackTrace) {
         ProgressHud.of(context)?.dismiss();
-        Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
+        Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error",
+            ContentType.failure, 5);
       });
     } on Exception catch (e) {
       ProgressHud.of(context)?.dismiss();
-      Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: ${e.toString()}", ContentType.failure, 5);
+      Util.showNotification(context, null,
+          "Có lỗi xảy ra. Chi tiết: ${e.toString()}", ContentType.failure, 5);
     }
   }
 }

@@ -2,7 +2,6 @@
 import 'dart:convert';
 
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:ionicons/ionicons.dart';
@@ -18,10 +17,12 @@ import 'package:timeline_tile/timeline_tile.dart';
 class DetailTheoDoiBody extends StatefulWidget {
   final int id;
   final PhieuDeXuatDetailModel? phieuDeXuat;
-  const DetailTheoDoiBody({Key? key, required this.id, this.phieuDeXuat}) : super(key: key);
+  const DetailTheoDoiBody({Key? key, required this.id, this.phieuDeXuat})
+      : super(key: key);
 
   @override
-  _DetailTheoDoiBodyPageState createState() => new _DetailTheoDoiBodyPageState(id, phieuDeXuat);
+  _DetailTheoDoiBodyPageState createState() =>
+      new _DetailTheoDoiBodyPageState(id, phieuDeXuat);
 }
 
 class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
@@ -43,7 +44,12 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
     ];
     var filterOptions = [];
 
-    var options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+    var options = new LoadOptionsModel(
+        take: 0,
+        skip: 0,
+        sort: jsonEncode(sortOptions),
+        filter: jsonEncode(filterOptions),
+        requireTotalCount: 'true');
     var response = await getListTheoDoi(id, options);
     if (response.statusCode == 200)
       return TheoDoiModels.fromJson(jsonDecode(response.body));
@@ -60,7 +66,11 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
         children: [
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Text("THÔNG TIN TRÌNH TỰ PHÊ DUYỆT", style: TextStyle(color: kTextColor, fontWeight: FontWeight.w700, fontSize: 20.0)),
+            child: Text("THÔNG TIN TRÌNH TỰ PHÊ DUYỆT",
+                style: TextStyle(
+                    color: kTextColor,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20.0)),
           ),
           _listOfTheoDoi(context),
         ],
@@ -78,11 +88,14 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
         },
         child: FutureBuilder<TheoDoiModels>(
           future: listTheoDoi,
-          builder: (BuildContext context, AsyncSnapshot<TheoDoiModels> snapshot) {
+          builder:
+              (BuildContext context, AsyncSnapshot<TheoDoiModels> snapshot) {
             if (snapshot.hasError)
               return DataErrorWidget(error: snapshot.error.toString());
             else {
-              if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active))
+              if ((snapshot.connectionState == ConnectionState.none ||
+                  snapshot.connectionState == ConnectionState.waiting ||
+                  snapshot.connectionState == ConnectionState.active))
                 return LoadingWidget();
               else {
                 if (snapshot.hasData && snapshot.data!.data.isNotEmpty) {
@@ -98,12 +111,18 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
                               duration: const Duration(milliseconds: 400),
                               child: SlideAnimation(
                                 child: FadeInAnimation(
-                                  child: _itemOfTheoDoi(index, snapshot.data!.data, context),
+                                  child: _itemOfTheoDoi(
+                                      index, snapshot.data!.data, context),
                                 ),
                               ),
                             );
                           },
-                          separatorBuilder: (BuildContext context, int index) => TimelineDivider(begin: 0.1, end: 0.9, color: Colors.grey, thickness: 10),
+                          separatorBuilder: (BuildContext context, int index) =>
+                              TimelineDivider(
+                                  begin: 0.1,
+                                  end: 0.9,
+                                  color: Colors.grey,
+                                  thickness: 10),
                         ),
                       ),
                     ),
@@ -136,11 +155,17 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
         indicator: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: (item.isDuyet == null ? Colors.grey : (item.isDuyet == true ? Colors.green : Colors.red)),
+              color: (item.isDuyet == null
+                  ? Colors.grey
+                  : (item.isDuyet == true ? Colors.green : Colors.red)),
               border: Border.fromBorderSide(BorderSide(color: Colors.grey)),
             ),
             child: Icon(
-              (item.isDuyet == null ? Ionicons.time_outline : (item.isDuyet == true ? Ionicons.checkmark_outline : Ionicons.close_outline)),
+              (item.isDuyet == null
+                  ? Ionicons.time_outline
+                  : (item.isDuyet == true
+                      ? Ionicons.checkmark_outline
+                      : Ionicons.close_outline)),
               color: Colors.white,
               size: 30,
             )),
@@ -164,13 +189,19 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
                 title: Text(
                   item.nguoiDuyetInfo.hoTen.toString(),
                   textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: kPrimaryColor),
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: kPrimaryColor),
                 ),
                 subtitle: Text(
                   "${item.nguoiDuyetInfo.chucDanh.toString()} - ${item.nguoiDuyetInfo.phongBan.toString()}",
                   textAlign: TextAlign.left,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic, color: kTextColor),
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontStyle: FontStyle.italic,
+                      color: kTextColor),
                 ),
               ))
           : null,
@@ -193,15 +224,22 @@ class _DetailTheoDoiBodyPageState extends State<DetailTheoDoiBody> {
                 title: Text(
                   item.nguoiDuyetInfo.hoTen.toString(),
                   textAlign: TextAlign.right,
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: kPrimaryColor),
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: kPrimaryColor),
                 ),
                 subtitle: Text(
                   "${item.nguoiDuyetInfo.chucDanh.toString()} - ${item.nguoiDuyetInfo.phongBan.toString()}",
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.right,
-                  style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic, color: kTextColor),
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontStyle: FontStyle.italic,
+                      color: kTextColor),
                 ),
-                onTap: (() => Util.showNotification(context, null, item.ghiChu, ContentType.help, 10)),
+                onTap: (() => Util.showNotification(
+                    context, null, item.ghiChu, ContentType.help, 10)),
               ),
             )
           : null,

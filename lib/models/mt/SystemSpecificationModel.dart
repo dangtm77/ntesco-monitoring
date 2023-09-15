@@ -1,6 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-
 class SystemSpecificationModels {
   final int totalCount;
   final List<SystemSpecificationModel> data;
@@ -37,7 +34,8 @@ class SystemSpecificationModel {
       id: map['id'] as int,
       title: map['title'] != null ? map['title'] as String : null,
       dataType: map['dataType'] != null ? map['dataType'] as String : null,
-      dataValues: map['dataValues'] != null ? map['dataValues'] as String : null,
+      dataValues:
+          map['dataValues'] != null ? map['dataValues'] as String : null,
       dataUnit: map['dataUnit'] != null ? map['dataUnit'] as String : null,
       helpText: map['helpText'] != null ? map['helpText'] as String : null,
       sortIndex: map['sortIndex'] != null ? map['sortIndex'] as int : null,

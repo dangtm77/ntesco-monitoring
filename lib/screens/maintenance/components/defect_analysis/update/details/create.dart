@@ -23,12 +23,14 @@ import '../../../../../../components/image_picker_options.dart';
 
 class DefectAnalysisDetailsCreateScreen extends StatelessWidget {
   final int id;
-  const DefectAnalysisDetailsCreateScreen({Key? key, required this.id}) : super(key: key);
+  const DefectAnalysisDetailsCreateScreen({Key? key, required this.id})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return Scaffold(drawerScrimColor: Colors.transparent, body: CreateBody(id: id));
+    return Scaffold(
+        drawerScrimColor: Colors.transparent, body: CreateBody(id: id));
   }
 }
 
@@ -77,7 +79,10 @@ class _CreatePageState extends State<CreateBody> {
             onTap: () => Navigator.pop(context),
             child: Stack(
               clipBehavior: Clip.none,
-              children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 30.0)],
+              children: [
+                Icon(Ionicons.chevron_back_outline,
+                    color: kPrimaryColor, size: 30.0)
+              ],
             ),
           ),
           buttonRight: InkWell(
@@ -85,7 +90,9 @@ class _CreatePageState extends State<CreateBody> {
             onTap: () async => submitFunc(context),
             child: Stack(
               clipBehavior: Clip.none,
-              children: [Icon(Ionicons.save_outline, color: kPrimaryColor, size: 30.0)],
+              children: [
+                Icon(Ionicons.save_outline, color: kPrimaryColor, size: 30.0)
+              ],
             ),
           ),
         ),
@@ -100,7 +107,6 @@ class _CreatePageState extends State<CreateBody> {
           child: FormBuilder(
             key: _formKey,
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            autoFocusOnValidationFailure: true,
             initialValue: {
               'partName': null,
               'partQuantity': '1',
@@ -126,8 +132,11 @@ class _CreatePageState extends State<CreateBody> {
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.all(0),
                         ),
-                        onPressed: () => setState(() => isShowAdvance = !isShowAdvance),
-                        child: Text('Thông tin khác', style: TextStyle(fontSize: 15, color: kPrimaryColor)),
+                        onPressed: () =>
+                            setState(() => isShowAdvance = !isShowAdvance),
+                        child: Text('Thông tin khác',
+                            style:
+                                TextStyle(fontSize: 15, color: kPrimaryColor)),
                       ),
                     )
                   ],
@@ -188,7 +197,10 @@ class _CreatePageState extends State<CreateBody> {
                   children: [
                     Text(
                       'Hình ảnh đính kèm',
-                      style: TextStyle(color: kPrimaryColor, fontSize: 18.0, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: kPrimaryColor,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -208,12 +220,14 @@ class _CreatePageState extends State<CreateBody> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.0),
-                                  border: Border.all(color: Colors.grey, width: 2),
+                                  border:
+                                      Border.all(color: Colors.grey, width: 2),
                                 ),
                                 child: SizedBox(
                                   width: 110.0,
                                   height: 110.0,
-                                  child: Image.file(File(item.path), fit: BoxFit.cover),
+                                  child: Image.file(File(item.path),
+                                      fit: BoxFit.cover),
                                 ),
                               ),
                             ),
@@ -221,11 +235,14 @@ class _CreatePageState extends State<CreateBody> {
                               top: 0.0,
                               right: 0.0,
                               child: GestureDetector(
-                                onTap: () => setState(() => _imageList.remove(item)),
+                                onTap: () =>
+                                    setState(() => _imageList.remove(item)),
                                 child: CircleAvatar(
                                   radius: 15,
-                                  backgroundColor: Color.fromARGB(228, 244, 67, 54),
-                                  child: Icon(Icons.close, color: Colors.white, size: 18),
+                                  backgroundColor:
+                                      Color.fromARGB(228, 244, 67, 54),
+                                  child: Icon(Icons.close,
+                                      color: Colors.white, size: 18),
                                 ),
                               ),
                             ),
@@ -237,7 +254,8 @@ class _CreatePageState extends State<CreateBody> {
                           context: context,
                           builder: (BuildContext context) {
                             return ImagePickerOptions(
-                              callBack: (_) => setState(() => _imageList.addAll(_)),
+                              callBack: (_) =>
+                                  setState(() => _imageList.addAll(_)),
                             );
                           },
                         ),
@@ -246,14 +264,19 @@ class _CreatePageState extends State<CreateBody> {
                           margin: EdgeInsets.all(10),
                           color: kPrimaryColor,
                           child: SizedBox(
-                              width: _imageList.length == 0 ? double.infinity : 120.0,
+                              width: _imageList.length == 0
+                                  ? double.infinity
+                                  : 120.0,
                               height: 120.0,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.add_a_photo_outlined, size: 30.0, color: Colors.white),
+                                  Icon(Icons.add_a_photo_outlined,
+                                      size: 30.0, color: Colors.white),
                                   SizedBox(height: 5),
-                                  Text("Chọn hình ảnh", style: TextStyle(color: Colors.white, fontSize: 15.0)),
+                                  Text("Chọn hình ảnh",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 15.0)),
                                 ],
                               )),
                         ),
@@ -277,11 +300,15 @@ class _CreatePageState extends State<CreateBody> {
             label: Text.rich(TextSpan(
               children: [
                 TextSpan(text: 'Thông tin thiết bị'),
-                TextSpan(text: ' (*)', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: ' (*)',
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold)),
               ],
             )),
           ).applyDefaults(inputDecorationTheme()),
-          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+          validator:
+              FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
       case "partManufacturer":
         return FormBuilderTextField(
@@ -327,11 +354,15 @@ class _CreatePageState extends State<CreateBody> {
             label: Text.rich(TextSpan(
               children: [
                 TextSpan(text: 'Phân tích sự cố'),
-                TextSpan(text: ' (*)', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: ' (*)',
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold)),
               ],
             )),
           ).applyDefaults(inputDecorationTheme()),
-          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+          validator:
+              FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
       case "solution":
         return FormBuilderTextField(
@@ -342,11 +373,15 @@ class _CreatePageState extends State<CreateBody> {
             label: Text.rich(TextSpan(
               children: [
                 TextSpan(text: 'Giải pháp khắc phục sự cố'),
-                TextSpan(text: ' (*)', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: ' (*)',
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold)),
               ],
             )),
           ).applyDefaults(inputDecorationTheme()),
-          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+          validator:
+              FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
       case "departmentInCharge":
         return FormBuilderTextField(
@@ -357,11 +392,15 @@ class _CreatePageState extends State<CreateBody> {
             label: Text.rich(TextSpan(
               children: [
                 TextSpan(text: 'Nhân sự / Phòng ban phụ trách'),
-                TextSpan(text: ' (*)', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: ' (*)',
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold)),
               ],
             )),
           ).applyDefaults(inputDecorationTheme()),
-          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+          validator:
+              FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
       case "executionTime":
         return FormBuilderTextField(
@@ -372,11 +411,15 @@ class _CreatePageState extends State<CreateBody> {
             label: Text.rich(TextSpan(
               children: [
                 TextSpan(text: 'Thời gian thực hiện / xử lý'),
-                TextSpan(text: ' (*)', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: ' (*)',
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold)),
               ],
             )),
           ).applyDefaults(inputDecorationTheme()),
-          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+          validator:
+              FormBuilderValidators.compose([FormBuilderValidators.required()]),
         );
       case "note":
         return FormBuilderTextField(
@@ -405,31 +448,45 @@ class _CreatePageState extends State<CreateBody> {
         var model = <String, dynamic>{
           'idDefectAnalysis': id,
           'partName': _formKey.currentState?.fields['partName']?.value,
-          'partQuantity': _formKey.currentState?.fields['partQuantity']?.value ?? 1,
-          'partManufacturer': _formKey.currentState?.fields['partManufacturer']?.value,
+          'partQuantity':
+              _formKey.currentState?.fields['partQuantity']?.value ?? 1,
+          'partManufacturer':
+              _formKey.currentState?.fields['partManufacturer']?.value,
           'partModel': _formKey.currentState?.fields['partModel']?.value,
-          'partSpecifications': _formKey.currentState?.fields['partSpecifications']?.value,
-          'analysisProblemCause': _formKey.currentState?.fields['analysisProblemCause']?.value,
+          'partSpecifications':
+              _formKey.currentState?.fields['partSpecifications']?.value,
+          'analysisProblemCause':
+              _formKey.currentState?.fields['analysisProblemCause']?.value,
           'solution': _formKey.currentState?.fields['solution']?.value,
-          'departmentInCharge': _formKey.currentState?.fields['departmentInCharge']?.value,
-          'executionTime': _formKey.currentState?.fields['executionTime']?.value,
+          'departmentInCharge':
+              _formKey.currentState?.fields['departmentInCharge']?.value,
+          'executionTime':
+              _formKey.currentState?.fields['executionTime']?.value,
           'note': _formKey.currentState?.fields['note']?.value,
           'pictures': pictures,
         };
 
         await Maintenance.DefectAnalysisDetails_Create(model).then((response) {
           if (response.statusCode >= 200 && response.statusCode <= 299) {
-            Util.showNotification(context, null, 'Khởi tạo chi tiết cho báo cáo phân tích sự cố thành công', ContentType.success, 3);
+            Util.showNotification(
+                context,
+                null,
+                'Khởi tạo chi tiết cho báo cáo phân tích sự cố thành công',
+                ContentType.success,
+                3);
             Navigator.of(context).pop();
           } else
-            Util.showNotification(context, null, response.body, ContentType.failure, 5);
+            Util.showNotification(
+                context, null, response.body, ContentType.failure, 5);
         }).catchError((error, stackTrace) {
           ProgressHud.of(context)?.dismiss();
-          Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
+          Util.showNotification(context, null,
+              "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
         });
       } on Exception catch (e) {
         ProgressHud.of(context)?.dismiss();
-        Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: ${e.toString()}", ContentType.failure, 5);
+        Util.showNotification(context, null,
+            "Có lỗi xảy ra. Chi tiết: ${e.toString()}", ContentType.failure, 5);
       }
     }
   }

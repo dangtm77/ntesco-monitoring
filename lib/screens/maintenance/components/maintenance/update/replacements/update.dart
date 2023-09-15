@@ -20,12 +20,14 @@ import '../../../../../../repository/mt/systyem_report_replacements.dart';
 
 class SystemReportReplacementsUpdateScreen extends StatelessWidget {
   final int id;
-  const SystemReportReplacementsUpdateScreen({Key? key, required this.id}) : super(key: key);
+  const SystemReportReplacementsUpdateScreen({Key? key, required this.id})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return Scaffold(drawerScrimColor: Colors.transparent, body: UpdateBody(id: id));
+    return Scaffold(
+        drawerScrimColor: Colors.transparent, body: UpdateBody(id: id));
   }
 }
 
@@ -47,7 +49,8 @@ class _UpdateBodyState extends State<UpdateBody> {
 
   @override
   void initState() {
-    _systemReportReplacement = MaintenanceSystemReportReplacementsRepository.getDetail(id);
+    _systemReportReplacement =
+        MaintenanceSystemReportReplacementsRepository.getDetail(id);
     super.initState();
   }
 
@@ -78,7 +81,10 @@ class _UpdateBodyState extends State<UpdateBody> {
           onTap: () => Navigator.pop(context),
           child: Stack(
             clipBehavior: Clip.none,
-            children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 25.0)],
+            children: [
+              Icon(Ionicons.chevron_back_outline,
+                  color: kPrimaryColor, size: 25.0)
+            ],
           ),
         ),
         buttonRight: InkWell(
@@ -86,7 +92,9 @@ class _UpdateBodyState extends State<UpdateBody> {
           onTap: () async => submitFunc(context),
           child: Stack(
             clipBehavior: Clip.none,
-            children: [Icon(Ionicons.save_outline, color: kPrimaryColor, size: 25.0)],
+            children: [
+              Icon(Ionicons.save_outline, color: kPrimaryColor, size: 25.0)
+            ],
           ),
         ),
       ),
@@ -97,9 +105,14 @@ class _UpdateBodyState extends State<UpdateBody> {
     return Expanded(
         child: FutureBuilder<SystemReportReplacementsModel>(
       future: _systemReportReplacement,
-      builder: (BuildContext context, AsyncSnapshot<SystemReportReplacementsModel> snapshot) {
-        if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
-        if (snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) return LoadingWidget();
+      builder: (BuildContext context,
+          AsyncSnapshot<SystemReportReplacementsModel> snapshot) {
+        if (snapshot.hasError)
+          return DataErrorWidget(error: snapshot.error.toString());
+        if (snapshot.connectionState == ConnectionState.none ||
+            snapshot.connectionState == ConnectionState.waiting ||
+            snapshot.connectionState == ConnectionState.active)
+          return LoadingWidget();
         if (!(snapshot.hasData && snapshot.data != null)) return NoDataWidget();
 
         return _form(context, snapshot.data!);
@@ -116,7 +129,6 @@ class _UpdateBodyState extends State<UpdateBody> {
       child: FormBuilder(
         key: _formKey,
         autovalidateMode: AutovalidateMode.onUserInteraction,
-        autoFocusOnValidationFailure: true,
         initialValue: {
           'name': model.name,
           'model': model.model,
@@ -151,7 +163,11 @@ class _UpdateBodyState extends State<UpdateBody> {
             SizedBox(height: 20),
             editorForm("stateOfEmergency"),
             SizedBox(height: 20),
-            DefaultButton(text: 'Hủy bỏ thông tin', icon: Icons.delete_forever, color: Colors.red, press: () async => removeFunc(context, model))
+            DefaultButton(
+                text: 'Hủy bỏ thông tin',
+                icon: Icons.delete_forever,
+                color: Colors.red,
+                press: () async => removeFunc(context, model))
           ],
         ),
       ),
@@ -167,19 +183,28 @@ class _UpdateBodyState extends State<UpdateBody> {
             hintText: "common.text_input_hint".tr(),
             label: Text.rich(TextSpan(
               children: [
-                TextSpan(text: "maintenance.system_report_replacements.name.label".tr()),
-                TextSpan(text: ' (*)', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: "maintenance.system_report_replacements.name.label"
+                        .tr()),
+                TextSpan(
+                    text: ' (*)',
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold)),
               ],
             )),
           ).applyDefaults(inputDecorationTheme()),
-          validator: FormBuilderValidators.compose([FormBuilderValidators.required(errorText: "validation.required_select".tr())]),
+          validator: FormBuilderValidators.compose([
+            FormBuilderValidators.required(
+                errorText: "validation.required_select".tr())
+          ]),
         );
       case "quantity":
         return FormBuilderTextField(
           name: key,
           decoration: InputDecoration(
             hintText: "common.text_input_hint".tr(),
-            labelText: "maintenance.system_report_replacements.quantity.label".tr(),
+            labelText:
+                "maintenance.system_report_replacements.quantity.label".tr(),
           ).applyDefaults(inputDecorationTheme()),
           valueTransformer: (value) => int.parse(value!),
           keyboardType: TextInputType.number,
@@ -188,7 +213,8 @@ class _UpdateBodyState extends State<UpdateBody> {
         return FormBuilderTextField(
           name: key,
           decoration: InputDecoration(
-            labelText: 'maintenance.system_report_replacements.model.label'.tr(),
+            labelText:
+                'maintenance.system_report_replacements.model.label'.tr(),
             hintText: "common.text_input_hint".tr(),
           ).applyDefaults(inputDecorationTheme()),
         );
@@ -205,7 +231,9 @@ class _UpdateBodyState extends State<UpdateBody> {
           name: key,
           maxLines: 4,
           decoration: InputDecoration(
-            labelText: "maintenance.system_report_replacements.specifications.label".tr(),
+            labelText:
+                "maintenance.system_report_replacements.specifications.label"
+                    .tr(),
             hintText: "common.text_input_hint".tr(),
           ).applyDefaults(inputDecorationTheme()),
         );
@@ -213,12 +241,22 @@ class _UpdateBodyState extends State<UpdateBody> {
         return FormBuilderFilterChip<bool>(
           name: key,
           decoration: InputDecoration(
-            labelText: "maintenance.system_report_replacements.state_of_emergency.label".tr(),
+            labelText:
+                "maintenance.system_report_replacements.state_of_emergency.label"
+                    .tr(),
             hintText: "common.text_select_hint".tr(),
           ).applyDefaults(inputDecorationTheme()),
           options: [
-            FormBuilderChipOption(value: true, child: Text("maintenance.system_report_replacements.state_of_emergency.option_01".tr())),
-            FormBuilderChipOption(value: false, child: Text("maintenance.system_report_replacements.state_of_emergency.option_02".tr())),
+            FormBuilderChipOption(
+                value: true,
+                child: Text(
+                    "maintenance.system_report_replacements.state_of_emergency.option_01"
+                        .tr())),
+            FormBuilderChipOption(
+                value: false,
+                child: Text(
+                    "maintenance.system_report_replacements.state_of_emergency.option_02"
+                        .tr())),
           ],
           checkmarkColor: kPrimaryColor,
           elevation: 6,
@@ -231,7 +269,8 @@ class _UpdateBodyState extends State<UpdateBody> {
           name: key,
           decoration: InputDecoration(
             hintText: "common.text_input_hint".tr(),
-            labelText: "maintenance.system_report_replacements.sort_index.label".tr(),
+            labelText:
+                "maintenance.system_report_replacements.sort_index.label".tr(),
           ).applyDefaults(inputDecorationTheme()),
           valueTransformer: (value) => int.parse(value!),
           keyboardType: TextInputType.number,
@@ -243,32 +282,45 @@ class _UpdateBodyState extends State<UpdateBody> {
 
   Future<void> submitFunc(BuildContext context) async {
     if (_formKey.currentState?.saveAndValidate() ?? false) {
-      ProgressHud.of(context)?.show(ProgressHudType.loading, "state.waiting".tr());
+      ProgressHud.of(context)
+          ?.show(ProgressHudType.loading, "state.waiting".tr());
       try {
         var model = <String, dynamic>{
           'name': _formKey.currentState?.fields['name']?.value,
           'model': _formKey.currentState?.fields['model']?.value,
           'unit': _formKey.currentState?.fields['unit']?.value,
           'quantity': _formKey.currentState?.fields['quantity']?.value,
-          'specifications': _formKey.currentState?.fields['specifications']?.value,
-          'stateOfEmergency': _formKey.currentState?.fields['stateOfEmergency']?.value.first ?? false,
+          'specifications':
+              _formKey.currentState?.fields['specifications']?.value,
+          'stateOfEmergency':
+              _formKey.currentState?.fields['stateOfEmergency']?.value.first ??
+                  false,
           'sortIndex': _formKey.currentState?.fields['sortIndex']?.value,
         };
 
-        await MaintenanceSystemReportReplacementsRepository.update(id, model).then((response) {
+        await MaintenanceSystemReportReplacementsRepository.update(id, model)
+            .then((response) {
           ProgressHud.of(context)?.dismiss();
           if (response.statusCode >= 200 && response.statusCode <= 299) {
-            Util.showNotification(context, null, 'Cập nhật thông tin thiết bị cần thay thế thành công', ContentType.success, 3);
+            Util.showNotification(
+                context,
+                null,
+                'Cập nhật thông tin thiết bị cần thay thế thành công',
+                ContentType.success,
+                3);
             Navigator.of(context).pop();
           } else
-            Util.showNotification(context, null, response.body, ContentType.failure, 5);
+            Util.showNotification(
+                context, null, response.body, ContentType.failure, 5);
         }).catchError((error, stackTrace) {
           ProgressHud.of(context)?.dismiss();
-          Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
+          Util.showNotification(context, null,
+              "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
         });
       } on Exception catch (e) {
         ProgressHud.of(context)?.dismiss();
-        Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: ${e.toString()}", ContentType.failure, 5);
+        Util.showNotification(context, null,
+            "Có lỗi xảy ra. Chi tiết: ${e.toString()}", ContentType.failure, 5);
       }
     }
   }
@@ -283,17 +335,22 @@ class _UpdateBodyState extends State<UpdateBody> {
       isDestructiveAction: true,
     ).then((result) async {
       if (result == OkCancelResult.ok) {
-        ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
-        await MaintenanceSystemReportReplacementsRepository.delete(item.id).then((response) {
+        ProgressHud.of(context)
+            ?.show(ProgressHudType.loading, "Vui lòng chờ...");
+        await MaintenanceSystemReportReplacementsRepository.delete(item.id)
+            .then((response) {
           ProgressHud.of(context)?.dismiss();
           if (response.statusCode >= 200 && response.statusCode <= 299) {
             Navigator.of(context).pop();
-            Util.showNotification(context, 'Xóa bỏ thành công', response.body, ContentType.success, 3);
+            Util.showNotification(context, 'Xóa bỏ thành công', response.body,
+                ContentType.success, 3);
           } else
-            Util.showNotification(context, null, response.body, ContentType.failure, 5);
+            Util.showNotification(
+                context, null, response.body, ContentType.failure, 5);
         }).catchError((error, stackTrace) {
           ProgressHud.of(context)?.dismiss();
-          Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
+          Util.showNotification(context, null,
+              "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
         });
       }
     });

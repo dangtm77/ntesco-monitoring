@@ -72,8 +72,11 @@ class TopHeaderSub extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: buttonRight == null ? CrossAxisAlignment.start : CrossAxisAlignment.center,
                   children: [
-                    Text(title, style: TextStyle(fontSize: 15, color: kPrimaryColor, fontWeight: FontWeight.w700)),
-                    (subtitle != null ? Text(subtitle!, maxLines: 2, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 13, color: kSecondaryColor)) : SizedBox.shrink()),
+                    Text(
+                      title,
+                      style: TextStyle(fontSize: kNormalFontSize, color: kPrimaryColor, fontWeight: FontWeight.w700),
+                    ),
+                    (subtitle != null ? Text(subtitle!, maxLines: 2, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: kSmallFontSize, color: kSecondaryColor)) : SizedBox.shrink()),
                   ],
                 ),
               ),

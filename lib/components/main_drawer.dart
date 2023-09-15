@@ -4,16 +4,11 @@ import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/core/auth.dart';
 import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
-import 'package:ntesco_smart_monitoring/screens/dexuat/dexuat_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/maintenance/defect_analysis_screen.dart';
-import 'package:ntesco_smart_monitoring/screens/maintenance/maintenance_screen.dart';
-import 'package:ntesco_smart_monitoring/screens/maintenance/plan_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/signin/signin_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ntesco_smart_monitoring/models/Login.dart';
 import 'package:easy_localization/easy_localization.dart';
-
-import '../size_config.dart';
 import 'change_language.dart';
 
 class MainDrawer extends StatefulWidget {
@@ -32,26 +27,20 @@ class _MainDrawerState extends State<MainDrawer> {
 
   Future<LoginResponseModel> _getUserCurrent() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return LoginResponseModel.fromJson(json.decode(prefs.getString('USERCURRENT')!));
+    return LoginResponseModel.fromJson(
+        json.decode(prefs.getString('USERCURRENT')!));
   }
 
   @override
   Widget build(BuildContext context) {
-    var MenuList = [
-      {
-        "icon": Ionicons.home_outline,
-        "text": "menu.home".tr(),
-        "press": () => Navigator.pushNamed(context, HomeScreen.routeName),
-      },
-    ];
-
     return new FutureBuilder(
       future: userCurrent,
       builder: (_, AsyncSnapshot<LoginResponseModel> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: new Theme(
-              data: Theme.of(context).copyWith(secondaryHeaderColor: Colors.blue),
+              data:
+                  Theme.of(context).copyWith(secondaryHeaderColor: Colors.blue),
               child: new CircularProgressIndicator(),
             ),
           );
@@ -66,7 +55,14 @@ class _MainDrawerState extends State<MainDrawer> {
                   margin: EdgeInsets.symmetric(horizontal: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [Text("language_display".tr(), style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600)), ChangeLanguage()],
+                    children: [
+                      Text("language_display".tr(),
+                          style: TextStyle(
+                            color: kPrimaryColor,
+                            fontWeight: FontWeight.w600,
+                          )),
+                      ChangeLanguage()
+                    ],
                   ),
                 ),
                 Container(
@@ -76,21 +72,37 @@ class _MainDrawerState extends State<MainDrawer> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        CircleAvatar(radius: 80.0, backgroundColor: kPrimaryColor, child: CircleAvatar(radius: 75.0, backgroundImage: NetworkImage(userCurrent!.anhDaiDien.toString()))),
+                        CircleAvatar(
+                            radius: 80.0,
+                            backgroundColor: kPrimaryColor,
+                            child: CircleAvatar(
+                                radius: 75.0,
+                                backgroundImage: NetworkImage(
+                                    userCurrent!.anhDaiDien.toString()))),
                         SizedBox(height: 5.0),
                         Text(
                           "${userCurrent.hoTen}",
-                          style: TextStyle(fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.w800, color: kPrimaryColor),
+                          style: TextStyle(
+                              fontSize: kLargeFontSize,
+                              fontWeight: FontWeight.w800,
+                              color: kPrimaryColor),
                         ),
                         SizedBox(height: 1.0),
                         Text(
                           "${userCurrent.chucDanh}",
-                          style: TextStyle(fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.w400, color: kSecondaryColor),
+                          style: TextStyle(
+                              fontSize: kNormalFontSize,
+                              fontWeight: FontWeight.w400,
+                              color: kSecondaryColor),
                         ),
                         SizedBox(height: 1.0),
                         Text(
                           "${userCurrent.phongBan}",
-                          style: TextStyle(fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.w400, color: kSecondaryColor),
+                          style: TextStyle(
+                            fontSize: kNormalFontSize,
+                            fontWeight: FontWeight.w400,
+                            color: kSecondaryColor,
+                          ),
                         ),
                       ],
                     ),
@@ -98,31 +110,18 @@ class _MainDrawerState extends State<MainDrawer> {
                 ),
                 SizedBox(height: 20.0),
                 ListTile(
-                  onTap: () => Navigator.pushNamed(context, HomeScreen.routeName),
+                  onTap: () =>
+                      Navigator.pushNamed(context, HomeScreen.routeName),
                   title: Row(
                     children: [
                       Icon(
                         Ionicons.home_outline,
                         color: kPrimaryColor,
-                        size: getProportionateScreenWidth(15),
-                      ),
-                      SizedBox(width: 10),
-                      Text("menu.home".tr(), style: TextStyle(fontSize: getProportionateScreenWidth(13), color: kPrimaryColor, fontWeight: FontWeight.w600)),
-                    ],
-                  ),
-                ),
-                ListTile(
-                  onTap: () => Navigator.pushNamed(context, ListOfDeXuatScreen.routeName),
-                  title: Row(
-                    children: [
-                      Icon(
-                        Ionicons.git_compare_outline,
-                        color: kPrimaryColor,
-                        size: getProportionateScreenWidth(15),
+                        size: kNormalFontSize,
                       ),
                       SizedBox(width: 10),
                       Text(
-                        "menu.phieudexuat".tr(),
+                        "menu.home".tr(),
                         style: TextStyle(
                           fontSize: kNormalFontSize,
                           color: kPrimaryColor,
@@ -132,11 +131,34 @@ class _MainDrawerState extends State<MainDrawer> {
                     ],
                   ),
                 ),
+                // ListTile(
+                //   onTap: () => Navigator.pushNamed(
+                //       context, ListOfDeXuatScreen.routeName),
+                //   title: Row(
+                //     children: [
+                //       Icon(
+                //         Ionicons.git_compare_outline,
+                //         color: kPrimaryColor,
+                //         size: getProportionateScreenWidth(15),
+                //       ),
+                //       SizedBox(width: 10),
+                //       Text(
+                //         "menu.phieudexuat".tr(),
+                //         style: TextStyle(
+                //           fontSize: kNormalFontSize,
+                //           color: kPrimaryColor,
+                //           fontWeight: FontWeight.w600,
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 ExpansionTile(
                   initiallyExpanded: true,
                   title: Row(
                     children: [
-                      Icon(Ionicons.construct_outline, color: kPrimaryColor, size: 15.0),
+                      Icon(Ionicons.construct_outline,
+                          color: kPrimaryColor, size: kNormalFontSize),
                       SizedBox(width: 10),
                       Text(
                         "menu.maintenance".tr(),
@@ -149,41 +171,59 @@ class _MainDrawerState extends State<MainDrawer> {
                     ],
                   ),
                   children: <Widget>[
+                    // Padding(
+                    //   padding: const EdgeInsets.only(left: 35.0),
+                    //   child: ListTile(
+                    //     onTap: () =>
+                    //         Navigator.pushNamed(context, PlanScreen.routeName),
+                    //     title: Row(
+                    //       children: [
+                    //         Icon(Ionicons.newspaper_outline,
+                    //             color: kPrimaryColor, size: 15.0),
+                    //         SizedBox(width: 10),
+                    //         Text(
+                    //           "menu.maintenance_plan".tr(),
+                    //           style: TextStyle(
+                    //             fontSize: kNormalFontSize,
+                    //             color: kPrimaryColor,
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(left: 35.0),
+                    //   child: ListTile(
+                    //     onTap: () => Navigator.pushNamed(
+                    //         context, MaintenanceScreen.routeName),
+                    //     title: Row(
+                    //       children: [
+                    //         Icon(Ionicons.build_outline,
+                    //             color: kPrimaryColor, size: 15),
+                    //         SizedBox(width: 10),
+                    //         Text("menu.maintenance_systems".tr(),
+                    //             style: TextStyle(
+                    //                 fontSize: kNormalFontSize,
+                    //                 color: kPrimaryColor)),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
                     Padding(
                       padding: const EdgeInsets.only(left: 35.0),
                       child: ListTile(
-                        onTap: () => Navigator.pushNamed(context, PlanScreen.routeName),
+                        onTap: () => Navigator.pushNamed(
+                            context, DefectAnalysisScreen.routeName),
                         title: Row(
                           children: [
-                            Icon(Ionicons.newspaper_outline, color: kPrimaryColor, size: 15.0),
+                            Icon(Ionicons.shield_checkmark_outline,
+                                color: kPrimaryColor, size: 15.0),
                             SizedBox(width: 10),
-                            Text("menu.maintenance_plan".tr(), style: TextStyle(fontSize: kNormalFontSize, color: kPrimaryColor)),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 35.0),
-                      child: ListTile(
-                        onTap: () => Navigator.pushNamed(context, MaintenanceScreen.routeName),
-                        title: Row(
-                          children: [
-                            Icon(Ionicons.build_outline, color: kPrimaryColor, size: 15),
-                            SizedBox(width: 10),
-                            Text("menu.maintenance_systems".tr(), style: TextStyle(fontSize: kNormalFontSize, color: kPrimaryColor)),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 35.0),
-                      child: ListTile(
-                        onTap: () => Navigator.pushNamed(context, DefectAnalysisScreen.routeName),
-                        title: Row(
-                          children: [
-                            Icon(Ionicons.shield_checkmark_outline, color: kPrimaryColor, size: 15.0),
-                            SizedBox(width: 10),
-                            Text("menu.maintenance_defect_analysis".tr(), style: TextStyle(fontSize: kNormalFontSize, color: kPrimaryColor)),
+                            Text("menu.maintenance_defect_analysis".tr(),
+                                style: TextStyle(
+                                    fontSize: kNormalFontSize,
+                                    color: kPrimaryColor)),
                           ],
                         ),
                       ),
@@ -192,20 +232,22 @@ class _MainDrawerState extends State<MainDrawer> {
                 ),
                 ListTile(
                   onTap: () async {
-                    if (await funcLogOut()) Navigator.pushReplacementNamed(context, SignInScreen.routeName);
+                    if (await funcLogOut())
+                      Navigator.pushReplacementNamed(
+                          context, SignInScreen.routeName);
                   },
                   title: Row(
                     children: [
                       Icon(
                         Ionicons.log_out_outline,
                         color: kPrimaryColor,
-                        size: getProportionateScreenWidth(15),
+                        size: kNormalFontSize,
                       ),
                       SizedBox(width: 10),
                       Text(
                         "menu.log_out".tr(),
                         style: TextStyle(
-                          fontSize: getProportionateScreenWidth(13),
+                          fontSize: kNormalFontSize,
                           color: kPrimaryColor,
                           fontWeight: FontWeight.w600,
                         ),
