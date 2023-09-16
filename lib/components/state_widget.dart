@@ -1,13 +1,9 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:ntesco_smart_monitoring/core/auth.dart';
 import 'package:ntesco_smart_monitoring/screens/signin/signin_screen.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import '../constants.dart';
 import 'package:easy_localization/easy_localization.dart';
-
-import '../screens/home/home_screen.dart';
 
 class DataErrorWidget extends StatefulWidget {
   final String error;
@@ -37,15 +33,13 @@ class _DataErrorWidgetState extends State<DataErrorWidget> {
               size: 50,
               color: Colors.red,
             ),
-            Text("Xác thực tài khoản".toUpperCase(),
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+            Text("Xác thực tài khoản".toUpperCase(), style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
             Text("Thời gian hoặc quyền sự dụng đã hết hạn."),
             Text("Vui lòng đăng nhập lại..."),
             SizedBox(height: 10),
             ElevatedButton(
               onPressed: () async {
-                if (await funcLogOut())
-                  Navigator.pushNamed(context, SignInScreen.routeName);
+                if (await funcLogOut()) Navigator.pushNamed(context, SignInScreen.routeName);
               },
               child: const Text(
                 'Đăng nhập',
@@ -68,17 +62,11 @@ class _DataErrorWidgetState extends State<DataErrorWidget> {
               size: 90,
               color: Colors.redAccent,
             ),
-            Text("state.error".tr().toUpperCase(),
-                style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w800,
-                    color: kPrimaryColor)),
-            Text("state.error_subtitle".tr(),
-                style: TextStyle(fontSize: 13, color: kSecondaryColor)),
+            Text("state.error".tr().toUpperCase(), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: kPrimaryColor)),
+            Text("state.error_subtitle".tr(), style: TextStyle(fontSize: 13, color: kSecondaryColor)),
             SizedBox(height: 20),
             Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: getProportionateScreenWidth(20)),
+              padding: EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
               child: Text(
                 "$error",
                 textAlign: TextAlign.center,
@@ -110,13 +98,8 @@ class LoadingWidget extends StatelessWidget {
         new SizedBox(
           height: 10.0,
         ),
-        Text("state.loading".tr().toUpperCase(),
-            style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-                color: kPrimaryColor)),
-        Text("state.loading_subtitle".tr(),
-            style: TextStyle(fontSize: 15, color: kSecondaryColor)),
+        Text("state.loading".tr().toUpperCase(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: kPrimaryColor)),
+        Text("state.loading_subtitle".tr(), style: TextStyle(fontSize: 15, color: kSecondaryColor)),
       ],
     );
   }
@@ -126,49 +109,20 @@ class NoDataWidget extends StatelessWidget {
   final String? title;
   final String? subtitle;
   final Widget? button;
-  const NoDataWidget({Key? key, this.title, this.subtitle, this.button})
-      : super(key: key);
+  const NoDataWidget({Key? key, this.title, this.subtitle, this.button}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text("#404#",
-            style: TextStyle(
-                fontSize: getProportionateScreenWidth(50),
-                fontWeight: FontWeight.w800,
-                color: Colors.redAccent)),
-        Text(title ?? "state.nodata".tr().toUpperCase(),
-            style: TextStyle(
-                fontSize: getProportionateScreenWidth(15),
-                fontWeight: FontWeight.w800,
-                color: Colors.redAccent)),
+        Text("#404#", style: TextStyle(fontSize: getProportionateScreenWidth(50), fontWeight: FontWeight.w800, color: Colors.redAccent)),
+        Text(title ?? "state.nodata".tr().toUpperCase(), style: TextStyle(fontSize: kLargeFontSize, fontWeight: FontWeight.w800, color: Colors.redAccent)),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          child: Text(subtitle ?? "state.nodata_subtitle".tr(),
-              style: TextStyle(
-                  fontSize: kNormalFontSize,
-                  color: kSecondaryColor,
-                  fontStyle: FontStyle.italic)),
+          child: Text(subtitle ?? "state.nodata_subtitle".tr(), style: TextStyle(fontSize: kSmallFontSize, color: kSecondaryColor, fontStyle: FontStyle.italic)),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton.icon(
-              onPressed: () =>
-                  Navigator.pushNamed(context, HomeScreen.routeName),
-              icon: Icon(Icons.home, size: 22.0),
-              label: Text('Back to home',
-                  style: TextStyle(fontSize: kNormalFontSize)),
-            ),
-            SizedBox(width: 10.0),
-            Visibility(
-              visible: button != null,
-              child: button ?? SizedBox.shrink(),
-            )
-          ],
-        )
+        Visibility(visible: button != null, child: button ?? SizedBox.shrink())
       ],
     );
   }
@@ -182,16 +136,8 @@ class NoConnectionWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Icon(Icons.wifi_off_outlined, size: 100, color: Colors.redAccent),
-        Text("state.no_connection".tr().toUpperCase(),
-            style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-                color: Colors.redAccent)),
-        Text("state.no_connection_subtitle".tr(),
-            style: TextStyle(
-                fontSize: 15,
-                color: kSecondaryColor,
-                fontStyle: FontStyle.italic)),
+        Text("state.no_connection".tr().toUpperCase(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Colors.redAccent)),
+        Text("state.no_connection_subtitle".tr(), style: TextStyle(fontSize: 15, color: kSecondaryColor, fontStyle: FontStyle.italic)),
       ],
     );
   }

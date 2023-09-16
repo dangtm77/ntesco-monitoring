@@ -20,8 +20,8 @@ class VariableModel {
   int id;
   //String? group;
   //String? code;
-  int? value;
-  String? text;
+  int value;
+  String text;
   //String? icon;
   //String? css;
   //String? description;
@@ -32,7 +32,7 @@ class VariableModel {
     //this.group,
     //this.code,
     required this.value,
-    this.text,
+    required this.text,
     // this.icon,
     // this.css,
     // this.description,
@@ -45,7 +45,7 @@ class VariableModel {
       // group: map['group'] != null ? map['group'] as String : null,
       // code: map['code'] != null ? map['code'] as String : null,
       value: map['value'],
-      text: map['text'] != null ? map['text'] as String : null,
+      text: map['text'],
       // icon: map['icon'] != null ? map['icon'] as String : null,
       // css: map['css'] != null ? map['css'] as String : null,
       // description: map['description'] != null ? map['description'] as String : null,

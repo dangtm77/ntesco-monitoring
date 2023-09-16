@@ -51,7 +51,7 @@ class TopHeaderSub extends StatelessWidget {
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: getProportionateScreenWidth(5),
+          vertical: getProportionateScreenWidth(0),
           horizontal: getProportionateScreenWidth(10.0),
         ),
         child: Row(

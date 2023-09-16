@@ -15,6 +15,7 @@ const kWarningColor = Colors.deepOrange;
 
 const kAnimationDuration = Duration(milliseconds: 200);
 
+const kLargerFontSize = 19.0;
 const kLargeFontSize = 17.0;
 const kNormalFontSize = 15.0;
 const kSmallFontSize = 13.0;

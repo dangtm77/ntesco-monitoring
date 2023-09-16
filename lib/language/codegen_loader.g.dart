@@ -10,7 +10,7 @@ class CodegenLoader extends AssetLoader{
   const CodegenLoader();
 
   @override
-  Future<Map<String, dynamic>> load(String fullPath, Locale locale ) {
+  Future<Map<String, dynamic>?> load(String path, Locale locale) {
     return Future.value(mapLocales[locale.toString()]);
   }
 
@@ -183,7 +183,7 @@ static const Map<String,dynamic> vi_VN = {
     },
     "defect_analysis": {
       "title": "Phân tích sự cố",
-      "subtitle": "Phân tích và báo cáo sự cố của hệ thống"
+      "subtitle": "Báo cáo phân tích sự cố của hệ thống"
     },
     "defect_analysis_details": {
       "title": "Cập nhật chi tiết sự cố",

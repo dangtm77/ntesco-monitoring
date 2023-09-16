@@ -1,10 +1,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:ntesco_smart_monitoring/screens/contact_us/contact_us_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
-import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/update.dart';
-import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/update/details/update.dart';
+//import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/update.dart';
+//import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/update/details/update.dart';
 import 'package:ntesco_smart_monitoring/screens/maintenance/defect_analysis_screen.dart';
-import 'package:ntesco_smart_monitoring/screens/maintenance/plan_screen.dart';
+//import 'package:ntesco_smart_monitoring/screens/maintenance/plan_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/signin/signin_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/splash/splash_screen.dart';
 
@@ -21,7 +21,7 @@ final Map<String, WidgetBuilder> routes = {
   // MaintenanceScreen.routeName: (context) => MaintenanceScreen(),
   //PlanScreen.routeName: (context) => PlanScreen(),
   DefectAnalysisScreen.routeName: (context) => DefectAnalysisScreen(),
-  DefectAnalysisUpdateScreen.routeName: (context) => DefectAnalysisUpdateScreen(),
-  DefectAnalysisDetailsUpdateScreen.routeName: (context) => DefectAnalysisDetailsUpdateScreen(),
+  //DefectAnalysisUpdateScreen.routeName: (context) => DefectAnalysisUpdateScreen(),
+  //DefectAnalysisDetailsUpdateScreen.routeName: (context) => DefectAnalysisDetailsUpdateScreen(),
   // MaintenanceUpdateScreen.routeName: (context) => MaintenanceUpdateScreen(),
 };

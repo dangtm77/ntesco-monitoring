@@ -24,8 +24,8 @@ import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
 import 'package:ntesco_smart_monitoring/models/common/VariableModel.dart';
 import 'package:ntesco_smart_monitoring/models/mt/DefectAnalysisModel.dart';
 import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
-import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/create.dart';
-import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/update.dart';
+//import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/create.dart';
+//import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/update.dart';
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -75,7 +75,6 @@ class _BodyPageState extends State<Body> {
     _projectCurrent = prefs.getInt('MAINTENANCE-IDPROJECT') ?? 0;
 
     List<dynamic> sortOptions = [
-      {"selector": "totalDetail", "desc": "true"},
       {"selector": "analysisDate", "desc": "true"},
       {"selector": "dateCreate", "desc": "true"}
     ];
@@ -111,18 +110,24 @@ class _BodyPageState extends State<Body> {
       searchGroupFilterOptions.add(['system.name', 'contains', _keyword]);
       searchGroupFilterOptions.add('or');
       searchGroupFilterOptions.add(['system.code', 'contains', _keyword]);
-      searchGroupFilterOptions.add('or');
-      searchGroupFilterOptions.add(['project.code', 'contains', _keyword]);
-      searchGroupFilterOptions.add('or');
-      searchGroupFilterOptions.add(['project.contractNo', 'contains', _keyword]);
-      searchGroupFilterOptions.add('or');
-      searchGroupFilterOptions.add(['project.name', 'contains', _keyword]);
+      //searchGroupFilterOptions.add('or');
+      //searchGroupFilterOptions.add(['project.code', 'contains', _keyword]);
+      //searchGroupFilterOptions.add('or');
+      //searchGroupFilterOptions.add(['project.contractNo', 'contains', _keyword]);
+      //searchGroupFilterOptions.add('or');
+      //searchGroupFilterOptions.add(['project.name', 'contains', _keyword]);
       filterOptions.add(searchGroupFilterOptions);
     }
-
-    LoadOptionsModel options = new LoadOptionsModel(take: itemPerPage * pageIndex, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+    LoadOptionsModel options = new LoadOptionsModel(
+      take: itemPerPage * pageIndex,
+      skip: 0,
+      sort: jsonEncode(sortOptions),
+      filter: jsonEncode(filterOptions),
+      requireTotalCount: 'true',
+    );
     Response response = await Maintenance.DefectAnalysis_GetList(options.toMap());
     if (response.statusCode >= 200 && response.statusCode <= 299) {
+      setState(() => _isLoading = false);
       DefectAnalysisModels result = DefectAnalysisModels.fromJson(jsonDecode(response.body));
       return result;
     } else
@@ -191,20 +196,13 @@ class _BodyPageState extends State<Body> {
               opacity: _isLoading ? 1.0 : 0.0,
               duration: const Duration(milliseconds: 300),
               child: Container(
-                // height: _isLoading ? 30.0 : 0,
-                height: 30.0,
+                height: _isLoading ? 30.0 : 0,
                 color: kPrimaryColor,
                 child: Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          ),
-                          height: 10.0,
-                          width: 10.0),
+                      SizedBox(child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2), height: 10.0, width: 10.0),
                       SizedBox(width: 10.0),
                       Text(
                         "Đang tải thêm $itemPerPage dòng dữ liệu...",
@@ -234,15 +232,13 @@ class _BodyPageState extends State<Body> {
         ),
       ),
       buttonRight: IconButton(
-        enableFeedback: true,
-        color: (_projectCurrent != 0) ? kPrimaryColor : Colors.grey,
-        icon: Icon(Icons.addchart_outlined, size: 25.0),
-        onPressed: () => (_projectCurrent != 0)
-            ? showModalBottomSheet(
-                context: context,
-                builder: (context) => DefectAnalysisCreateScreen(),
-              ).then((value) => _refresh())
-            : null,
+        enableFeedback: true, color: (_projectCurrent != 0) ? kPrimaryColor : Colors.grey, icon: Icon(Icons.addchart_outlined, size: 25.0), onPressed: () => {},
+        // onPressed: () => (_projectCurrent != 0)
+        //     ? showModalBottomSheet(
+        //         context: context,
+        //         builder: (context) => DefectAnalysisCreateScreen(),
+        //       ).then((value) => _refresh())
+        //     : null,
       ),
     );
   }
@@ -384,6 +380,7 @@ class _BodyPageState extends State<Body> {
                       color: kTextColor,
                       press: () {
                         setState(() {
+                          _projectCurrent = 0;
                           _statusCurrent = [];
                           _listOfDefectAnalysis = _getlistOfDefectAnalysis();
                         });
@@ -430,28 +427,14 @@ class _BodyPageState extends State<Body> {
                 return true;
               },
               child: RefreshIndicator(
-                onRefresh: () async {
-                  setState(() {
-                    _isLoading = false;
-                    _listOfDefectAnalysis = _getlistOfDefectAnalysis();
-                  });
-                },
+                onRefresh: () async => _refresh(),
                 child: FutureBuilder<DefectAnalysisModels>(
                   future: _listOfDefectAnalysis,
                   builder: (BuildContext context, AsyncSnapshot<DefectAnalysisModels> snapshot) {
                     if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
                     if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !_isLoading) return LoadingWidget();
                     if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty))
-                      return NoDataWidget(
-                        subtitle: "Vui lòng kiểm tra lại điều kiện lọc...",
-                        button: OutlinedButton.icon(
-                            onPressed: _refresh,
-                            icon: Icon(Ionicons.refresh, size: 22.0),
-                            label: Text(
-                              "button.refresh".tr(),
-                              style: TextStyle(fontSize: kNormalFontSize),
-                            )),
-                      );
+                      return NoDataWidget(subtitle: "Vui lòng kiểm tra lại điều kiện lọc...");
                     else
                       return Padding(
                         padding: EdgeInsets.symmetric(
@@ -461,17 +444,13 @@ class _BodyPageState extends State<Body> {
                         child: AnimationLimiter(
                           child: GroupedListView<dynamic, String>(
                             elements: snapshot.data!.data,
-                            groupBy: (element) => "HỆ THỐNG ${element.system.name}" + (element.system.otherName != null ? " (${element.system.otherName})" : ""),
+                            groupBy: (element) => element.system.name,
                             groupSeparatorBuilder: (String value) => Container(
                               width: MediaQuery.of(context).size.width,
                               color: kPrimaryColor,
                               child: Padding(
-                                padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
-                                child: Text(
-                                  value,
-                                  textAlign: TextAlign.left,
-                                  style: const TextStyle(fontSize: kNormalFontSize, fontWeight: FontWeight.bold, color: Colors.white),
-                                ),
+                                padding: const EdgeInsets.all(10.0),
+                                child: Text(value, style: const TextStyle(fontSize: kNormalFontSize, fontWeight: FontWeight.bold, color: Colors.white)),
                               ),
                             ),
                             itemBuilder: (BuildContext context, dynamic item) {
@@ -509,35 +488,35 @@ class _BodyPageState extends State<Body> {
         ),
         onTap: () async {
           Navigator.of(context).pop();
-          Navigator.pushNamed(context, DefectAnalysisUpdateScreen.routeName, arguments: {'id': item.id, 'tabIndex': 0});
+          //Navigator.pushNamed(context, DefectAnalysisUpdateScreen.routeName, arguments: {'id': item.id, 'tabIndex': 0});
         },
       ),
-      Visibility(
-        visible: (item.status > 0 && item.totalDetail > 0),
-        child: ListTile(
-          title: Row(
-            children: [
-              Icon(Ionicons.cloud_download_outline, color: kPrimaryColor, size: 20),
-              SizedBox(width: 10.0),
-              Text("common.list_menu_button_export".tr(), style: TextStyle(color: kPrimaryColor, fontSize: kNormalFontSize)),
-            ],
-          ),
-          onTap: () async => exportFunc(item.id),
-        ),
-      ),
-      Visibility(
-        visible: (item.status == 0 && item.totalDetail > 0),
-        child: ListTile(
-          title: Row(
-            children: [
-              Icon(Ionicons.send_outline, color: kPrimaryColor, size: 20),
-              SizedBox(width: 10.0),
-              Text("common.list_menu_button_send_report".tr(), style: TextStyle(color: kPrimaryColor, fontSize: kNormalFontSize)),
-            ],
-          ),
-          onTap: () async => sendFunc(item.id),
-        ),
-      ),
+      // Visibility(
+      //   visible: (item.status > 0 && item.totalDetail > 0),
+      //   child: ListTile(
+      //     title: Row(
+      //       children: [
+      //         Icon(Ionicons.cloud_download_outline, color: kPrimaryColor, size: 20),
+      //         SizedBox(width: 10.0),
+      //         Text("common.list_menu_button_export".tr(), style: TextStyle(color: kPrimaryColor, fontSize: kNormalFontSize)),
+      //       ],
+      //     ),
+      //     onTap: () async => exportFunc(item.id),
+      //   ),
+      // ),
+      // Visibility(
+      //   visible: (item.status == 0 && item.totalDetail > 0),
+      //   child: ListTile(
+      //     title: Row(
+      //       children: [
+      //         Icon(Ionicons.send_outline, color: kPrimaryColor, size: 20),
+      //         SizedBox(width: 10.0),
+      //         Text("common.list_menu_button_send_report".tr(), style: TextStyle(color: kPrimaryColor, fontSize: kNormalFontSize)),
+      //       ],
+      //     ),
+      //     onTap: () async => sendFunc(item.id),
+      //   ),
+      // ),
       ListTile(
         title: Row(
           children: [
@@ -551,55 +530,86 @@ class _BodyPageState extends State<Body> {
     ];
 
     return ListTile(
+      dense: true,
+      title: RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(text: item.code, style: TextStyle(color: kPrimaryColor, fontSize: kNormalFontSize, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal)),
+            WidgetSpan(
+              child: Visibility(
+                visible: isMobile(),
+                child: RichText(
+                  text: TextSpan(
+                    style: TextStyle(color: kTextColor, fontSize: kSmallFontSize, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic),
+                    children: [
+                      WidgetSpan(child: SizedBox(width: 5.0)),
+                      TextSpan(text: DateFormat("hh:mm dd/MM/yy").format(item.analysisDate!), style: TextStyle(color: kTextColor, fontSize: kSmallFontSize, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            WidgetSpan(
+              child: Visibility(
+                visible: !isMobile(),
+                child: RichText(
+                  text: TextSpan(
+                    style: TextStyle(color: kTextColor, fontSize: kSmallFontSize, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic),
+                    children: [
+                      WidgetSpan(child: SizedBox(width: 5.0)),
+                      TextSpan(text: DateFormat("hh:mm dd/MM/yy").format(item.analysisDate!), style: TextStyle(color: kTextColor, fontSize: kSmallFontSize, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
+                      WidgetSpan(child: SizedBox(width: 10.0)),
+                      WidgetSpan(child: Icon(Icons.person, size: 15)),
+                      WidgetSpan(child: SizedBox(width: 2.0)),
+                      TextSpan(text: "${StringHelper.toShortName(item.analysisBy!)}"),
+                      WidgetSpan(child: SizedBox(width: 10.0)),
+                      WidgetSpan(child: Icon(Icons.label_important_rounded, size: 15)),
+                      WidgetSpan(child: SizedBox(width: 0.0)),
+                      TextSpan(text: "${item.statusInfo.text} (${item.processConfirm})"),
+                      WidgetSpan(child: SizedBox(width: 10.0)),
+                      WidgetSpan(child: Icon(Icons.label_important_rounded, size: 15)),
+                      WidgetSpan(child: SizedBox(width: 0.0)),
+                      TextSpan(text: "Có ${item.totalDetail} sự cố"),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      subtitle: isMobile()
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                  overflow: TextOverflow.ellipsis,
+                  text: TextSpan(
+                    style: TextStyle(color: kTextColor, fontSize: kSmallFontSize, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic),
+                    children: [
+                      WidgetSpan(child: Icon(Icons.person, size: 15)),
+                      WidgetSpan(child: SizedBox(width: 2.0)),
+                      TextSpan(text: "${StringHelper.toShortName(item.analysisBy!)}"),
+                      WidgetSpan(child: SizedBox(width: 10.0)),
+                      WidgetSpan(child: Icon(Icons.label_important_rounded, size: 15)),
+                      WidgetSpan(child: SizedBox(width: 0.0)),
+                      TextSpan(text: "${item.statusInfo.text} (${item.processConfirm})"),
+                      WidgetSpan(child: SizedBox(width: 10.0)),
+                      WidgetSpan(child: Icon(Icons.label_important_rounded, size: 15)),
+                      WidgetSpan(child: SizedBox(width: 0.0)),
+                      TextSpan(text: "Có ${item.totalDetail} sự cố"),
+                    ],
+                  ),
+                )
+              ],
+            )
+          : null,
       onTap: () => showModalBottomSheet(
         context: context,
         builder: (_) => Material(
           child: SafeArea(top: true, child: Column(mainAxisSize: MainAxisSize.min, children: _listMenu)),
         ),
-      ),
-      title: Text(
-        "${item.code}",
-        style: TextStyle(color: kPrimaryColor, fontSize: kNormalFontSize, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal),
-      ),
-      subtitle: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 5.0),
-          RichText(
-            text: TextSpan(
-              style: TextStyle(fontSize: kSmallFontSize, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal),
-              children: [
-                WidgetSpan(child: Icon(Icons.tag, size: 15, color: kTextColor)),
-                WidgetSpan(child: SizedBox(width: 2.0)),
-                TextSpan(text: "${item.id}", style: TextStyle(color: kTextColor)),
-                WidgetSpan(child: SizedBox(width: 15.0)),
-                WidgetSpan(child: Icon(Icons.label_important_rounded, size: 15, color: kTextColor)),
-                WidgetSpan(child: SizedBox(width: 2.0)),
-                TextSpan(text: "${item.statusInfo.text}", style: TextStyle(color: kTextColor)),
-                WidgetSpan(child: SizedBox(width: 15.0)),
-                WidgetSpan(child: Icon(Icons.label_important_rounded, size: 15, color: kTextColor)),
-                WidgetSpan(child: SizedBox(width: 2.0)),
-                TextSpan(text: "Có ${item.totalDetail} sự cố", style: TextStyle(color: kTextColor)),
-              ],
-            ),
-          ),
-          SizedBox(height: 5.0),
-          RichText(
-            text: TextSpan(
-              style: TextStyle(fontSize: kSmallFontSize, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal),
-              children: [
-                WidgetSpan(child: Icon(Icons.person_add_alt_1, size: 15, color: kTextColor)),
-                WidgetSpan(child: SizedBox(width: 2.0)),
-                TextSpan(text: "${StringHelper.toShortName(item.analysisByInfo!.hoTen)}", style: TextStyle(color: kTextColor)),
-                WidgetSpan(child: SizedBox(width: 15.0)),
-                WidgetSpan(child: Icon(Icons.calendar_month, size: 15, color: kTextColor)),
-                WidgetSpan(child: SizedBox(width: 2.0)),
-                TextSpan(text: "${DateFormat("hh:mm dd/MM/yy").format(item.analysisDate!)}", style: TextStyle(color: kTextColor)),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

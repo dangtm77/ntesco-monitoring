@@ -31,25 +31,6 @@ Future<void> main() async {
   ));
 }
 
-// class MyApp extends StatelessWidget {
-//   final bool? status;
-//   final bool? isLoggedIn;
-//   const MyApp(this.status, this.isLoggedIn);
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       supportedLocales: context.supportedLocales,
-//       localizationsDelegates: context.localizationDelegates,
-//       locale: context.locale,
-//       debugShowCheckedModeBanner: false,
-//       title: 'NTesco App' + status.toString(),
-//       theme: theme(),
-//       initialRoute: (status == false || status == null) ? SplashScreen.routeName : ((isLoggedIn == false || isLoggedIn == null) ? SignInScreen.routeName : HomeScreen.routeName),
-//       routes: routes,
-//     );
-//   }
-// }
-
 class MyApp extends StatefulWidget {
   final bool? status;
   final bool? isLoggedIn;
