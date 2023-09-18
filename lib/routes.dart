@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:ntesco_smart_monitoring/screens/contact_us/contact_us_screen.dart';
 import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
 //import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/update.dart';
 //import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/update/details/update.dart';
@@ -14,7 +13,6 @@ final Map<String, WidgetBuilder> routes = {
   SplashScreen.routeName: (context) => SplashScreen(),
   SignInScreen.routeName: (context) => SignInScreen(),
   HomeScreen.routeName: (context) => HomeScreen(),
-  ContactUsScreen.routeName: (context) => ContactUsScreen(),
   // ListOfDeXuatScreen.routeName: (context) => ListOfDeXuatScreen(),
   // DetailOfDeXuatScreen.routeName: (context) => DetailOfDeXuatScreen(),
   // CreateDeXuatScreen.routeName: (context) => CreateDeXuatScreen(),

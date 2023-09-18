@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
+import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
+import 'package:ntesco_smart_monitoring/models/common/UsersModel.dart';
+import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
 import 'package:ntesco_smart_monitoring/size_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ntesco_smart_monitoring/models/Login.dart';
@@ -26,6 +30,18 @@ class _BodyPageState extends State<Body> {
     return LoginResponseModel.fromJson(json.decode(prefs.getString('USERCURRENT')!));
   }
 
+  Future<UsersModels> _getlistOfUsers() async {
+    List<dynamic> sortOptions = [];
+    List<dynamic> filterOptions = [];
+    LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+    Response response = await Common.Users_GetList(options.toMap());
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
+      UsersModels result = UsersModels.fromJson(response.body);
+      return result;
+    } else
+      throw Exception(response.body);
+  }
+
   Future<void> _refreshUserCurrent() async {
     await new Future.delayed(new Duration(seconds: 3));
     setState(() {
@@ -35,6 +51,12 @@ class _BodyPageState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
+    _getlistOfUsers().then((values) {
+      values.data.forEach((element) {
+        print(element.toString());
+      });
+    });
+
     return SafeArea(
       child: new RefreshIndicator(
           color: Colors.red,

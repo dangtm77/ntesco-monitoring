@@ -6,22 +6,23 @@ class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SizedBox(
-        width: double.infinity,
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(
-            horizontal: getProportionateScreenWidth(30),
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(30)),
+              child: Column(
+                children: [
+                  SizedBox(height: getProportionateScreenHeight(100)),
+                  Image.asset("assets/images/logofull.png", width: 220),
+                  SizedBox(height: getProportionateScreenHeight(50)),
+                  SignForm(),
+                  SizedBox(height: getProportionateScreenHeight(100)),
+                ],
+              ),
+            ),
           ),
-          child: Column(
-            children: [
-              SizedBox(height: getProportionateScreenHeight(100)),
-              Image.asset("assets/images/logofull.png", width: 200),
-              SizedBox(height: getProportionateScreenHeight(20)),
-              SignForm(),
-              SizedBox(height: getProportionateScreenHeight(100)),
-            ],
-          ),
-        ),
+        ],
       ),
     );
   }

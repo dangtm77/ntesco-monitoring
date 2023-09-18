@@ -59,7 +59,7 @@
     },
     "defect_analysis": {
       "title": "Phân tích sự cố",
-      "subtitle": "Phân tích và báo cáo sự cố của hệ thống"
+      "subtitle": "Báo cáo phân tích sự cố của hệ thống"
     },
     "defect_analysis_details": {
       "title": "Cập nhật chi tiết sự cố",
