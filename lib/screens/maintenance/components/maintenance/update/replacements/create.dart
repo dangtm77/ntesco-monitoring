@@ -11,21 +11,19 @@ import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:ntesco_smart_monitoring/components/top_header.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/helper/util.dart';
-import 'package:ntesco_smart_monitoring/size_config.dart';
+import 'package:ntesco_smart_monitoring/sizeconfig.dart';
 import 'package:ntesco_smart_monitoring/theme.dart';
 
 import '../../../../../../repository/mt/systyem_report_replacements.dart';
 
 class SystemReportReplacementsCreateScreen extends StatelessWidget {
   final int id;
-  const SystemReportReplacementsCreateScreen({Key? key, required this.id})
-      : super(key: key);
+  const SystemReportReplacementsCreateScreen({Key? key, required this.id}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return Scaffold(
-        drawerScrimColor: Colors.transparent, body: CreateBody(id: id));
+    return Scaffold(drawerScrimColor: Colors.transparent, body: CreateBody(id: id));
   }
 }
 
@@ -73,10 +71,7 @@ class _CreatePageState extends State<CreateBody> {
           onTap: () => Navigator.pop(context),
           child: Stack(
             clipBehavior: Clip.none,
-            children: [
-              Icon(Ionicons.chevron_back_outline,
-                  color: kPrimaryColor, size: 25.0)
-            ],
+            children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 25.0)],
           ),
         ),
         buttonRight: InkWell(
@@ -84,9 +79,7 @@ class _CreatePageState extends State<CreateBody> {
           onTap: () async => submitFunc(context),
           child: Stack(
             clipBehavior: Clip.none,
-            children: [
-              Icon(Ionicons.save_outline, color: kPrimaryColor, size: 25.0)
-            ],
+            children: [Icon(Ionicons.save_outline, color: kPrimaryColor, size: 25.0)],
           ),
         ),
       ),
@@ -143,28 +136,19 @@ class _CreatePageState extends State<CreateBody> {
             hintText: "common.text_input_hint".tr(),
             label: Text.rich(TextSpan(
               children: [
-                TextSpan(
-                    text: "maintenance.system_report_replacements.name.label"
-                        .tr()),
-                TextSpan(
-                    text: ' (*)',
-                    style: TextStyle(
-                        color: Colors.red, fontWeight: FontWeight.bold)),
+                TextSpan(text: "maintenance.system_report_replacements.name.label".tr()),
+                TextSpan(text: ' (*)', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
               ],
             )),
           ).applyDefaults(inputDecorationTheme()),
-          validator: FormBuilderValidators.compose([
-            FormBuilderValidators.required(
-                errorText: "validation.required_select".tr())
-          ]),
+          validator: FormBuilderValidators.compose([FormBuilderValidators.required(errorText: "validation.required_select".tr())]),
         );
       case "quantity":
         return FormBuilderTextField(
           name: key,
           decoration: InputDecoration(
             hintText: "common.text_input_hint".tr(),
-            labelText:
-                "maintenance.system_report_replacements.quantity.label".tr(),
+            labelText: "maintenance.system_report_replacements.quantity.label".tr(),
           ).applyDefaults(inputDecorationTheme()),
           valueTransformer: (value) => int.parse(value!),
           keyboardType: TextInputType.number,
@@ -174,8 +158,7 @@ class _CreatePageState extends State<CreateBody> {
         return FormBuilderTextField(
           name: key,
           decoration: InputDecoration(
-            labelText:
-                'maintenance.system_report_replacements.model.label'.tr(),
+            labelText: 'maintenance.system_report_replacements.model.label'.tr(),
             hintText: "common.text_input_hint".tr(),
           ).applyDefaults(inputDecorationTheme()),
         );
@@ -192,9 +175,7 @@ class _CreatePageState extends State<CreateBody> {
           name: key,
           maxLines: 4,
           decoration: InputDecoration(
-            labelText:
-                "maintenance.system_report_replacements.specifications.label"
-                    .tr(),
+            labelText: "maintenance.system_report_replacements.specifications.label".tr(),
             hintText: "common.text_input_hint".tr(),
           ).applyDefaults(inputDecorationTheme()),
         );
@@ -202,22 +183,12 @@ class _CreatePageState extends State<CreateBody> {
         return FormBuilderFilterChip<bool>(
           name: key,
           decoration: InputDecoration(
-            labelText:
-                "maintenance.system_report_replacements.state_of_emergency.label"
-                    .tr(),
+            labelText: "maintenance.system_report_replacements.state_of_emergency.label".tr(),
             hintText: "common.text_select_hint".tr(),
           ).applyDefaults(inputDecorationTheme()),
           options: [
-            FormBuilderChipOption(
-                value: true,
-                child: Text(
-                    "maintenance.system_report_replacements.state_of_emergency.option_01"
-                        .tr())),
-            FormBuilderChipOption(
-                value: false,
-                child: Text(
-                    "maintenance.system_report_replacements.state_of_emergency.option_02"
-                        .tr())),
+            FormBuilderChipOption(value: true, child: Text("maintenance.system_report_replacements.state_of_emergency.option_01".tr())),
+            FormBuilderChipOption(value: false, child: Text("maintenance.system_report_replacements.state_of_emergency.option_02".tr())),
           ],
           checkmarkColor: kPrimaryColor,
           elevation: 6,
@@ -231,8 +202,7 @@ class _CreatePageState extends State<CreateBody> {
           name: key,
           decoration: InputDecoration(
             hintText: "common.text_input_hint".tr(),
-            labelText:
-                "maintenance.system_report_replacements.sort_index.label".tr(),
+            labelText: "maintenance.system_report_replacements.sort_index.label".tr(),
           ).applyDefaults(inputDecorationTheme()),
           valueTransformer: (value) => int.parse(value!),
           keyboardType: TextInputType.number,
@@ -245,8 +215,7 @@ class _CreatePageState extends State<CreateBody> {
 
   Future<void> submitFunc(BuildContext context) async {
     if (_formKey.currentState?.saveAndValidate() ?? false) {
-      ProgressHud.of(context)
-          ?.show(ProgressHudType.loading, "state.waiting".tr());
+      ProgressHud.of(context)?.show(ProgressHudType.loading, "state.waiting".tr());
       try {
         var model = <String, dynamic>{
           'idSystemReport': id,
@@ -254,37 +223,25 @@ class _CreatePageState extends State<CreateBody> {
           'model': _formKey.currentState?.fields['model']?.value,
           'unit': _formKey.currentState?.fields['unit']?.value,
           'quantity': _formKey.currentState?.fields['quantity']?.value,
-          'specifications':
-              _formKey.currentState?.fields['specifications']?.value,
-          'stateOfEmergency':
-              _formKey.currentState?.fields['stateOfEmergency']?.value.first ??
-                  false,
+          'specifications': _formKey.currentState?.fields['specifications']?.value,
+          'stateOfEmergency': _formKey.currentState?.fields['stateOfEmergency']?.value.first ?? false,
           'sortIndex': _formKey.currentState?.fields['sortIndex']?.value,
         };
 
-        await MaintenanceSystemReportReplacementsRepository.create(model)
-            .then((response) {
+        await MaintenanceSystemReportReplacementsRepository.create(model).then((response) {
           ProgressHud.of(context)?.dismiss();
           if (response.statusCode >= 200 && response.statusCode <= 299) {
-            Util.showNotification(
-                context,
-                null,
-                'Khởi tạo thêm thông tin thiết bị cần thay thế thành công',
-                ContentType.success,
-                3);
+            Util.showNotification(context, null, 'Khởi tạo thêm thông tin thiết bị cần thay thế thành công', ContentType.success, 3);
             Navigator.of(context).pop();
           } else
-            Util.showNotification(
-                context, null, response.body, ContentType.failure, 5);
+            Util.showNotification(context, null, response.body, ContentType.failure, 5);
         }).catchError((error, stackTrace) {
           ProgressHud.of(context)?.dismiss();
-          Util.showNotification(context, null,
-              "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
+          Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
         });
       } on Exception catch (e) {
         ProgressHud.of(context)?.dismiss();
-        Util.showNotification(context, null,
-            "Có lỗi xảy ra. Chi tiết: ${e.toString()}", ContentType.failure, 5);
+        Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: ${e.toString()}", ContentType.failure, 5);
       }
     }
   }

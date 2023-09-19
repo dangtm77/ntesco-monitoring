@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Future<http.Response> getListPhieuDeXuat(int year, LoadOptionsModel options) async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USER_CURRENT')!));
   var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
 
   var api = "v2/dx/phieudexuat";
@@ -20,7 +20,7 @@ Future<http.Response> getListPhieuDeXuat(int year, LoadOptionsModel options) asy
 
 Future<http.Response> getListTheoDoi(int id, LoadOptionsModel options) async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USER_CURRENT')!));
   var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
 
   var api = "v2/dx/phieudexuat/theodoi";
@@ -33,7 +33,7 @@ Future<http.Response> getListTheoDoi(int id, LoadOptionsModel options) async {
 
 Future<http.Response> getDetailPhieuDeXuat(int id) async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USER_CURRENT')!));
   var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
 
   var api = "v2/dx/phieudexuat/byid";
@@ -46,7 +46,7 @@ Future<http.Response> getDetailPhieuDeXuat(int id) async {
 
 Future<http.Response> getListDanhMuc(LoadOptionsModel options) async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USER_CURRENT')!));
   var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
 
   var api = "v2/dx/danhmuc/lookup";
@@ -58,7 +58,7 @@ Future<http.Response> getListDanhMuc(LoadOptionsModel options) async {
 
 Future<http.Response> getDetailThongKe(int year) async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USER_CURRENT')!));
   var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
 
   var api = "v2/dx/PhieuDeXuat/ThongKe";

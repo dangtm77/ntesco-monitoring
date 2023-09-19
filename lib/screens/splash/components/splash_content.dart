@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart'; 
-import '../../../size_config.dart';
+import 'package:flutter/material.dart';
+import '../../../sizeconfig.dart';
 
 class SplashContent extends StatelessWidget {
   const SplashContent({
@@ -15,7 +15,7 @@ class SplashContent extends StatelessWidget {
       children: <Widget>[
         Spacer(),
         SizedBox(height: 50),
-        Image.asset("assets/images/logofull.png", width: getProportionateScreenWidth(190)), 
+        Image.asset("assets/images/logofull.png", width: getProportionateScreenWidth(190)),
         Spacer(flex: 2),
         Image.asset(
           image!,

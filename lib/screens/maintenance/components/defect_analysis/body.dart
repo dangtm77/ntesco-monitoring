@@ -21,12 +21,13 @@ import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
+import 'package:ntesco_smart_monitoring/models/common/UsersModel.dart';
 import 'package:ntesco_smart_monitoring/models/common/VariableModel.dart';
 import 'package:ntesco_smart_monitoring/models/mt/DefectAnalysisModel.dart';
 import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
 //import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/create.dart';
 //import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/update.dart';
-import 'package:ntesco_smart_monitoring/size_config.dart';
+import 'package:ntesco_smart_monitoring/sizeconfig.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -50,6 +51,7 @@ class _BodyPageState extends State<Body> {
 
   late int _projectCurrent = 0;
   late List<int> _statusCurrent = [];
+  late List<UsersModel> _listOfUsers = [];
   late Future<DefectAnalysisModels> _listOfDefectAnalysis;
 
   @override
@@ -65,12 +67,25 @@ class _BodyPageState extends State<Body> {
       setState(() {
         isOnline = status;
         _isLoading = false;
-        _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+        _getListOfUsers();
+        _listOfDefectAnalysis = _getListOfDefectAnalysis();
       });
     });
   }
 
-  Future<DefectAnalysisModels> _getlistOfDefectAnalysis() async {
+  Future<void> _getListOfUsers() async {
+    List<dynamic> sortOptions = [];
+    List<dynamic> filterOptions = [];
+    LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+    Response response = await Common.Users_GetList(options.toMap());
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
+      UsersModels result = UsersModels.fromJson(response.body);
+      setState(() => _listOfUsers = result.data);
+    } else
+      throw Exception(response.body);
+  }
+
+  Future<DefectAnalysisModels> _getListOfDefectAnalysis() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _projectCurrent = prefs.getInt('MAINTENANCE-IDPROJECT') ?? 0;
 
@@ -171,7 +186,7 @@ class _BodyPageState extends State<Body> {
   Future<void> _refresh() async {
     setState(() {
       _isLoading = false;
-      _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+      _listOfDefectAnalysis = _getListOfDefectAnalysis();
     });
   }
 
@@ -382,7 +397,7 @@ class _BodyPageState extends State<Body> {
                         setState(() {
                           _projectCurrent = 0;
                           _statusCurrent = [];
-                          _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+                          _listOfDefectAnalysis = _getListOfDefectAnalysis();
                         });
                         Navigator.pop(context);
                       },
@@ -397,7 +412,7 @@ class _BodyPageState extends State<Body> {
                       press: () {
                         setState(() {
                           _isLoading = false;
-                          _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+                          _listOfDefectAnalysis = _getListOfDefectAnalysis();
                         });
                         Navigator.pop(context);
                       },
@@ -420,7 +435,7 @@ class _BodyPageState extends State<Body> {
                 if (!_isLoading && scrollInfo.metrics.maxScrollExtent != 0.0 && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
                   setState(() {
                     pageIndex = pageIndex + 1;
-                    _listOfDefectAnalysis = _getlistOfDefectAnalysis();
+                    _listOfDefectAnalysis = _getListOfDefectAnalysis();
                     _isLoading = true;
                   });
                 }
@@ -477,6 +492,8 @@ class _BodyPageState extends State<Body> {
   }
 
   Widget _item(DefectAnalysisModel item) {
+    var analysisByInfo = _listOfUsers.firstWhere((e) => e.username == item.analysisBy, orElse: () => new UsersModel(username: item.analysisBy!, hoTen: item.analysisBy!));
+
     List<Widget> _listMenu = [
       ListTile(
         title: Row(
@@ -561,7 +578,7 @@ class _BodyPageState extends State<Body> {
                       WidgetSpan(child: SizedBox(width: 10.0)),
                       WidgetSpan(child: Icon(Icons.person, size: 15)),
                       WidgetSpan(child: SizedBox(width: 2.0)),
-                      TextSpan(text: "${StringHelper.toShortName(item.analysisBy!)}"),
+                      TextSpan(text: "${StringHelper.toShortName(analysisByInfo.hoTen)}"),
                       WidgetSpan(child: SizedBox(width: 10.0)),
                       WidgetSpan(child: Icon(Icons.label_important_rounded, size: 15)),
                       WidgetSpan(child: SizedBox(width: 0.0)),
@@ -590,7 +607,7 @@ class _BodyPageState extends State<Body> {
                     children: [
                       WidgetSpan(child: Icon(Icons.person, size: 15)),
                       WidgetSpan(child: SizedBox(width: 2.0)),
-                      TextSpan(text: "${StringHelper.toShortName(item.analysisBy!)}"),
+                      TextSpan(text: "${StringHelper.toShortName(analysisByInfo.hoTen)}"),
                       WidgetSpan(child: SizedBox(width: 10.0)),
                       WidgetSpan(child: Icon(Icons.label_important_rounded, size: 15)),
                       WidgetSpan(child: SizedBox(width: 0.0)),

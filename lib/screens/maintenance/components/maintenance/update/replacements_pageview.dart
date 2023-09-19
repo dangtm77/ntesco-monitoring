@@ -12,7 +12,7 @@ import '../../../../../constants.dart';
 import '../../../../../models/mt/SystemReportModel.dart';
 import '../../../../../models/mt/SystemReportReplacementsModel.dart';
 import '../../../../../repository/mt/systyem_report_replacements.dart';
-import '../../../../../size_config.dart';
+import '../../../../../sizeconfig.dart';
 import 'replacements/create.dart';
 
 class ReplacementPageView extends StatefulWidget {

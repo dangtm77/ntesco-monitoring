@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ntesco_smart_monitoring/models/dx/DanhMuc.dart';
-import 'package:ntesco_smart_monitoring/size_config.dart';
+import 'package:ntesco_smart_monitoring/sizeconfig.dart';
 import 'components/detail_body.dart' as detail;
 import 'components/list_body.dart' as list;
 import 'components/create_body.dart' as create;

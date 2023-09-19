@@ -16,7 +16,15 @@ class CommonUsersRepository {
       List<dynamic> filterOptions = [];
       int takeOptions = 0, skipOptions = 0;
 
-      LoadOptionsModel options = (option != null) ? option : new LoadOptionsModel(take: takeOptions, skip: skipOptions, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+      LoadOptionsModel options = (option != null)
+          ? option
+          : new LoadOptionsModel(
+              take: takeOptions,
+              skip: skipOptions,
+              sort: jsonEncode(sortOptions),
+              filter: jsonEncode(filterOptions),
+              requireTotalCount: 'true',
+            );
       Response response = await Common.Users_GetList(options.toMap());
       if (response.statusCode >= 200 && response.statusCode <= 299)
         return UserModels.fromJson(jsonDecode(response.body));

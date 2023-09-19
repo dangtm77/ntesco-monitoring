@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/constants.dart';
 import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
-import '../size_config.dart';
+import '../sizeconfig.dart';
 import 'notification_bell.dart';
 
 class TopHeader extends StatelessWidget {

@@ -7,7 +7,7 @@ import 'package:ntesco_smart_monitoring/models/Login.dart';
 
 Future<http.Response> get(dynamic queryParameters, String urlApi) async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  var userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USER_CURRENT')!));
   var headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
   http.Response result = await http.get(Uri.https(endPoint, urlApi, queryParameters), headers: headerValue);
   return result;
@@ -15,7 +15,7 @@ Future<http.Response> get(dynamic queryParameters, String urlApi) async {
 
 Future<http.Response> post(dynamic body, String urlApi) async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  LoginResponseModel userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  LoginResponseModel userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USER_CURRENT')!));
   Map<String, String> headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
   var data = [
     {"Key": "values", "Value": body}
@@ -27,9 +27,9 @@ Future<http.Response> post(dynamic body, String urlApi) async {
   );
 }
 
-Future<http.Response> post_by_model(dynamic body, String urlApi) async {
+Future<http.Response> postByModel(dynamic body, String urlApi) async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  LoginResponseModel userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  LoginResponseModel userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USER_CURRENT')!));
   Map<String, String> headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
   return await http.post(
     Uri.https(endPoint, urlApi),
@@ -40,7 +40,7 @@ Future<http.Response> post_by_model(dynamic body, String urlApi) async {
 
 Future<http.Response> put(int key, dynamic body, String urlApi) async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  LoginResponseModel userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  LoginResponseModel userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USER_CURRENT')!));
   Map<String, String> headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
   var data = [
     {"Key": "key", "Value": key},
@@ -56,7 +56,7 @@ Future<http.Response> put(int key, dynamic body, String urlApi) async {
 
 Future<http.Response> delete(int key, String urlApi) async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  LoginResponseModel userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+  LoginResponseModel userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USER_CURRENT')!));
   Map<String, String> headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
   var data = [
     {"Key": "key", "Value": key}

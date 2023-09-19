@@ -27,8 +27,7 @@ class _MainDrawerState extends State<MainDrawer> {
 
   Future<LoginResponseModel> _getUserCurrent() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return LoginResponseModel.fromJson(
-        json.decode(prefs.getString('USERCURRENT')!));
+    return LoginResponseModel.fromJson(json.decode(prefs.getString('USER_CURRENT')!));
   }
 
   @override
@@ -39,8 +38,7 @@ class _MainDrawerState extends State<MainDrawer> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: new Theme(
-              data:
-                  Theme.of(context).copyWith(secondaryHeaderColor: Colors.blue),
+              data: Theme.of(context).copyWith(secondaryHeaderColor: Colors.blue),
               child: new CircularProgressIndicator(),
             ),
           );
@@ -72,28 +70,16 @@ class _MainDrawerState extends State<MainDrawer> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        CircleAvatar(
-                            radius: 80.0,
-                            backgroundColor: kPrimaryColor,
-                            child: CircleAvatar(
-                                radius: 75.0,
-                                backgroundImage: NetworkImage(
-                                    userCurrent!.anhDaiDien.toString()))),
+                        CircleAvatar(radius: 80.0, backgroundColor: kPrimaryColor, child: CircleAvatar(radius: 75.0, backgroundImage: NetworkImage(userCurrent!.anhDaiDien.toString()))),
                         SizedBox(height: 5.0),
                         Text(
                           "${userCurrent.hoTen}",
-                          style: TextStyle(
-                              fontSize: kLargeFontSize,
-                              fontWeight: FontWeight.w800,
-                              color: kPrimaryColor),
+                          style: TextStyle(fontSize: kLargeFontSize, fontWeight: FontWeight.w800, color: kPrimaryColor),
                         ),
                         SizedBox(height: 1.0),
                         Text(
                           "${userCurrent.chucDanh}",
-                          style: TextStyle(
-                              fontSize: kNormalFontSize,
-                              fontWeight: FontWeight.w400,
-                              color: kSecondaryColor),
+                          style: TextStyle(fontSize: kNormalFontSize, fontWeight: FontWeight.w400, color: kSecondaryColor),
                         ),
                         SizedBox(height: 1.0),
                         Text(
@@ -110,8 +96,7 @@ class _MainDrawerState extends State<MainDrawer> {
                 ),
                 SizedBox(height: 20.0),
                 ListTile(
-                  onTap: () =>
-                      Navigator.pushNamed(context, HomeScreen.routeName),
+                  onTap: () => Navigator.pushNamed(context, HomeScreen.routeName),
                   title: Row(
                     children: [
                       Icon(
@@ -157,8 +142,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   initiallyExpanded: true,
                   title: Row(
                     children: [
-                      Icon(Ionicons.construct_outline,
-                          color: kPrimaryColor, size: kNormalFontSize),
+                      Icon(Ionicons.construct_outline, color: kPrimaryColor, size: kNormalFontSize),
                       SizedBox(width: 10),
                       Text(
                         "menu.maintenance".tr(),
@@ -213,17 +197,12 @@ class _MainDrawerState extends State<MainDrawer> {
                     Padding(
                       padding: const EdgeInsets.only(left: 35.0),
                       child: ListTile(
-                        onTap: () => Navigator.pushNamed(
-                            context, DefectAnalysisScreen.routeName),
+                        onTap: () => Navigator.pushNamed(context, DefectAnalysisScreen.routeName),
                         title: Row(
                           children: [
-                            Icon(Ionicons.shield_checkmark_outline,
-                                color: kPrimaryColor, size: 15.0),
+                            Icon(Ionicons.shield_checkmark_outline, color: kPrimaryColor, size: 15.0),
                             SizedBox(width: 10),
-                            Text("menu.maintenance_defect_analysis".tr(),
-                                style: TextStyle(
-                                    fontSize: kNormalFontSize,
-                                    color: kPrimaryColor)),
+                            Text("menu.maintenance_defect_analysis".tr(), style: TextStyle(fontSize: kNormalFontSize, color: kPrimaryColor)),
                           ],
                         ),
                       ),
@@ -232,9 +211,7 @@ class _MainDrawerState extends State<MainDrawer> {
                 ),
                 ListTile(
                   onTap: () async {
-                    if (await funcLogOut())
-                      Navigator.pushReplacementNamed(
-                          context, SignInScreen.routeName);
+                    if (await funcLogOut()) Navigator.pushReplacementNamed(context, SignInScreen.routeName);
                   },
                   title: Row(
                     children: [

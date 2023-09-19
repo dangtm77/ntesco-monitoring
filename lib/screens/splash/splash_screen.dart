@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ntesco_smart_monitoring/screens/splash/components/body.dart';
-import 'package:ntesco_smart_monitoring/size_config.dart';
+import 'package:ntesco_smart_monitoring/sizeconfig.dart';
 
 class SplashScreen extends StatelessWidget {
   static String routeName = "/splash";

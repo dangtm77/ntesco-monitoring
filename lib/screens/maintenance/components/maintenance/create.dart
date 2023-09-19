@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, unused_field
 import 'dart:convert';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
@@ -21,7 +21,7 @@ import '../../../../helper/string.dart';
 import '../../../../models/mt/SystemModel.dart';
 import '../../../../models/mt/SystemReportReplacementsModel.dart';
 import '../../../../repository/mt/system_configs.dart';
-import '../../../../size_config.dart';
+import '../../../../sizeconfig.dart';
 import '../../../../theme.dart';
 
 class MaintenanceCreateScreen extends StatelessWidget {
@@ -347,7 +347,7 @@ class _MaintenanceCreateBodyState extends State<_MaintenanceCreateBody> {
             Map<String, dynamic> _systemReportModel = {
               'idSystem': systemModel.id,
               'code': _code,
-              'type': (_type != null && _type.length > 0) ? _type.first : null,
+              'type': (_type.length > 0) ? _type.first : null,
               'details': _systemConfigModel,
             };
 

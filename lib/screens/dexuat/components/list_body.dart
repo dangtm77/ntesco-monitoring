@@ -80,7 +80,7 @@ class _BodyPageState extends State<Body> {
 
   Future<PhieuDeXuatListModels> _getListPhieuDeXuat() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var userCurrent = LoginResponseModel.fromJson(json.decode(prefs.getString('USERCURRENT')!));
+    var userCurrent = LoginResponseModel.fromJson(json.decode(prefs.getString('USER_CURRENT')!));
     var sortOptions = [
       {"selector": "tinhTrang", "desc": "false"},
       {"selector": "ngayTao", "desc": "true"}

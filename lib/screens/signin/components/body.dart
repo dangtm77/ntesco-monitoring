@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ntesco_smart_monitoring/size_config.dart';
+import 'package:ntesco_smart_monitoring/sizeconfig.dart';
 import 'sign_form.dart';
 
 class Body extends StatelessWidget {

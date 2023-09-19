@@ -48,7 +48,7 @@ Future<http.Response> DefectAnalysisDetails_GetList(int id, dynamic options) asy
 }
 
 Future<http.Response> DefectAnalysisDetails_GetDetail(dynamic options) async => Core.get(options, API_DEFECTANALYSISDETAILS_GETDETAIL);
-Future<http.Response> DefectAnalysisDetails_Create(dynamic body) async => Core.post_by_model(body, API_DEFECTANALYSISDETAILS);
+Future<http.Response> DefectAnalysisDetails_Create(dynamic body) async => Core.postByModel(body, API_DEFECTANALYSISDETAILS);
 Future<http.Response> DefectAnalysisDetails_Update(int key, dynamic body) async => Core.put(key, body, API_DEFECTANALYSISDETAILS);
 Future<http.Response> DefectAnalysisDetails_Delete(int key) async => Core.delete(key, API_DEFECTANALYSISDETAILS);
 
@@ -58,7 +58,7 @@ Future<http.Response> DefectAnalysisDetails_WithFileDinhKem_GetList(int id, dyna
   return Core.get(queryParameters, API_DEFECTANALYSISDETAILS_WITH_FILEDINHKEM);
 }
 
-Future<http.Response> DefectAnalysisDetails_WithFileDinhKem_Create(dynamic body) async => Core.post_by_model(body, API_DEFECTANALYSISDETAILS_WITH_FILEDINHKEM);
+Future<http.Response> DefectAnalysisDetails_WithFileDinhKem_Create(dynamic body) async => Core.postByModel(body, API_DEFECTANALYSISDETAILS_WITH_FILEDINHKEM);
 Future<http.Response> DefectAnalysisDetails_WithFileDinhKem_Delete(int key) async => Core.delete(key, API_DEFECTANALYSISDETAILS_WITH_FILEDINHKEM);
 //--------------------------SYSTEM REPORT--------------------------//
 Future<http.Response> SystemReports_GetList(dynamic options) async => Core.get(options, API_SYSTEM_REPORTS);

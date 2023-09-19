@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ntesco_smart_monitoring/components/main_drawer.dart';
-import '../../size_config.dart';
+import '../../sizeconfig.dart';
 import 'components/body.dart';
 
 class HomeScreen extends StatelessWidget {

@@ -13,7 +13,6 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:http/http.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:ntesco_smart_monitoring/helper/string.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:ntesco_smart_monitoring/components/default_button.dart';
@@ -29,10 +28,8 @@ import '../../../../models/common/ProjectModel.dart';
 import '../../../../models/mt/SystemModel.dart';
 import '../../../../models/mt/SystemReportModel.dart';
 import '../../../../repository/mt/systems.dart';
-import '../../../../size_config.dart';
+import '../../../../sizeconfig.dart';
 import '../../../home/home_screen.dart';
-import 'create.dart';
-import 'update.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -48,8 +45,7 @@ class _BodyPageState extends State<Body> {
   late int itemPerPage = 15;
   late bool _isLoading = false;
 
-  late TextEditingController _keywordForSearchEditingController =
-      TextEditingController();
+  late TextEditingController _keywordForSearchEditingController = TextEditingController();
 
   late int _projectCurrent = 0;
   late Future<SystemReportModels> _listOfSystemReports;
@@ -59,9 +55,7 @@ class _BodyPageState extends State<Body> {
     _keywordForSearchEditingController.text = "";
     super.initState();
     checkConnectivity(null);
-    subscription = Connectivity()
-        .onConnectivityChanged
-        .listen((ConnectivityResult result) => checkConnectivity(result));
+    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) => checkConnectivity(result));
   }
 
   Future<void> checkConnectivity(ConnectivityResult? result) async {
@@ -87,15 +81,12 @@ class _BodyPageState extends State<Body> {
     projectsFilterOptions.add(['system.idProject', '=', _projectCurrent]);
     if (projectsFilterOptions.length > 0) {
       if (filterOptions.length > 0) filterOptions.add('and');
-      if (projectsFilterOptions.length > 0)
-        filterOptions.add(projectsFilterOptions);
+      if (projectsFilterOptions.length > 0) filterOptions.add(projectsFilterOptions);
     }
     //FILTER BY KEYWORD
-    if (_keywordForSearchEditingController.text.isNotEmpty &&
-        _keywordForSearchEditingController.text.trim().length > 3) {
+    if (_keywordForSearchEditingController.text.isNotEmpty && _keywordForSearchEditingController.text.trim().length > 3) {
       List<dynamic> searchGroupFilterOptions = [];
-      String _keyword =
-          _keywordForSearchEditingController.text.trim().toString();
+      String _keyword = _keywordForSearchEditingController.text.trim().toString();
       if (filterOptions.length > 0) filterOptions.add('and');
       searchGroupFilterOptions.add(['code', 'contains', _keyword]);
       searchGroupFilterOptions.add('or');
@@ -111,17 +102,10 @@ class _BodyPageState extends State<Body> {
       filterOptions.add(searchGroupFilterOptions);
     }
 
-    LoadOptionsModel options = new LoadOptionsModel(
-        take: itemPerPage * pageIndex,
-        skip: 0,
-        sort: jsonEncode(sortOptions),
-        filter: jsonEncode(filterOptions),
-        requireTotalCount: 'true');
-    Response response =
-        await Maintenance.SystemReports_GetList(options.toMap());
+    LoadOptionsModel options = new LoadOptionsModel(take: itemPerPage * pageIndex, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
+    Response response = await Maintenance.SystemReports_GetList(options.toMap());
     if (response.statusCode >= 200 && response.statusCode <= 299) {
-      SystemReportModels result =
-          SystemReportModels.fromJson(jsonDecode(response.body));
+      SystemReportModels result = SystemReportModels.fromJson(jsonDecode(response.body));
       setState(() {
         _isLoading = false;
       });
@@ -133,12 +117,7 @@ class _BodyPageState extends State<Body> {
   Future<List<S2Choice<int>>> _getListProjectsForSelect() async {
     List<dynamic> sortOptions = [];
     List<dynamic> filterOptions = [];
-    LoadOptionsModel options = new LoadOptionsModel(
-        take: 0,
-        skip: 0,
-        sort: jsonEncode(sortOptions),
-        filter: jsonEncode(filterOptions),
-        requireTotalCount: 'true');
+    LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
     Response response = await Common.Projects_GetList(options.toMap());
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       ProjectModels result = ProjectModels.fromJson(jsonDecode(response.body));
@@ -195,8 +174,7 @@ class _BodyPageState extends State<Body> {
                       SizedBox(width: 10.0),
                       Text(
                         "Đang tải thêm $itemPerPage dòng dữ liệu...",
-                        style: TextStyle(
-                            color: Colors.white, fontSize: kSmallFontSize),
+                        style: TextStyle(color: Colors.white, fontSize: kSmallFontSize),
                       )
                     ],
                   ),
@@ -218,10 +196,7 @@ class _BodyPageState extends State<Body> {
         onTap: () => Navigator.pushNamed(context, HomeScreen.routeName),
         child: Stack(
           clipBehavior: Clip.none,
-          children: [
-            Icon(Ionicons.chevron_back_outline,
-                color: kPrimaryColor, size: 25.0)
-          ],
+          children: [Icon(Ionicons.chevron_back_outline, color: kPrimaryColor, size: 25.0)],
         ),
       ),
       buttonRight: IconButton(
@@ -259,8 +234,7 @@ class _BodyPageState extends State<Body> {
               filled: true,
               fillColor: Colors.grey.shade100,
               contentPadding: EdgeInsets.all(0.0),
-              prefixIcon:
-                  Icon(Ionicons.search, size: 20, color: Colors.grey.shade600),
+              prefixIcon: Icon(Ionicons.search, size: 20, color: Colors.grey.shade600),
               suffixIcon: Padding(
                 padding: const EdgeInsets.all(0.0),
                 child: Row(
@@ -276,8 +250,7 @@ class _BodyPageState extends State<Body> {
                             _listOfSystemReports = _getlistOfSystemReports();
                           });
                         },
-                        icon: Icon(Ionicons.close_circle,
-                            color: Colors.grey.shade500, size: 20),
+                        icon: Icon(Ionicons.close_circle, color: Colors.grey.shade500, size: 20),
                       ),
                     IconButton(
                       onPressed: () => showModalBottomSheet(
@@ -291,18 +264,14 @@ class _BodyPageState extends State<Body> {
                       }),
                       icon: Icon(
                         Ionicons.filter,
-                        color: (_projectCurrent != 0)
-                            ? kPrimaryColor
-                            : Colors.grey.shade500,
+                        color: (_projectCurrent != 0) ? kPrimaryColor : Colors.grey.shade500,
                         size: 20,
                       ),
                     ),
                   ],
                 ),
               ),
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
               hintStyle: TextStyle(fontSize: 15, color: Colors.grey.shade500),
               hintText: "common.text_input_forsearch_hint".tr()),
         ),
@@ -331,8 +300,7 @@ class _BodyPageState extends State<Body> {
                 choiceType: S2ChoiceType.chips,
                 modalType: S2ModalType.bottomSheet,
                 onChange: (state) async {
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
                   prefs.setInt('MAINTENANCE-IDPROJECT', state.value);
                   setState(() => _projectCurrent = state.value);
                 },
@@ -340,15 +308,8 @@ class _BodyPageState extends State<Body> {
                   return S2Tile.fromState(
                     state,
                     isTwoLine: true,
-                    trailing: state.selected.length > 0
-                        ? CircleAvatar(
-                            radius: 15,
-                            backgroundColor: kPrimaryColor,
-                            child: Text('${state.selected.length}',
-                                style: TextStyle(color: Colors.white)))
-                        : null,
-                    isLoading:
-                        snapshot.connectionState == ConnectionState.waiting,
+                    trailing: state.selected.length > 0 ? CircleAvatar(radius: 15, backgroundColor: kPrimaryColor, child: Text('${state.selected.length}', style: TextStyle(color: Colors.white))) : null,
+                    isLoading: snapshot.connectionState == ConnectionState.waiting,
                   );
                 },
               );
@@ -400,9 +361,7 @@ class _BodyPageState extends State<Body> {
       child: (isOnline)
           ? NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification scrollInfo) {
-                if (!_isLoading &&
-                    scrollInfo.metrics.pixels ==
-                        scrollInfo.metrics.maxScrollExtent) {
+                if (!_isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
                   setState(() {
                     pageIndex = pageIndex + 1;
                     _listOfSystemReports = _getlistOfSystemReports();
@@ -420,25 +379,11 @@ class _BodyPageState extends State<Body> {
                 },
                 child: FutureBuilder<SystemReportModels>(
                   future: _listOfSystemReports,
-                  builder: (BuildContext context,
-                      AsyncSnapshot<SystemReportModels> snapshot) {
-                    if (snapshot.hasError)
-                      return DataErrorWidget(error: snapshot.error.toString());
-                    if ((snapshot.connectionState == ConnectionState.none ||
-                            snapshot.connectionState ==
-                                ConnectionState.waiting ||
-                            snapshot.connectionState ==
-                                ConnectionState.active) &&
-                        !_isLoading) return LoadingWidget();
+                  builder: (BuildContext context, AsyncSnapshot<SystemReportModels> snapshot) {
+                    if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
+                    if ((snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) && !_isLoading) return LoadingWidget();
                     if (!(snapshot.hasData && snapshot.data!.data.isNotEmpty))
-                      return NoDataWidget(
-                          subtitle: "Vui lòng kiểm tra lại điều kiện lọc...",
-                          button: OutlinedButton.icon(
-                              onPressed: _refresh,
-                              icon: Icon(Ionicons.refresh, size: 22.0),
-                              label: Text('Refresh',
-                                  style:
-                                      TextStyle(fontSize: kNormalFontSize))));
+                      return NoDataWidget(subtitle: "Vui lòng kiểm tra lại điều kiện lọc...", button: OutlinedButton.icon(onPressed: _refresh, icon: Icon(Ionicons.refresh, size: 22.0), label: Text('Refresh', style: TextStyle(fontSize: kNormalFontSize))));
                     else
                       return Padding(
                         padding: EdgeInsets.symmetric(
@@ -448,23 +393,13 @@ class _BodyPageState extends State<Body> {
                         child: AnimationLimiter(
                           child: GroupedListView<dynamic, String>(
                             elements: snapshot.data!.data,
-                            groupBy: (element) =>
-                                "${element.system.name}" +
-                                (element.system.otherName != null
-                                    ? " (${element.system.otherName})"
-                                    : ""),
+                            groupBy: (element) => "${element.system.name}" + (element.system.otherName != null ? " (${element.system.otherName})" : ""),
                             groupSeparatorBuilder: (String value) => Container(
                               width: MediaQuery.of(context).size.width,
                               color: kPrimaryColor,
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(15, 10, 0, 10),
-                                child: Text(value,
-                                    textAlign: TextAlign.left,
-                                    style: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white)),
+                                padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
+                                child: Text(value, textAlign: TextAlign.left, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
                               ),
                             ),
                             itemBuilder: (BuildContext context, dynamic item) {
@@ -614,9 +549,7 @@ class _BodyPageState extends State<Body> {
   }
 
   Widget _selectSystemForCreate(BuildContext context) {
-    Future<SystemModels> _listOfSystems =
-        MaintenanceSystemsRepository.getListSystemsByIDProject(
-            _projectCurrent, null);
+    Future<SystemModels> _listOfSystems = MaintenanceSystemsRepository.getListSystemsByIDProject(_projectCurrent, null);
     return Scrollbar(
       child: Column(
         children: [
@@ -624,50 +557,30 @@ class _BodyPageState extends State<Body> {
             alignment: Alignment.center,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Text("Vui lòng chọn hệ thống...",
-                  style: TextStyle(
-                      fontSize: kLargeFontSize,
-                      color: kPrimaryColor,
-                      fontWeight: FontWeight.w700)),
+              child: Text("Vui lòng chọn hệ thống...", style: TextStyle(fontSize: kLargeFontSize, color: kPrimaryColor, fontWeight: FontWeight.w700)),
             ),
           ),
           Expanded(
             child: FutureBuilder<SystemModels>(
               future: _listOfSystems,
               builder: (BuildContext _, AsyncSnapshot<SystemModels> snapshot) {
-                if (snapshot.hasError)
-                  return DataErrorWidget(error: snapshot.error.toString());
-                if (snapshot.connectionState == ConnectionState.none ||
-                    snapshot.connectionState == ConnectionState.waiting ||
-                    snapshot.connectionState == ConnectionState.active)
-                  return LoadingWidget();
+                if (snapshot.hasError) return DataErrorWidget(error: snapshot.error.toString());
+                if (snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active) return LoadingWidget();
                 if (!snapshot.hasData && !snapshot.data!.data.isNotEmpty)
                   return NoDataWidget(
                     subtitle: "Vui lòng kiểm tra lại điều kiện lọc",
-                    button: OutlinedButton.icon(
-                        onPressed: _refresh,
-                        icon: Icon(Ionicons.refresh, size: 24.0),
-                        label: Text('Refresh')),
+                    button: OutlinedButton.icon(onPressed: _refresh, icon: Icon(Ionicons.refresh, size: 24.0), label: Text('Refresh')),
                   );
                 else
                   return AnimationLimiter(
                     child: ListView.separated(
                       itemCount: snapshot.data!.data.length,
                       itemBuilder: (context, index) {
-                        SystemModel element =
-                            snapshot.data!.data.elementAt(index);
+                        SystemModel element = snapshot.data!.data.elementAt(index);
                         return ListTile(
                           title: Text(
-                            element.name.toString() +
-                                (element.otherName != null
-                                    ? (' (' +
-                                        element.otherName.toString() +
-                                        ')')
-                                    : ''),
-                            style: const TextStyle(
-                                fontSize: kNormalFontSize,
-                                color: kPrimaryColor,
-                                fontWeight: FontWeight.w600),
+                            element.name.toString() + (element.otherName != null ? (' (' + element.otherName.toString() + ')') : ''),
+                            style: const TextStyle(fontSize: kNormalFontSize, color: kPrimaryColor, fontWeight: FontWeight.w600),
                           ),
                           subtitle: Container(
                             padding: EdgeInsets.only(left: 10.0),
@@ -677,37 +590,21 @@ class _BodyPageState extends State<Body> {
                                 SizedBox(height: 5.0),
                                 RichText(
                                   text: TextSpan(
-                                    style: TextStyle(
-                                        fontSize: kSmallFontSize,
-                                        color: kTextColor),
+                                    style: TextStyle(fontSize: kSmallFontSize, color: kTextColor),
                                     children: [
-                                      WidgetSpan(
-                                          child: Icon(
-                                              Icons
-                                                  .label_important_outline_rounded,
-                                              size: kLargeFontSize)),
+                                      WidgetSpan(child: Icon(Icons.label_important_outline_rounded, size: kLargeFontSize)),
                                       WidgetSpan(child: SizedBox(width: 3.0)),
-                                      TextSpan(
-                                          text:
-                                              "Mã hiệu: ${element.code.toString()}"),
+                                      TextSpan(text: "Mã hiệu: ${element.code.toString()}"),
                                     ],
                                   ),
                                 ),
                                 RichText(
                                   text: TextSpan(
-                                    style: TextStyle(
-                                        fontSize: kSmallFontSize,
-                                        color: kTextColor),
+                                    style: TextStyle(fontSize: kSmallFontSize, color: kTextColor),
                                     children: [
-                                      WidgetSpan(
-                                          child: Icon(
-                                              Icons
-                                                  .label_important_outline_rounded,
-                                              size: kLargeFontSize)),
+                                      WidgetSpan(child: Icon(Icons.label_important_outline_rounded, size: kLargeFontSize)),
                                       WidgetSpan(child: SizedBox(width: 3.0)),
-                                      TextSpan(
-                                          text:
-                                              "Ngày bàn giao: ${DateFormat("dd/MM/yyyy").format(element.dateAcceptance!)}"),
+                                      TextSpan(text: "Ngày bàn giao: ${DateFormat("dd/MM/yyyy").format(element.dateAcceptance!)}"),
                                     ],
                                   ),
                                 ),
@@ -734,8 +631,7 @@ class _BodyPageState extends State<Body> {
                           },
                         );
                       }, // optional
-                      separatorBuilder: (BuildContext context, int index) =>
-                          const Divider(),
+                      separatorBuilder: (BuildContext context, int index) => const Divider(),
                     ),
                   );
               },
@@ -757,24 +653,20 @@ class _BodyPageState extends State<Body> {
       isDestructiveAction: true,
     ).then((result) async {
       if (result == OkCancelResult.ok) {
-        ProgressHud.of(context)
-            ?.show(ProgressHudType.loading, "Vui lòng chờ...");
+        ProgressHud.of(context)?.show(ProgressHudType.loading, "Vui lòng chờ...");
         await Maintenance.DefectAnalysis_Delete(key).then((response) {
           if (response.statusCode >= 200 && response.statusCode <= 299) {
             ProgressHud.of(context)?.dismiss();
-            Util.showNotification(context, null, "Hủy bỏ thông tin thành công",
-                ContentType.success, 3);
+            Util.showNotification(context, null, "Hủy bỏ thông tin thành công", ContentType.success, 3);
             setState(() {
               _isLoading = false;
               _listOfSystemReports = _getlistOfSystemReports();
             });
           } else
-            Util.showNotification(
-                context, null, response.body, ContentType.failure, 5);
+            Util.showNotification(context, null, response.body, ContentType.failure, 5);
         }).catchError((error, stackTrace) {
           ProgressHud.of(context)?.dismiss();
-          Util.showNotification(context, null,
-              "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
+          Util.showNotification(context, null, "Có lỗi xảy ra. Chi tiết: $error", ContentType.failure, 5);
         });
       }
     });

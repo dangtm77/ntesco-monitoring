@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 
 import '../constants.dart';
-import '../size_config.dart';
+import '../sizeconfig.dart';
 
 class NotificationBell extends StatefulWidget {
   NotificationBell({Key? key}) : super(key: key);

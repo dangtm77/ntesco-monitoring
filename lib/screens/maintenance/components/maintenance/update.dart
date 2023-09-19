@@ -16,7 +16,7 @@ import 'package:ntesco_smart_monitoring/models/mt/SystemReportModel.dart';
 import '../../../../components/state_widget.dart';
 import '../../../../components/top_header.dart';
 import '../../../../constants.dart';
-import '../../../../size_config.dart';
+import '../../../../sizeconfig.dart';
 import '../../maintenance_screen.dart';
 import 'update/replacements_pageview.dart';
 import 'update/reviews_pageview.dart';

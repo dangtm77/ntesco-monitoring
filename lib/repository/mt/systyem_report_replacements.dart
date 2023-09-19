@@ -49,7 +49,7 @@ class MaintenanceSystemReportReplacementsRepository {
   static Future<http.Response> create(dynamic body) async {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
-      LoginResponseModel userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+      LoginResponseModel userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USER_CURRENT')!));
       Map<String, String> headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
       var data = [
         {"Key": "values", "Value": jsonEncode(body)}
@@ -68,7 +68,7 @@ class MaintenanceSystemReportReplacementsRepository {
   static Future<http.Response> update(int key, dynamic body) async {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
-      LoginResponseModel userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+      LoginResponseModel userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USER_CURRENT')!));
       Map<String, String> headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
       var data = [
         {"Key": "key", "Value": key},
@@ -88,7 +88,7 @@ class MaintenanceSystemReportReplacementsRepository {
   static Future<http.Response> delete(int key) async {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
-      LoginResponseModel userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USERCURRENT')!));
+      LoginResponseModel userCurrent = LoginResponseModel.fromJson(json.decode(preferences.getString('USER_CURRENT')!));
       Map<String, String> headerValue = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer ${userCurrent.accessToken}'};
       var data = [
         {"Key": "key", "Value": key},

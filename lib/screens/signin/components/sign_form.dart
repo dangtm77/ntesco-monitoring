@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:bmprogresshud/progresshud.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -13,7 +12,7 @@ import 'package:ntesco_smart_monitoring/core/auth.dart';
 import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:ntesco_smart_monitoring/models/Login.dart';
 import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
-import 'package:ntesco_smart_monitoring/size_config.dart';
+import 'package:ntesco_smart_monitoring/sizeconfig.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignForm extends StatefulWidget {
@@ -40,9 +39,7 @@ class _SignFormState extends State<SignForm> {
 
   Future<void> checkConnectivity(ConnectivityResult? result) async {
     Util.checkConnectivity(result, (status) {
-      setState(() {
-        isOnline = status;
-      });
+      setState(() => isOnline = status);
     });
   }
 
@@ -57,9 +54,8 @@ class _SignFormState extends State<SignForm> {
           usernameTextFormField(),
           SizedBox(height: getProportionateScreenHeight(30)),
           passwordTextFormField(),
-          SizedBox(height: getProportionateScreenHeight(30)),
+          SizedBox(height: getProportionateScreenHeight(50)),
           DefaultButton(
-            //icon: Icons.send_sharp,
             text: "login.signin_button".tr(),
             press: () async => submitLogin(),
             height: 40,
@@ -112,14 +108,15 @@ class _SignFormState extends State<SignForm> {
   }
 
   Widget passwordTextFormField() {
+    print(password);
     return TextFormField(
       obscureText: _isObscure,
       onSaved: (newValue) => password = newValue,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (value) {
-        if (value!.isEmpty) {
+        if (value!.isEmpty)
           return "validation.required".tr();
-        } else
+        else
           return null;
       },
       style: TextStyle(letterSpacing: 2, fontSize: 20),
@@ -135,18 +132,15 @@ class _SignFormState extends State<SignForm> {
         ),
         isDense: true,
         suffixIcon: IconButton(
-            icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off, size: 30),
-            color: kPrimaryColor,
-            onPressed: () {
-              setState(() {
-                _isObscure = !_isObscure;
-              });
-            }),
+          icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off, size: 25),
+          color: kPrimaryColor,
+          onPressed: () => setState(() => _isObscure = !_isObscure),
+        ),
       ),
     );
   }
 
-  void submitLogin() async {
+  Future<void> submitLogin() async {
     if (_formKey.currentState!.validate()) {
       if (isOnline == false)
         Util.showNotification(context, null, "Vui lòng kiểm tra kết nối internet của thiết bị của bạn...", ContentType.warning, 2);
@@ -161,11 +155,11 @@ class _SignFormState extends State<SignForm> {
           await Future.delayed(Duration(milliseconds: 500));
           Util.hideKeyboard(context);
           if (data.accessToken!.isNotEmpty) {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
+            SharedPreferences _prefs = await SharedPreferences.getInstance();
             ProgressHud.of(context)?.showSuccessAndDismiss(text: "Thành công");
             await Future.delayed(Duration(milliseconds: 300));
-            prefs.setBool("ISLOGGEDIN", true);
-            prefs.setString('USERCURRENT', data.toJson());
+            _prefs.setBool("ISLOGGEDIN", true);
+            _prefs.setString('USER_CURRENT', data.toJson());
             Navigator.pushReplacementNamed(context, HomeScreen.routeName);
           } else {
             ProgressHud.of(context)?.dismiss();

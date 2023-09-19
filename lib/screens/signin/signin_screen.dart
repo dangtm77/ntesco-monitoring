@@ -1,7 +1,7 @@
 import 'package:bmprogresshud/bmprogresshud.dart';
 import 'package:flutter/material.dart';
 
-import '../../size_config.dart';
+import '../../sizeconfig.dart';
 import 'components/body.dart';
 
 class SignInScreen extends StatelessWidget {
