@@ -21,12 +21,10 @@ import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 import 'package:ntesco_smart_monitoring/helper/util.dart';
 import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/common/ProjectModel.dart';
-import 'package:ntesco_smart_monitoring/models/common/UsersModel.dart';
+import 'package:ntesco_smart_monitoring/models/common/UserModel.dart';
 import 'package:ntesco_smart_monitoring/models/common/VariableModel.dart';
-import 'package:ntesco_smart_monitoring/models/mt/DefectAnalysisModel.dart';
+import 'package:ntesco_smart_monitoring/models/maintenance/DefectAnalysisModel.dart';
 import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
-//import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/create.dart';
-//import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/update.dart';
 import 'package:ntesco_smart_monitoring/sizeconfig.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -51,7 +49,7 @@ class _BodyPageState extends State<Body> {
 
   late int _projectCurrent = 0;
   late List<int> _statusCurrent = [];
-  late List<UsersModel> _listOfUsers = [];
+  late List<UserModel> _listOfUsers = [];
   late Future<DefectAnalysisModels> _listOfDefectAnalysis;
 
   @override
@@ -79,7 +77,7 @@ class _BodyPageState extends State<Body> {
     LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
     Response response = await Common.Users_GetList(options.toMap());
     if (response.statusCode >= 200 && response.statusCode <= 299) {
-      UsersModels result = UsersModels.fromJson(response.body);
+      UserModels result = UserModels.fromJson(response.body);
       setState(() => _listOfUsers = result.data);
     } else
       throw Exception(response.body);
@@ -492,7 +490,7 @@ class _BodyPageState extends State<Body> {
   }
 
   Widget _item(DefectAnalysisModel item) {
-    var analysisByInfo = _listOfUsers.firstWhere((e) => e.username == item.analysisBy, orElse: () => new UsersModel(username: item.analysisBy!, hoTen: item.analysisBy!));
+    var analysisByInfo = _listOfUsers.firstWhere((e) => e.username == item.analysisBy, orElse: () => new UserModel(username: item.analysisBy!, hoTen: item.analysisBy!, anhDaiDien: '/'));
 
     List<Widget> _listMenu = [
       ListTile(

@@ -11,7 +11,7 @@ import 'package:ionicons/ionicons.dart';
 
 import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 import 'package:ntesco_smart_monitoring/helper/util.dart';
-import 'package:ntesco_smart_monitoring/models/mt/SystemReportModel.dart';
+import 'package:ntesco_smart_monitoring/models/maintenance/SystemReportModel.dart';
 
 import '../../../../components/state_widget.dart';
 import '../../../../components/top_header.dart';

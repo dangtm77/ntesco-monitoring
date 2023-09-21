@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 
 import '../../models/LoadOptions.dart';
-import '../../models/mt/SystemModel.dart';
+import '../../models/maintenance/SystemModel.dart';
 
 class MaintenanceSystemsRepository {
   static Future<SystemModels> getListSystemsByIDProject(int id, dynamic option) async {

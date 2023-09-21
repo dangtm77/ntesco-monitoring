@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 
 import '../../models/LoadOptions.dart';
-import '../../models/mt/DefectAnalysisDetailsModel.dart';
+import '../../models/maintenance/DefectAnalysisDetailsModel.dart';
 
 class MaintenanceDefectAnalysisDetailsRepository {
   static Future<DefectAnalysisDetailsModels> getList(int id, dynamic option) async {

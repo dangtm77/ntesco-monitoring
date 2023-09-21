@@ -15,7 +15,7 @@ import 'package:ntesco_smart_monitoring/theme.dart';
 
 import '../../../../../../components/default_button.dart';
 import '../../../../../../components/state_widget.dart';
-import '../../../../../../models/mt/SystemReportReplacementsModel.dart';
+import '../../../../../../models/maintenance/SystemReportReplacementsModel.dart';
 import '../../../../../../repository/mt/systyem_report_replacements.dart';
 
 class SystemReportReplacementsUpdateScreen extends StatelessWidget {

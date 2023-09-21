@@ -1,78 +1,62 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 // ignore_for_file: non_constant_identifier_names
+
+import 'dart:convert';
 
 class UserModels {
   final int totalCount;
   final List<UserModel> data;
-  UserModels({
-    required this.totalCount,
-    required this.data,
-  });
-  factory UserModels.fromJson(dynamic json) {
-    return UserModels(
-        totalCount: json['totalCount'],
-        data: json['data'].map<UserModel>((json) {
-          return UserModel.fromJson(json);
-        }).toList());
+  UserModels({required this.totalCount, required this.data});
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'totalCount': totalCount,
+      'data': data.map((x) => x.toMap()).toList(),
+    };
   }
+
+  factory UserModels.fromMap(Map<String, dynamic> map) {
+    return UserModels(
+      totalCount: map['totalCount'] as int,
+      data: List<UserModel>.from(map['data'].map<UserModel>((x) => UserModel.fromMap(x as Map<String, dynamic>))),
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory UserModels.fromJson(String source) => UserModels.fromMap(json.decode(source) as Map<String, dynamic>);
 }
 
 class UserModel {
+  final String? msnv;
   final String username;
-  final String? anhDaiDien;
+  final String anhDaiDien;
   final String hoTen;
-  //String? ngaySinh;
-  //String? gioiTinh;
-  //String? email;
-  final int idTrangThai;
-  final int idPhongBan;
-  final int idRootPhongBan;
-  final int idChucDanh;
-  //String? noiCongTac;
-  final String rootPhongBan;
-  final String phongBan;
-  final String chucDanh;
+  UserModel({this.msnv, required this.username, required this.anhDaiDien, required this.hoTen});
 
-  final int chucDanh_SapXep;
-  final int phongBan_SapXep;
-  final String chucDanh_Loai;
+  UserModel copyWith({String? msnv, String? username, String? anhDaiDien, String? hoTen}) {
+    return UserModel(msnv: msnv ?? this.msnv, username: username ?? this.username, anhDaiDien: anhDaiDien ?? this.anhDaiDien, hoTen: hoTen ?? this.hoTen);
+  }
 
-  UserModel({
-    required this.username,
-    this.anhDaiDien,
-    required this.hoTen,
-    // this.ngaySinh,
-    // this.gioiTinh,
-    // this.email,
-    required this.idTrangThai,
-    required this.idPhongBan,
-    required this.idRootPhongBan,
-    required this.idChucDanh,
-    required this.rootPhongBan,
-    required this.phongBan,
-    required this.chucDanh,
-    required this.chucDanh_SapXep,
-    required this.phongBan_SapXep,
-    required this.chucDanh_Loai,
-  });
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'msnv': msnv,
+      'username': username,
+      'anhDaiDien': anhDaiDien,
+      'hoTen': hoTen,
+    };
+  }
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
+  factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      username: json["username"],
-      anhDaiDien: json["anhDaiDien"] != null ? json["anhDaiDien"] : "",
-      hoTen: json["hoTen"],
-      // ngaySinh: json["ngaySinh"] != null ? json["ngaySinh"] : "",
-      // gioiTinh: json["gioiTinh"] != null ? json["gioiTinh"] : "",
-      // email: json["email"] != null ? json["email"] : "",
-      idTrangThai: json["idTrangThai"] as int,
-      idPhongBan: json["idPhongBan"] as int,
-      idRootPhongBan: json["idRootPhongBan"] as int,
-      idChucDanh: json["idChucDanh"] as int,
-      rootPhongBan: json["rootPhongBan"],
-      phongBan: json["phongBan"],
-      chucDanh: json["chucDanh"],
-      chucDanh_SapXep: json["chucDanh_SapXep"] as int,
-      phongBan_SapXep: json["phongBan_SapXep"] as int,
-      chucDanh_Loai: json["chucDanh_Loai"],
+      msnv: map['msnv'] != null ? map['msnv'] as String : null,
+      username: map['username'] as String,
+      anhDaiDien: map['anhDaiDien'] as String,
+      hoTen: map['hoTen'] as String,
     );
   }
+
+  String toJson() => json.encode(toMap());
+
+  factory UserModel.fromJson(String source) => UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

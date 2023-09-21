@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
+import 'package:ntesco_smart_monitoring/models/common/UserModel.dart';
 
 import '../../models/LoadOptions.dart';
-import '../../models/common/UserModel.dart';
 
 class CommonUsersRepository {
   static Future<UserModels> getListUsers(dynamic option) async {

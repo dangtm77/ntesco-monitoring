@@ -1,5 +1,3 @@
-import 'package:ntesco_smart_monitoring/models/common/UserModel.dart';
-
 class PlanModels {
   final int totalCount;
   final List<PlanModel> data;
@@ -27,7 +25,6 @@ class PlanModel {
   final DateTime? startDate;
   final DateTime? endDate;
   final String? participants;
-  final List<UserModel>? participantsInfo;
   final String? linkIDs;
   final bool isActive;
   final bool isDelete;
@@ -47,7 +44,6 @@ class PlanModel {
     this.startDate,
     this.endDate,
     this.participants,
-    this.participantsInfo,
     this.linkIDs,
     required this.isActive,
     required this.isDelete,
@@ -70,11 +66,6 @@ class PlanModel {
       startDate: json['startDate'] != null ? DateTime.parse((json['startDate'])) : null,
       endDate: json['endDate'] != null ? DateTime.parse((json['endDate'])) : null,
       participants: (json['participants'] != null && json['participants'].length > 1) ? json['participants'] as String : null,
-      participantsInfo: (json['participantsInfo'] != null && json['participantsInfo'].length > 1)
-          ? json['participantsInfo'].map<UserModel>((json) {
-              return UserModel.fromJson(json);
-            }).toList()
-          : null,
       linkIDs: json['linkIDs'] != null ? json['linkIDs'] : null,
       isActive: json['isActive'] as bool,
       isDelete: json['isDelete'] as bool,

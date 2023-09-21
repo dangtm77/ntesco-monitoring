@@ -11,15 +11,15 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:ntesco_smart_monitoring/helper/util.dart';
-import 'package:ntesco_smart_monitoring/models/mt/SystemConfigModel.dart';
+import 'package:ntesco_smart_monitoring/models/maintenance/SystemConfigModel.dart';
 import 'package:ntesco_smart_monitoring/core/maintenance.dart' as Maintenance;
 
 import '../../../../components/state_widget.dart';
 import '../../../../components/top_header.dart';
 import '../../../../constants.dart';
 import '../../../../helper/string.dart';
-import '../../../../models/mt/SystemModel.dart';
-import '../../../../models/mt/SystemReportReplacementsModel.dart';
+import '../../../../models/maintenance/SystemModel.dart';
+import '../../../../models/maintenance/SystemReportReplacementsModel.dart';
 import '../../../../repository/mt/system_configs.dart';
 import '../../../../sizeconfig.dart';
 import '../../../../theme.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
-import '../../../../../models/mt/SystemReportModel.dart';
+import '../../../../../models/maintenance/SystemReportModel.dart';
 
 class SummaryPageView extends StatefulWidget {
   final int id;

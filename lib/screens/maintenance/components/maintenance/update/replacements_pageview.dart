@@ -9,8 +9,8 @@ import 'package:ntesco_smart_monitoring/screens/maintenance/components/maintenan
 import '../../../../../components/default_button.dart';
 import '../../../../../components/state_widget.dart';
 import '../../../../../constants.dart';
-import '../../../../../models/mt/SystemReportModel.dart';
-import '../../../../../models/mt/SystemReportReplacementsModel.dart';
+import '../../../../../models/maintenance/SystemReportModel.dart';
+import '../../../../../models/maintenance/SystemReportReplacementsModel.dart';
 import '../../../../../repository/mt/systyem_report_replacements.dart';
 import '../../../../../sizeconfig.dart';
 import 'replacements/create.dart';

@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants.dart';
 import '../../models/LoadOptions.dart';
 import '../../models/Login.dart';
-import '../../models/mt/SystemReportReplacementsModel.dart';
+import '../../models/maintenance/SystemReportReplacementsModel.dart';
 
 class MaintenanceSystemReportReplacementsRepository {
   static String API_SYSTEM_REPORTS_REPLACEMENTS = "v2/mt/systemreportreplacements";
