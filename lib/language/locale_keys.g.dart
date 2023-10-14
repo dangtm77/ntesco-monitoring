@@ -53,6 +53,8 @@ abstract class  LocaleKeys {
   static const maintenance_plan = 'maintenance.plan';
   static const maintenance_defect_analysis_title = 'maintenance.defect_analysis.title';
   static const maintenance_defect_analysis_subtitle = 'maintenance.defect_analysis.subtitle';
+  static const maintenance_defect_analysis_create_title = 'maintenance.defect_analysis.create_title';
+  static const maintenance_defect_analysis_create_subtitle = 'maintenance.defect_analysis.create_subtitle';
   static const maintenance_defect_analysis = 'maintenance.defect_analysis';
   static const maintenance_defect_analysis_details_title = 'maintenance.defect_analysis_details.title';
   static const maintenance_defect_analysis_details_subtitle = 'maintenance.defect_analysis_details.subtitle';

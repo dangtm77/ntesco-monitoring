@@ -75,7 +75,9 @@ class CodegenLoader extends AssetLoader{
     },
     "defect_analysis": {
       "title": "Defect analysis",
-      "subtitle": "Analysis and report defect of projects"
+      "subtitle": "Analysis and report defect of projects",
+      "create_title": "Create new report",
+      "create_subtitle": "Create and new information of report"
     },
     "defect_analysis_details": {
       "title": "Update defect analysis details",
@@ -183,7 +185,9 @@ static const Map<String,dynamic> vi_VN = {
     },
     "defect_analysis": {
       "title": "Phân tích sự cố",
-      "subtitle": "Báo cáo phân tích sự cố của hệ thống"
+      "subtitle": "Báo cáo phân tích sự cố của hệ thống",
+      "create_title": "Tạo báo cáo phân tích",
+      "create_subtitle": "Tạo và thêm thông tin báo cáo phân tích"
     },
     "defect_analysis_details": {
       "title": "Cập nhật chi tiết sự cố",

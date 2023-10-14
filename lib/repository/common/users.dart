@@ -2,16 +2,15 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:ntesco_smart_monitoring/core/common.dart' as Common;
+import 'package:ntesco_smart_monitoring/models/LoadOptions.dart';
 import 'package:ntesco_smart_monitoring/models/common/UserModel.dart';
 
-import '../../models/LoadOptions.dart';
-
 class CommonUsersRepository {
-  static Future<UserModels> getListUsers(dynamic option) async {
+  static Future<UserModels> getList(dynamic option) async {
     try {
       List<dynamic> sortOptions = [
-        {"selector": "phongBan_SapXep", "desc": "false"},
-        {"selector": "chucDanh_SapXep", "desc": "true"},
+        {"selector": "sapXepPhongBan", "desc": "false"},
+        {"selector": "sapXepChucDanh", "desc": "true"},
       ];
       List<dynamic> filterOptions = [];
       int takeOptions = 0, skipOptions = 0;

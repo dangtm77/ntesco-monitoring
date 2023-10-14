@@ -29,10 +29,10 @@ class UserModels {
 
 class UserModel {
   final String? msnv;
-  final String username;
+  final String? username;
   final String anhDaiDien;
   final String hoTen;
-  UserModel({this.msnv, required this.username, required this.anhDaiDien, required this.hoTen});
+  UserModel({this.msnv, this.username, required this.anhDaiDien, required this.hoTen});
 
   UserModel copyWith({String? msnv, String? username, String? anhDaiDien, String? hoTen}) {
     return UserModel(msnv: msnv ?? this.msnv, username: username ?? this.username, anhDaiDien: anhDaiDien ?? this.anhDaiDien, hoTen: hoTen ?? this.hoTen);
@@ -50,7 +50,7 @@ class UserModel {
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       msnv: map['msnv'] != null ? map['msnv'] as String : null,
-      username: map['username'] as String,
+      username: map['username'] != null ? map['username'] as String : null,
       anhDaiDien: map['anhDaiDien'] as String,
       hoTen: map['hoTen'] as String,
     );

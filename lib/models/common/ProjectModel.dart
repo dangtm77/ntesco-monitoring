@@ -1,10 +1,7 @@
 class ProjectModels {
   final int totalCount;
   final List<ProjectModel> data;
-  ProjectModels({
-    required this.totalCount,
-    required this.data,
-  });
+  ProjectModels({required this.totalCount, required this.data});
   factory ProjectModels.fromJson(dynamic json) {
     return ProjectModels(
         totalCount: json['totalCount'],

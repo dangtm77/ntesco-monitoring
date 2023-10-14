@@ -24,7 +24,8 @@ class MaintenanceSystemsRepository {
       Response response = await Maintenance.Systems_GetList_ByProject(id, options.toMap());
 
       if (response.statusCode >= 200 && response.statusCode <= 299) {
-        return SystemModels.fromJson(jsonDecode(response.body));
+        var rs = SystemModels.fromJson(jsonDecode(response.body));
+        return rs;
       } else
         throw Exception(response.body);
     } catch (ex) {

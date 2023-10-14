@@ -1,10 +1,7 @@
 class SystemModels {
   final int totalCount;
   final List<SystemModel> data;
-  SystemModels({
-    required this.totalCount,
-    required this.data,
-  });
+  SystemModels({required this.totalCount, required this.data});
   factory SystemModels.fromJson(dynamic json) {
     return SystemModels(
         totalCount: json['totalCount'],
@@ -30,6 +27,9 @@ class SystemModel {
     this.dateAcceptance,
   });
   factory SystemModel.fromJson(dynamic map) {
+    print('--');
+    print(map['dateAcceptance']);
+    print('--');
     return SystemModel(
       id: map['id'] as int,
       idProject: map['idProject'] as int,

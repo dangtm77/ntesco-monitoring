@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const endPoint = "portal-api.ntesco.com";
+const endPoint = "api.ntesco.com";
 const urlNoImage = 'https://via.placeholder.com/200x120/CCCCCC/000000?text=No+image';
 const UPLOAD_IMAGE_QUALITY = 80;
 const UPLOAD_IMAGE_WIDTH_MAX = 800.0;

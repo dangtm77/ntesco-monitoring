@@ -25,6 +25,7 @@ import 'package:ntesco_smart_monitoring/models/common/UserModel.dart';
 import 'package:ntesco_smart_monitoring/models/common/VariableModel.dart';
 import 'package:ntesco_smart_monitoring/models/maintenance/DefectAnalysisModel.dart';
 import 'package:ntesco_smart_monitoring/screens/home/home_screen.dart';
+import 'package:ntesco_smart_monitoring/screens/maintenance/components/defect_analysis/create.dart';
 import 'package:ntesco_smart_monitoring/sizeconfig.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -72,7 +73,10 @@ class _BodyPageState extends State<Body> {
   }
 
   Future<void> _getListOfUsers() async {
-    List<dynamic> sortOptions = [];
+    List<dynamic> sortOptions = [
+      {"selector": "sapXepPhongBan", "desc": "false"},
+      {"selector": "sapXepChucDanh", "desc": "true"},
+    ];
     List<dynamic> filterOptions = [];
     LoadOptionsModel options = new LoadOptionsModel(take: 0, skip: 0, sort: jsonEncode(sortOptions), filter: jsonEncode(filterOptions), requireTotalCount: 'true');
     Response response = await Common.Users_GetList(options.toMap());
@@ -245,13 +249,15 @@ class _BodyPageState extends State<Body> {
         ),
       ),
       buttonRight: IconButton(
-        enableFeedback: true, color: (_projectCurrent != 0) ? kPrimaryColor : Colors.grey, icon: Icon(Icons.addchart_outlined, size: 25.0), onPressed: () => {},
-        // onPressed: () => (_projectCurrent != 0)
-        //     ? showModalBottomSheet(
-        //         context: context,
-        //         builder: (context) => DefectAnalysisCreateScreen(),
-        //       ).then((value) => _refresh())
-        //     : null,
+        enableFeedback: true,
+        color: (_projectCurrent != 0) ? kPrimaryColor : Colors.grey,
+        icon: Icon(Icons.addchart_outlined, size: 25.0),
+        onPressed: () => (_projectCurrent != 0)
+            ? showModalBottomSheet(
+                context: context,
+                builder: (context) => DefectAnalysisCreateScreen(),
+              ).then((value) => _refresh())
+            : null,
       ),
     );
   }
@@ -558,7 +564,15 @@ class _BodyPageState extends State<Body> {
                     style: TextStyle(color: kTextColor, fontSize: kSmallFontSize, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic),
                     children: [
                       WidgetSpan(child: SizedBox(width: 5.0)),
-                      TextSpan(text: DateFormat("hh:mm dd/MM/yy").format(item.analysisDate!), style: TextStyle(color: kTextColor, fontSize: kSmallFontSize, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
+                      TextSpan(
+                        text: DateFormat("hh:mm dd/MM/yy").format(item.analysisDate!),
+                        style: TextStyle(
+                          color: kTextColor,
+                          fontSize: kSmallFontSize,
+                          fontWeight: FontWeight.normal,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -572,9 +586,17 @@ class _BodyPageState extends State<Body> {
                     style: TextStyle(color: kTextColor, fontSize: kSmallFontSize, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic),
                     children: [
                       WidgetSpan(child: SizedBox(width: 5.0)),
-                      TextSpan(text: DateFormat("hh:mm dd/MM/yy").format(item.analysisDate!), style: TextStyle(color: kTextColor, fontSize: kSmallFontSize, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic)),
+                      TextSpan(
+                        text: DateFormat("hh:mm dd/MM/yy").format(item.analysisDate!),
+                        style: TextStyle(
+                          color: kTextColor,
+                          fontSize: kSmallFontSize,
+                          fontWeight: FontWeight.normal,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
                       WidgetSpan(child: SizedBox(width: 10.0)),
-                      WidgetSpan(child: Icon(Icons.person, size: 15)),
+                      WidgetSpan(child: Icon(Icons.label_important_rounded, size: 15)),
                       WidgetSpan(child: SizedBox(width: 2.0)),
                       TextSpan(text: "${StringHelper.toShortName(analysisByInfo.hoTen)}"),
                       WidgetSpan(child: SizedBox(width: 10.0)),
@@ -603,7 +625,7 @@ class _BodyPageState extends State<Body> {
                   text: TextSpan(
                     style: TextStyle(color: kTextColor, fontSize: kSmallFontSize, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic),
                     children: [
-                      WidgetSpan(child: Icon(Icons.person, size: 15)),
+                      WidgetSpan(child: Icon(Icons.label_important_rounded, size: 15)),
                       WidgetSpan(child: SizedBox(width: 2.0)),
                       TextSpan(text: "${StringHelper.toShortName(analysisByInfo.hoTen)}"),
                       WidgetSpan(child: SizedBox(width: 10.0)),
@@ -685,6 +707,6 @@ class _BodyPageState extends State<Body> {
   }
 
   Future<void> exportFunc(key) async {
-    await launchUrl(Uri.parse('https://portal-api.ntesco.com/v2/MT/DefectAnalysis/Export?id=2'), mode: LaunchMode.inAppWebView);
+    await launchUrl(Uri.parse('https://api.ntesco.com/v2/MT/DefectAnalysis/Export?id=2'), mode: LaunchMode.inAppWebView);
   }
 }
