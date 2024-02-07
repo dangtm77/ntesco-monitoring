@@ -1,3 +1,5 @@
+// ignore_for_file: cancel_subscriptions
+
 import 'dart:async';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:bmprogresshud/progresshud.dart';
